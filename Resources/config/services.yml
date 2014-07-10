@@ -1,0 +1,7 @@
+parameters:
+#    nefarian_cms.example.class: Nefarian\CmsBundle\Example
+
+services:
+#    nefarian_cms.example:
+#        class: %nefarian_cms.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

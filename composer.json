@@ -18,5 +18,6 @@
     "autoload": {
         "psr-0": {"Nefarian\\CmsBundle\\": ""}
     },
+    "target-dir": "Nefarian/CmsBundle",
     "minimum-stability": "stable"
 }
