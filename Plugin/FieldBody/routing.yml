@@ -1,0 +1,4 @@
+#field_body:
+#    resource: "@AndyCmsBundle/Resources/config/routing.yml"
+#    prefix:   /
+

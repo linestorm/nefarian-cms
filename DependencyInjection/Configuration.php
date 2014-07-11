@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -20,10 +21,19 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('nefarian_cms');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode->isRequired();
+        $this->addPluginSection($rootNode);
 
         return $treeBuilder;
+    }
+
+    private function addPluginSection(NodeDefinition $rootNode)
+    {
+        $rootNode->children()
+            ->arrayNode('plugins')->isRequired()
+                ->prototype('scalar')
+                ->end()
+            ->end()
+        ->end();
     }
 }

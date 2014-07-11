@@ -1,7 +1,7 @@
 parameters:
-#    nefarian_cms.example.class: Nefarian\CmsBundle\Example
+    nefarian_cms.config_manager.class: Nefarian\CmsBundle\Configuration\ConfigManager
 
 services:
-#    nefarian_cms.example:
-#        class: %nefarian_cms.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    nefarian_cms.config_manager:
+        class: %nefarian_cms.config_manager.class%
+        arguments: [@doctrine.orm.default_entity_manager]
