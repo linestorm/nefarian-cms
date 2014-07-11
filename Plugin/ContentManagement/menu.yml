@@ -1,0 +1,11 @@
+index:
+  route: index
+  title: Content
+  description: Content management
+  parent: ~
+
+list:
+  route: index
+  title: All Content Types
+  description: Add, Edit and Delete Content Types
+  parent: self.index

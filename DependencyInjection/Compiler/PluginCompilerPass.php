@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
+use Nefarian\CmsBundle\DependencyInjection\Compiler\Exception\PluginConfigNotFound;
 use Nefarian\CmsBundle\Plugin\Plugin;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,7 +22,10 @@ class PluginCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $plugins = $container->getParameter('nefarian_cms.plugins');
+        $plugins = $container->getParameter('nefarian_core.plugins');
+
+        $pluginRouterDefinition = $container->getDefinition('nefarian_core.routing.plugin_loader');
+        $menuManagerDefinition  = $container->getDefinition('nefarian_core.menu_manager');
 
         foreach($plugins as $pluginClass)
         {
@@ -34,19 +38,50 @@ class PluginCompilerPass implements CompilerPassInterface
 
             // load the module config
             $moduleYaml = $path . DIRECTORY_SEPARATOR . 'module.yml';
-            if(file_exists($moduleYaml))
+            if(!file_exists($moduleYaml))
             {
-                $moduleConfig = $yamlParser->parse(file_get_contents($moduleYaml));
+                throw new PluginConfigNotFound($moduleYaml);
             }
 
+            $moduleConfig = $yamlParser->parse(file_get_contents($moduleYaml));
+
             // TODO: Load module routing
+            $routingYaml = $path . DIRECTORY_SEPARATOR . 'routing.admin.yml';
+            if(file_exists($routingYaml))
+            {
+                $pluginRouterDefinition->addMethodCall('addResource', array($routingYaml, $moduleConfig['name']));
+            }
 
             // TODO: Load module menu
+            $menuYaml = $path . DIRECTORY_SEPARATOR . 'menu.yml';
+            if(file_exists($menuYaml))
+            {
+                $menuConfig = $yamlParser->parse(file_get_contents($menuYaml));
+
+                foreach($menuConfig as $link)
+                {
+                    $menuManagerDefinition->addMethodCall('addLink', array(
+                        $moduleConfig['name'],
+                        $link['title'],
+                        $link['route'],
+                        $link['description'],
+                    ));
+                }
+            }
 
             // TODO: Load module entities
+            $modelPath = $path . DIRECTORY_SEPARATOR . '/Resources/model/doctrine';
+            if(file_exists($modelPath))
+            {
+                $mappings = array(
+                    $modelPath => $plugin->getNamespace() . '\Model',
+                );
+                $container->addCompilerPass(DoctrineOrmCompilerPass::getMappingsPass($mappings));
+            }
 
             // TODO: Load module services?
         }
+
     }
 
 } 

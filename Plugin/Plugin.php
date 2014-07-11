@@ -10,11 +10,21 @@ namespace Nefarian\CmsBundle\Plugin;
  */
 class Plugin
 {
-
+    /**
+     * @var string
+     */
     private $path;
 
+    /**
+     * @var \ReflectionClass
+     */
     private $metaClass;
 
+    /**
+     * Boot the plugin
+     *
+     * @return $this
+     */
     public function boot()
     {
         $this->metaClass = new \ReflectionClass($this);
@@ -24,11 +34,23 @@ class Plugin
     }
 
     /**
+     * Get the base path
+     *
      * @return mixed
      */
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * Get the base namespace
+     *
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->metaClass->getNamespaceName();
     }
 
 

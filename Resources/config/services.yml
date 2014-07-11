@@ -1,7 +1,24 @@
 parameters:
-    nefarian_cms.config_manager.class: Nefarian\CmsBundle\Configuration\ConfigManager
+  nefarian_core.config_manager.class: Nefarian\CmsBundle\Configuration\ConfigManager
+  nefarian_core.menu_manager.class: Nefarian\CmsBundle\Menu\MenuManager
+
+  # Routing
+  nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
 
 services:
-    nefarian_cms.config_manager:
-        class: %nefarian_cms.config_manager.class%
-        arguments: [@doctrine.orm.default_entity_manager]
+
+  #
+  # Managers
+  nefarian_core.config_manager:
+    class: %nefarian_core.config_manager.class%
+    arguments: [@doctrine.orm.default_entity_manager]
+
+  nefarian_core.menu_manager:
+    class: %nefarian_core.menu_manager.class%
+
+  #
+  # Routing
+  nefarian_core.routing.plugin_loader:
+    class: %nefarian_core.routing.plugin_loader.class%
+    tags:
+      - { name: routing.loader }

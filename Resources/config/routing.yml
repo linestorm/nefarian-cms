@@ -1,3 +1,9 @@
-nefarian_cms_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: NefarianCmsBundle:Default:index }
+nefarian_plugins:
+  resource:   .
+  type:       nefarian_plugins
+
+#nefarian_cms_homepage:
+#    path:     /hello/{name}
+#    defaults: { _controller: NefarianCmsBundle:Default:index }
+
+

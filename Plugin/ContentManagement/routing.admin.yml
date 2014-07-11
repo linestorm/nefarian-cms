@@ -1,0 +1,11 @@
+index:
+  path:     /
+  defaults: { _controller: NefarianCmsBundle:Default:index }
+
+new:
+  path:     /new
+  defaults: { _controller: NefarianCmsBundle:Default:index }
+
+manage:
+  path:     /manage
+  defaults: { _controller: NefarianCmsBundle:Default:index }
