@@ -73,7 +73,6 @@ class PluginCompiler
         $this->path = pathinfo($this->metaClass->getFileName(), PATHINFO_DIRNAME);
 
         $this->loadConfig();
-        $this->load('routing', 'routing.admin.yml');
         $this->load('menu');
 
         return $this;

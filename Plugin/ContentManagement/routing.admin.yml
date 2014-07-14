@@ -1,11 +1,11 @@
 index:
   path:     /
-  defaults: { _controller: AdminContent::indexAction }
+  defaults: { _controller: AdminContent:index }
 
 new:
   path:     /new
-  defaults: { _controller: AdminContent::indexAction }
+  defaults: { _controller: AdminContent:index }
 
 manage:
   path:     /manage
-  defaults: { _controller: AdminContent::indexAction }
+  defaults: { _controller: AdminContent:index }

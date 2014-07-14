@@ -1,0 +1,24 @@
+
+{% javascripts
+    filter="uglifyjs2" output="js/require.js"
+    "vendor/requirejs/require.js"
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script type="text/javascript">{% spaceless %}
+    requirejs.config({
+        baseUrl: '/js'
+    });
+
+    require(['common'], function(common){
+        require([
+            {# % if requirejs_module is defined -%}
+                    {%- for m in requirejs_module -%}
+                        {{ require(m) }}{% if not loop.last %},{% endif %}
+                    {%- endfor -%}
+            {% else % #}
+                'app/main'
+            {#% endif %#}
+        ]);
+    });
+{% endspaceless %}</script>

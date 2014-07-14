@@ -33,7 +33,7 @@ class PluginLoader extends Loader
     public function addPluginResource(Plugin $plugin, $resource)
     {
         $this->resources[$plugin->getName()][] = $resource;
-        $this->plugins[$plugin->getName()] = $plugin->getName();
+        $this->plugins[$plugin->getName()] = $plugin;
     }
 
     /**
@@ -63,17 +63,16 @@ class PluginLoader extends Loader
             foreach($pluginRoutes->all() as $name => $route)
             {
                 $defaultController = $route->getDefault('_controller');
-                list($controller, $method) = explode('::', $defaultController);
+                list($controller, $method) = explode(':', $defaultController);
                 $controller = $plugin->getNamespace().'\\Controller\\'.$controller.'Controller';
-                var_dump($controller);
-                $route->setDefault('_controller', array(
-                    $controller,
+                /*$route->setDefault('_controller', array(
+                    new $controller(),
                     $method.'Action',
-                ));
+                ));*/
+                $route->setDefault('_controller', $controller.'::'.$method.'Action');
                 $routes->add('nefarian_plugin_' . $pluginName . '_' . $name, $route);
             }
         }
-        die();
 
         $routes->addPrefix('/_cms/admin/plugins/');
 

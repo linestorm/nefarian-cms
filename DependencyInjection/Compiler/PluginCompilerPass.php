@@ -42,15 +42,20 @@ class PluginCompilerPass implements CompilerPassInterface
             $pluginReference = new Reference($pluginDefinitionId);
 
             // register the plugins with the router
-            $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $plugin->getConfig('routing')));
+            $routingResource = $plugin->getPath().'/routing.admin.yml';
+            if(file_exists($routingResource))
+            {
+                $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
+            }
 
 
             // Add the default plugin template path to the twig loader
             $loader         = $container->findDefinition('twig.loader');
             $templateFolder = $path . '/Resources/views';
+            $templateNamespace = $this->toCamelCase($plugin->getName()) . 'Plugin';
             if(file_exists($templateFolder))
             {
-                $loader->addMethodCall('addPath', array($templateFolder, 'NefarianPlugin:' . $this->toCamelCase($plugin->getName()) . ':'));
+                $loader->addMethodCall('addPath', array($templateFolder, $templateNamespace));
             }
 
 
@@ -74,13 +79,11 @@ class PluginCompilerPass implements CompilerPassInterface
                 $mappings = array(
                     $modelPath => $plugin->getNamespace() . '\Model',
                 );
-                $container->addCompilerPass(DoctrineOrmCompilerPass::getMappingsPass($mappings));
+                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian.entity_manager'), 'nefarian.backend_type_orm'));
             }
 
 
             // TODO: Load module services?
-
-
         }
 
     }

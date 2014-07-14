@@ -1,0 +1,64 @@
+
+/* Form */
+form {
+    margin: 10px;
+    
+    * {
+        font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    }
+
+    input, 
+    button, 
+    textarea, 
+    select {
+        font-size: 13px !important;
+    }
+    
+    label {
+        font-size: 13px;
+        line-height: 13px;
+    }
+    
+    &.form-inline {
+        button {
+            margin-left: 15px;
+        }
+    }
+    
+    &.form-horizontal {
+        .controls {
+            margin-left: 110px;
+        }
+
+        .controls:first-child {
+            *padding-left: 100px;
+        }
+
+        .form-actions {
+            padding-left: 110px;
+        }
+    }
+
+    .form-actions {
+        padding: 5px 20px 5px;
+        background: transparent;
+        border-top: 0px;
+    }
+}
+
+input, textarea {
+    background-image: none !important;
+    border: 1px solid #ccc !important;
+    font-family: "Open Sans", Arial, Helvetica, sans-serif !important;
+}
+
+select {
+    font-size: 13px !important;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin: 0px 0 0 !important;
+    margin-right: 5px !important;
+    line-height: 23px !important;
+    border: 0px !important;
+}
