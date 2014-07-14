@@ -2,10 +2,10 @@
 
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
-use Nefarian\CmsBundle\DependencyInjection\Compiler\Exception\PluginConfigNotFound;
-use Nefarian\CmsBundle\Plugin\Plugin;
+use Nefarian\CmsBundle\Plugin\PluginCompiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -29,45 +29,43 @@ class PluginCompilerPass implements CompilerPassInterface
 
         foreach($plugins as $pluginClass)
         {
-            /** @var Plugin $plugin */
-            $plugin = new $pluginClass();
-            $plugin->boot();
+            $plugin = new PluginCompiler($pluginClass);
+            $plugin->compile();
             $path = $plugin->getPath();
 
             $yamlParser = new Parser();
 
-            // load the module config
-            $moduleYaml = $path . DIRECTORY_SEPARATOR . 'module.yml';
-            if(!file_exists($moduleYaml))
+            // configure the plugin service
+            $pluginDefinitionId = 'nefarian.plugin.' . $plugin->getName();
+            $pluginDefinition   = $container->register($pluginDefinitionId, $pluginClass);
+            $pluginDefinition->addArgument($plugin->getName());
+            $pluginReference = new Reference($pluginDefinitionId);
+
+            // register the plugins with the router
+            $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $plugin->getConfig('routing')));
+
+
+            // Add the default plugin template path to the twig loader
+            $loader         = $container->findDefinition('twig.loader');
+            $templateFolder = $path . '/Resources/views';
+            if(file_exists($templateFolder))
             {
-                throw new PluginConfigNotFound($moduleYaml);
+                $loader->addMethodCall('addPath', array($templateFolder, 'NefarianPlugin:' . $this->toCamelCase($plugin->getName()) . ':'));
             }
 
-            $moduleConfig = $yamlParser->parse(file_get_contents($moduleYaml));
-
-            // TODO: Load module routing
-            $routingYaml = $path . DIRECTORY_SEPARATOR . 'routing.admin.yml';
-            if(file_exists($routingYaml))
-            {
-                $pluginRouterDefinition->addMethodCall('addResource', array($routingYaml, $moduleConfig['name']));
-            }
 
             // TODO: Load module menu
-            $menuYaml = $path . DIRECTORY_SEPARATOR . 'menu.yml';
-            if(file_exists($menuYaml))
+            $menu = $plugin->getConfig('menu');
+            foreach($menu as $item)
             {
-                $menuConfig = $yamlParser->parse(file_get_contents($menuYaml));
-
-                foreach($menuConfig as $link)
-                {
-                    $menuManagerDefinition->addMethodCall('addLink', array(
-                        $moduleConfig['name'],
-                        $link['title'],
-                        $link['route'],
-                        $link['description'],
-                    ));
-                }
+                $menuManagerDefinition->addMethodCall('addLink', array(
+                    $plugin->getName(),
+                    $item['title'],
+                    $item['route'],
+                    $item['description'],
+                ));
             }
+
 
             // TODO: Load module entities
             $modelPath = $path . DIRECTORY_SEPARATOR . '/Resources/model/doctrine';
@@ -79,9 +77,29 @@ class PluginCompilerPass implements CompilerPassInterface
                 $container->addCompilerPass(DoctrineOrmCompilerPass::getMappingsPass($mappings));
             }
 
+
             // TODO: Load module services?
+
+
         }
 
     }
+
+
+    /**
+     * Convert a plugin name to camel case
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    private function toCamelCase($name)
+    {
+        $name   = preg_replace('/[^a-zA-Z0-9]/', ' ', $name);
+        $string = ucwords(strtolower($name));
+
+        return str_replace(' ', '', $string);
+    }
+
 
 } 

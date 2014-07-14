@@ -1,11 +1,11 @@
 index:
   path:     /
-  defaults: { _controller: NefarianCmsBundle:Default:index }
+  defaults: { _controller: AdminContent::indexAction }
 
 new:
   path:     /new
-  defaults: { _controller: NefarianCmsBundle:Default:index }
+  defaults: { _controller: AdminContent::indexAction }
 
 manage:
   path:     /manage
-  defaults: { _controller: NefarianCmsBundle:Default:index }
+  defaults: { _controller: AdminContent::indexAction }

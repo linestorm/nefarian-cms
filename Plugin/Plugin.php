@@ -13,24 +13,46 @@ class Plugin
     /**
      * @var string
      */
+    private $name;
+
+    /**
+     * @var string
+     */
     private $path;
+
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
+     * @var array
+     */
+    private $routes = array();
 
     /**
      * @var \ReflectionClass
      */
-    private $metaClass;
+    private $meta;
 
     /**
-     * Boot the plugin
-     *
-     * @return $this
+     * @param string $name
      */
-    public function boot()
+    function __construct($name)
     {
-        $this->metaClass = new \ReflectionClass($this);
-        $this->path = pathinfo($this->metaClass->getFileName(), PATHINFO_DIRNAME);
+        $this->name = $name;
 
-        return $this;
+        $this->meta = new \ReflectionClass($this);
+        $this->path = pathinfo($this->meta->getFileName(), PATHINFO_DIRNAME);
+        $this->namespace = $this->meta->getNamespaceName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -50,8 +72,15 @@ class Plugin
      */
     public function getNamespace()
     {
-        return $this->metaClass->getNamespaceName();
+        return $this->namespace;
     }
 
+    /**
+     * @return array
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
 
 } 

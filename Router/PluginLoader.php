@@ -2,7 +2,7 @@
 
 namespace Nefarian\CmsBundle\Router;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Nefarian\CmsBundle\Plugin\Plugin;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -16,14 +16,24 @@ class PluginLoader extends Loader
     private $resources = array();
 
     /**
+     * Array of app plugin paths
+     *
+     * @var Plugin[]
+     */
+    private $plugins = array();
+
+    /**
      * Add a resource to the stack
      *
-     * @param $resource
-     * @param $name
+     * @param string $resource
+     * @param Plugin $plugin
+     *
+     * @internal param $name
      */
-    public function addResource($resource, $name)
+    public function addPluginResource(Plugin $plugin, $resource)
     {
-        $this->resources[$name][] = $resource;
+        $this->resources[$plugin->getName()][] = $resource;
+        $this->plugins[$plugin->getName()] = $plugin->getName();
     }
 
     /**
@@ -39,6 +49,7 @@ class PluginLoader extends Loader
         $routes = new RouteCollection();
         foreach($this->resources as $pluginName => $routeResources)
         {
+            $plugin = $this->plugins[$pluginName];
             $pluginRoutes = new RouteCollection();
             foreach($routeResources as $routeResource)
             {
@@ -46,16 +57,26 @@ class PluginLoader extends Loader
                 $pluginRoutes->addCollection($resourceRoutes);
             }
 
-            $pluginRoutes->addPrefix('/'.$pluginName);
+            $pluginRoutes->addPrefix('/' . $pluginName);
 
             // prefix all the routes with the plugin base
             foreach($pluginRoutes->all() as $name => $route)
             {
-                $routes->add('nefarian_plugin_'.$pluginName.'_'.$name, $route);
+                $defaultController = $route->getDefault('_controller');
+                list($controller, $method) = explode('::', $defaultController);
+                $controller = $plugin->getNamespace().'\\Controller\\'.$controller.'Controller';
+                var_dump($controller);
+                $route->setDefault('_controller', array(
+                    $controller,
+                    $method.'Action',
+                ));
+                $routes->add('nefarian_plugin_' . $pluginName . '_' . $name, $route);
             }
         }
+        die();
 
         $routes->addPrefix('/_cms/admin/plugins/');
+
         return $routes;
     }
 
