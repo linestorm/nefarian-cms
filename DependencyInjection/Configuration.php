@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->isRequired();
         $this->addPluginSection($rootNode);
+        $this->addThemeSection($rootNode);
 
         return $treeBuilder;
     }
@@ -36,4 +37,15 @@ class Configuration implements ConfigurationInterface
             ->end()
         ->end();
     }
+
+    private function addThemeSection(NodeDefinition $rootNode)
+    {
+        $rootNode->children()
+            ->arrayNode('themes')->isRequired()
+                ->prototype('scalar')
+                ->end()
+            ->end()
+        ->end();
+    }
+
 }

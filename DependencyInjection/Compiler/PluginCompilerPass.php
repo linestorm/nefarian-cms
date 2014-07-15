@@ -33,8 +33,6 @@ class PluginCompilerPass implements CompilerPassInterface
             $plugin->compile();
             $path = $plugin->getPath();
 
-            $yamlParser = new Parser();
-
             // configure the plugin service
             $pluginDefinitionId = 'nefarian.plugin.' . $plugin->getName();
             $pluginDefinition   = $container->register($pluginDefinitionId, $pluginClass);
@@ -50,13 +48,8 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
             // Add the default plugin template path to the twig loader
-            $loader         = $container->findDefinition('twig.loader');
-            $templateFolder = $path . '/Resources/views';
-            $templateNamespace = $this->toCamelCase($plugin->getName()) . 'Plugin';
-            if(file_exists($templateFolder))
-            {
-                $loader->addMethodCall('addPath', array($templateFolder, $templateNamespace));
-            }
+            $loader         = $container->findDefinition('twig.loader.plugin_loader');
+            $loader->addMethodCall('addPlugin', array($pluginReference));
 
 
             // TODO: Load module menu

@@ -1,0 +1,82 @@
+/* Navbar */
+.navbar {
+    background: #000;
+
+    * {
+        text-shadow: none !important;
+    }
+
+    .container {
+        width: 100%;
+
+        .navbar-header {
+            .navbar-brand {
+                color: #fff !important;
+            }
+            .navbar-toggle {
+                background-color: #374553;
+            }
+
+
+        }
+
+        .navbar-collapse {
+
+            ul.nav > li {
+                > a {
+                    font-size: 13px !important;
+                    color: #fff !important;
+
+                    i {
+                        margin-right: 3px;
+                    }
+                }
+            }
+
+            .caret {
+                border-top-color: #fff !important;
+                border-bottom-color: #fff !important;
+            }
+            .nav-user-pic {
+                width: 20px;
+                margin-right: 10px;
+                display: inline-block;
+            }
+            .badge {
+                margin-left: 5px;
+            }
+        }
+    }
+
+}
+
+
+.navbar.navbar-inverse {
+    min-height: 48px;
+    margin-bottom: 0px;
+    border-radius: 0px;
+    border-bottom: 1px solid #191e23;
+
+    background: $bs-page-bg;
+    @include background-image(linear-gradient($bs-page-bg-light, $bs-page-bg));
+    
+    .nav > li > a:hover {
+        background: rgba(25, 31, 36, 0.6);
+        -webkit-transition: background 0.5s ease;
+        -moz-transition: background 0.5s ease;
+        -o-transition: background 0.5s ease;
+        transition: background 0.5s ease;
+    }
+    .navbar-nav > .open > a {
+        color: #FFF;
+        background: #254261!important;
+        box-shadow: inset 1px 0px 1px 0px #3E5A79;
+        &:hover, &:focus {
+            color: #FFF;
+            background: #254261!important;
+            box-shadow: inset 1px 0px 1px 0px #3E5A79;
+        }
+    }
+}
+
+

@@ -5,6 +5,11 @@ parameters:
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
 
+  # Theming
+  nefarian_core.theme_manager.class: Nefarian\CmsBundle\Theme\ThemeManager
+  nefarian_core.theme_loader.class:  Nefarian\CmsBundle\Twig\Loader\ThemeLoader
+  nefarian_core.plugin_loader.class:  Nefarian\CmsBundle\Twig\Loader\PluginLoader
+
 services:
 
   #
@@ -17,8 +22,52 @@ services:
     class: %nefarian_core.menu_manager.class%
 
   #
-  # Routing
+  # Plugin - Routing
   nefarian_core.routing.plugin_loader:
     class: %nefarian_core.routing.plugin_loader.class%
     tags:
       - { name: routing.loader }
+
+  #
+  # Plugin - Twig Loader
+  twig.loader.plugin_loader:
+    class: %nefarian_core.plugin_loader.class%
+    arguments:
+      - @templating.locator
+      - @templating.name_parser
+    tags:
+      - { name: twig.loader }
+
+
+  #
+  # Theming
+  nefarian_core.theme_manager:
+    class: %nefarian_core.theme_manager.class%
+
+  twig.loader.theme_loader:
+    class: %nefarian_core.theme_loader.class%
+    arguments:
+      - @nefarian_core.theme_manager
+      - @templating.locator
+      - @templating.name_parser
+    tags:
+      - { name: twig.loader }
+
+  #
+  # Template loader!
+  templating.locator.theme_locator:
+    class: Nefarian\CmsBundle\Templating\Locator\ThemeLocator
+    arguments:
+      - @nefarian_core.theme_manager
+
+  templating.locator.theme_filesystem_locator:
+    class: %templating.locator.class%
+    arguments:
+      - @templating.locator.theme_locator
+      - %kernel.cache_dir%
+
+  templating.loader.theme_loader:
+    class: %templating.loader.filesystem.class%
+    arguments:
+      - @templating.locator.theme_locator
+

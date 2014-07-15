@@ -23,6 +23,7 @@ class NefarianCmsExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('nefarian_core.plugins', $config['plugins']);
+        $container->setParameter('nefarian_core.themes',  $config['themes']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

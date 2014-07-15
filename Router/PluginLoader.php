@@ -65,10 +65,6 @@ class PluginLoader extends Loader
                 $defaultController = $route->getDefault('_controller');
                 list($controller, $method) = explode(':', $defaultController);
                 $controller = $plugin->getNamespace().'\\Controller\\'.$controller.'Controller';
-                /*$route->setDefault('_controller', array(
-                    new $controller(),
-                    $method.'Action',
-                ));*/
                 $route->setDefault('_controller', $controller.'::'.$method.'Action');
                 $routes->add('nefarian_plugin_' . $pluginName . '_' . $name, $route);
             }

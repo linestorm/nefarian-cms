@@ -12,7 +12,7 @@ class AdminContentController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('@ContentManagementPlugin/index.html.twig', array(
+        return $this->render('@plugin_content_management/index.html.twig', array(
 
         ));
     }
