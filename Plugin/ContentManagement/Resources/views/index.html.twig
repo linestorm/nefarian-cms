@@ -1,5 +1,41 @@
 {% extends '@theme/layout.html.twig' %}
 
-{% block body %}
-    index
+{% block plugin %}
+    <a class="btn btn-default" href="{{ url('nefarian_plugin_content_management_new') }}">
+        <i class="fa-plus"></i> New Content Type
+    </a>
+
+    <div class="responsive-table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Health</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contentType in contentTypes %}
+                    <tr>
+                        <td>{{ contentType.name }}</td>
+                        <td></td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ url('nefarian_plugin_content_management_manage') }}" class="btn btn-danger">Edit</a>
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">View</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#" class="text-danger">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

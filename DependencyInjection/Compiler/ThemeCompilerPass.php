@@ -24,6 +24,7 @@ class ThemeCompilerPass implements CompilerPassInterface
         $themes = $container->getParameter('nefarian_core.themes');
 
         $themeManagerDefinition = $container->getDefinition('nefarian_core.theme_manager');
+        $themeManagerReference = new Reference('nefarian_core.theme_manager');
 
         foreach($themes as $theme)
         {
@@ -57,6 +58,28 @@ class ThemeCompilerPass implements CompilerPassInterface
                     ))
                 );
                 $assetManagerDefinition->addMethodCall('addResource', array(new Reference($resourceDefinitionId), $engine));
+            }
+
+            // add the theme manager into the asset factory
+            $assetFactoryDefinition = $container->findDefinition('assetic.asset_factory');
+            $assetFactoryDefinition->addMethodCall('setThemeManager', array($themeManagerReference));
+
+
+            // tell asstic where the plugin assets are
+            $jsAssets = @glob($path . '/Resources/assets/js/*.js');
+            if(count($jsAssets))
+            {
+                foreach($jsAssets as $jsAsset)
+                {
+                    $destination = str_replace($path . '/Resources/assets/js/', '', $jsAsset);
+                    $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_theme_' . $oTheme->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination), array(
+                        $jsAsset,
+                        array('?uglifyjs2'),
+                        array(
+                            'output' => 'js/theme/' . $oTheme->getName() . '/' . $destination
+                        ),
+                    )));
+                }
             }
         }
 

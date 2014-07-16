@@ -17,12 +17,12 @@ define(['jquery', 'bootstrap'], function ($, bs) {
             var menu_ul = menu_li.children("ul");
 
             menu_ul.stop(true, true);
-            if (menu_li.hasClass("open")) {
+            if (e.type == "mouseleave" && menu_li.hasClass("open")) {
                 menu_ul.slideUp(350);
                 menu_li.removeClass("open");
-            } else {
-                $(".navi > li > ul").slideUp(350);
-                $(".navi > li").removeClass("open");
+            } else if(e.type == "mouseenter") {
+                //$(".navi > li > ul").not(menu_ul).slideUp(350);
+                //$(".navi > li").not(menu_li).removeClass("open");
                 menu_ul.slideDown(350);
                 menu_li.addClass("open");
             }

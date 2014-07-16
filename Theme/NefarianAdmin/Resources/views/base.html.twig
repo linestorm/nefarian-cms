@@ -3,10 +3,10 @@
 <head>
 
     {% if form|default(false) %}
-        {% form_theme form 'NefarianCmsBundle:Admin:Form/fields.html.twig' %}
+        {% form_theme form '@theme_nefarian_admin/Form/fields.html.twig' %}
     {% endif %}
 
-    <title>LineStorm CMS Admin Panel</title>
+    <title>{% block meta_title %}LineStorm CMS Admin Panel{% endblock %}</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -23,7 +23,7 @@
 
     <!-- START STYLESHEETS -->
     {% stylesheets
-        filter="compass" output="/css/cms/core/main.css"
+        filter="compass" output="css/cms/core/main.css"
         "@theme_nefarian_admin/Resources/assets/sass/main.scss"
     %}
         <link rel="stylesheet" href="{{ asset_url }}" />
@@ -37,16 +37,10 @@
     <script type="text/javascript">
         window.Nefarian = {};
     </script>
-    <script type="text/javascript" src="/vendor/requirejs/require.js"></script>
-    {% javascripts
-        filter='uglifyjs2' output = '/js/cms/core/main.js'
-        "@theme_nefarian_admin/Resources/assets/js/main.js"
-    %}
-    {% endjavascripts %}
     {% block head_javascripts %}
         {{
             include('NefarianCmsBundle::requirejs.html.twig', {
-                requirejs_module: ['cms/core/main']
+                requirejs_module: ['cms/core/api', 'theme/nefarian_admin/main']
             })
         }}
     {% endblock %}

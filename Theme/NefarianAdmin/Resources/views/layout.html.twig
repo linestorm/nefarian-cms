@@ -1,1 +1,41 @@
 {% extends '@theme_nefarian_admin/base.html.twig' %}
+
+{% block meta_title %}
+    <!--NefarianCMS | { { parent() } }-->
+{% endblock %}
+
+{% block header %}
+<!--<em>nefarian</em><strong>CMS</strong>-->
+{% endblock %}
+
+{% block pagetitle %}
+
+{% endblock %}
+
+{% block pagesubtitle %}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+
+{% endblock %}
+
+{% block nav %}
+    {% for plugin,links in nefarian_menu_manager.links %}
+        <li class="has_submenu">
+            <a class="" href="#-menu-{{ loop.index }}"><i class="fa-angle-right"></i> {{ plugin }}</a>
+            <ul id="menu-{{ loop.index }}" class="">
+                {% for link in links %}
+                    <li><a href="{{ url(link.route) }}">{{ link.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <div class="body">
+        {% block plugin %}
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -1,11 +1,20 @@
 index:
   path:     /
-  defaults: { _controller: AdminContent:index }
+  defaults: { _controller: ContentType:index }
 
 new:
   path:     /new
-  defaults: { _controller: AdminContent:index }
+  defaults: { _controller: ContentType:new }
 
 manage:
   path:     /manage
-  defaults: { _controller: AdminContent:index }
+  defaults: { _controller: ContentType:index }
+
+edit:
+  path:     /{id}/edit
+  defaults: { _controller: ContentType:index }
+
+api:
+  type:         rest
+  prefix:       /api
+  resource:     "routing.api.yml"

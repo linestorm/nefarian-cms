@@ -2,19 +2,19 @@
 
 namespace Nefarian\CmsBundle\Entity;
 
-use Nefarian\CmsBundle\Plugin\ContentManagement\Model\ContentType as BaseContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Model\Node as BaseNode;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class ContentType
+ * Class Node
  *
  * @package Nefarian\CmsBundle\Entity
  * @author  Andy Thorne <contrabandvr@gmail.com>
  *
- * @ORM\Table(name="content_type")
+ * @ORM\Table(name="node")
  * @ORM\Entity
  */
-class ContentType extends BaseContentType
+class Node extends BaseNode
 {
     /**
      * @var integer
@@ -26,9 +26,9 @@ class ContentType extends BaseContentType
     protected $id;
 
     /**
-     * @var ContentField[]
+     * @var ContentType
      *
-     * @ORM\ManyToMany(targetEntity="ContentField", mappedBy="fields", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="ContentType", cascade={"persist"})
      */
-    protected $types;
+    protected $contentType;
 } 

@@ -34,6 +34,11 @@ class Node
     protected $description;
 
     /**
+     * @var ContentType
+     */
+    protected $contentType;
+
+    /**
      * @var boolean
      */
     protected $published;

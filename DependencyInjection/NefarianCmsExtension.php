@@ -27,5 +27,8 @@ class NefarianCmsExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        $container->setParameter("nefarian_core.entity_manager",   $config['entity_manager']);
+        $container->setParameter("nefarian_core.backend_type_orm", $config['backend_type'] === 'orm');
     }
 }

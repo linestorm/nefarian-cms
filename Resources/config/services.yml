@@ -10,6 +10,9 @@ parameters:
   nefarian_core.theme_loader.class:  Nefarian\CmsBundle\Twig\Loader\ThemeLoader
   nefarian_core.plugin_loader.class:  Nefarian\CmsBundle\Twig\Loader\PluginLoader
 
+  # override the asset factory
+  assetic.asset_factory.class: Nefarian\CmsBundle\Assetic\Factory\NefarianAssetFactory
+
 services:
 
   #
@@ -48,7 +51,7 @@ services:
     class: %nefarian_core.theme_loader.class%
     arguments:
       - @nefarian_core.theme_manager
-      - @templating.locator
+      - @templating.locator.theme_filesystem_locator
       - @templating.name_parser
     tags:
       - { name: twig.loader }

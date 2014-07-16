@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle;
 
+use Nefarian\CmsBundle\DependencyInjection\Compiler\CoreCompilerPass;
 use Nefarian\CmsBundle\DependencyInjection\Compiler\PluginCompilerPass;
 use Nefarian\CmsBundle\DependencyInjection\Compiler\ThemeCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +20,7 @@ class NefarianCmsBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new CoreCompilerPass($this));
         $container->addCompilerPass(new PluginCompilerPass());
         $container->addCompilerPass(new ThemeCompilerPass());
     }

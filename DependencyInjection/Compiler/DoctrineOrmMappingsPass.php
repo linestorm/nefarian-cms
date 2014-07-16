@@ -59,7 +59,7 @@ class DoctrineOrmMappingsPass extends RegisterMappingsPass
      *                                       enable the mapping. Set to false to not do any check,
      *                                       optional.
      *
-     * @return \LineStorm\CmsBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass
+     * @return DoctrineOrmMappingsPass
      */
     public static function createXmlMappingDriver(array $mappings, array $managerParameters = array(), $enabledParameter = false)
     {

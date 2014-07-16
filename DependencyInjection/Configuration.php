@@ -21,7 +21,12 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('nefarian_cms');
 
-        $rootNode->isRequired();
+        $rootNode->isRequired()
+            ->children()
+                ->scalarNode('entity_manager')->isRequired()->end()
+                ->scalarNode('backend_type')->isRequired()->end()
+            ->end();
+
         $this->addPluginSection($rootNode);
         $this->addThemeSection($rootNode);
 

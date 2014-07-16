@@ -6,7 +6,6 @@ use Nefarian\CmsBundle\Plugin\PluginCompiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Yaml\Parser;
 
 /**
  * Class PluginCompilerPass
@@ -26,6 +25,7 @@ class PluginCompilerPass implements CompilerPassInterface
 
         $pluginRouterDefinition = $container->getDefinition('nefarian_core.routing.plugin_loader');
         $menuManagerDefinition  = $container->getDefinition('nefarian_core.menu_manager');
+        $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
 
         foreach($plugins as $pluginClass)
         {
@@ -40,7 +40,7 @@ class PluginCompilerPass implements CompilerPassInterface
             $pluginReference = new Reference($pluginDefinitionId);
 
             // register the plugins with the router
-            $routingResource = $plugin->getPath().'/routing.admin.yml';
+            $routingResource = $plugin->getPath() . '/routing.admin.yml';
             if(file_exists($routingResource))
             {
                 $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
@@ -48,8 +48,26 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
             // Add the default plugin template path to the twig loader
-            $loader         = $container->findDefinition('twig.loader.plugin_loader');
+            $loader = $container->findDefinition('twig.loader.plugin_loader');
             $loader->addMethodCall('addPlugin', array($pluginReference));
+
+
+            // tell asstic where the plugin assets are
+            $jsAssets = @glob($plugin->getPath() . '/Resources/assets/js/*.js');
+            if(count($jsAssets))
+            {
+                foreach($jsAssets as $jsAsset)
+                {
+                    $destination = str_replace($plugin->getPath() . '/Resources/assets/js/', '', $jsAsset);
+                    $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination), array(
+                        $jsAsset,
+                        array('?uglifyjs2'),
+                        array(
+                            'output' => 'js/cms/' . $plugin->getName() . '/' . $destination
+                        ),
+                    )));
+                }
+            }
 
 
             // TODO: Load module menu
@@ -59,20 +77,22 @@ class PluginCompilerPass implements CompilerPassInterface
                 $menuManagerDefinition->addMethodCall('addLink', array(
                     $plugin->getName(),
                     $item['title'],
-                    $item['route'],
-                    $item['description'],
+                    'nefarian_plugin_' . $plugin->getName() . '_' . $item['route'],
+                    isset($item['description']) ? $item['description'] : null,
+                    isset($item['parent']) ? $item['parent'] : null,
                 ));
             }
 
 
             // TODO: Load module entities
-            $modelPath = $path . DIRECTORY_SEPARATOR . '/Resources/model/doctrine';
+            $modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine';
             if(file_exists($modelPath))
             {
                 $mappings = array(
                     $modelPath => $plugin->getNamespace() . '\Model',
                 );
-                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian.entity_manager'), 'nefarian.backend_type_orm'));
+                $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
+                $doctinePass->process($container);
             }
 
 

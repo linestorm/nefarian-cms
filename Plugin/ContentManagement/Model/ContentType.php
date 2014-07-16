@@ -2,6 +2,8 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Class ContentType
  *
@@ -13,17 +15,30 @@ class ContentType
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $description;
+    protected $description;
+
+    /**
+     * @var ContentField[]
+     */
+    protected $fields;
+
+    /**
+     * Initialisation
+     */
+    function __construct()
+    {
+        $this->fields = new ArrayCollection();
+    }
 
     /**
      * @return int

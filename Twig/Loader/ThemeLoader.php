@@ -43,9 +43,9 @@ class ThemeLoader extends FilesystemLoader
         }
 
         if (strpos($templateName, 'theme_') === 0) {
-            if(preg_match('theme_([^:]*):([^:]*):(.*)', $templateName, $matches))
+            if(preg_match('/theme_([^:]+):([^:]*):(.*)/', $templateName, $matches))
             {
-                list($themeName, $path, $file) = $matches;
+                list($fullName, $themeName, $path, $file) = $matches;
 
                 $theme = $this->themeManager->getTheme($themeName);
 
