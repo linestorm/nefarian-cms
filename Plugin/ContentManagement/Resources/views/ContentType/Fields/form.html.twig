@@ -1,0 +1,46 @@
+{% extends '@theme/Form/fields.html.twig' %}
+
+
+
+{% block _nefarian_plugin_content_management_content_type_typeFields_widget %}
+
+    {% import _self as fn %}
+    {% macro row(form) %}
+        {% spaceless %}
+            <tr data-order="{{ form.order.vars.value }}">
+                <!--<td>
+                    <button type="button" class="btn btn-link table-row-sortable"><i class="fa-arrows"></i></button>
+                </td>-->
+                <td>{{ form_widget(form.contentField) }}{{ form_widget(form.order) }}</td>
+                <td>@TODO: add this!</td>
+                <td>
+                    <button type="button" class="btn btn-danger field-type-remove">
+                        <i class="fa-trash-o"></i> Remove
+                    </button>
+                </td>
+            </tr>
+        {% endspaceless %}
+    {% endmacro %}
+
+    <button type="button" class="btn btn-link field-type-add" data-prototype="{{ fn.row(form.vars.prototype)|e }}">
+        <i class="fa-plus"></i> Add Field
+    </button>
+
+    <div class="table-responsive">
+        <table class="table table-striped field-type">
+            <thead>
+            <tr>
+                <th>Field</th>
+                <th>Display Type</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for typeField in form %}
+                {{ fn.row(typeField) }}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

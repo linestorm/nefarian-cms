@@ -1,4 +1,9 @@
-{% extends '@theme/layout.html.twig' %}
+{% extends '@plugin_content_management/base.html.twig' %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="#"><i class="fa-th"></i> All Content Types</a></li>
+{% endblock %}
 
 {% block plugin %}
     <a class="btn btn-default" href="{{ url('nefarian_plugin_content_management_new') }}">
@@ -21,15 +26,15 @@
                         <td></td>
                         <td>
                             <div class="btn-group">
-                                <a href="{{ url('nefarian_plugin_content_management_manage') }}" class="btn btn-danger">Edit</a>
-                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                                <a href="{{ url('nefarian_plugin_content_management_edit', {id: contentType.id}) }}" class="btn btn-default">Edit</a>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">View</a></li>
+                                    <li><a href="{{ url('nefarian_plugin_content_management_edit', {id: contentType.id}) }}">View</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#" class="text-danger">Delete</a></li>
+                                    <li><a href="#" class="text-danger"><i class="fa-trash-o"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>

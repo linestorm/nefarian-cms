@@ -1,9 +1,7 @@
 api_content_type:
   type:         rest
   resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\ContentTypeController
-  defaults:     { _controller:Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\ContentTypeController }
 
 api_content_field:
   type:         rest
   resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\ContentFieldController
-  defaults:     { _controller:Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\ContentFieldController }

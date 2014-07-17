@@ -12,9 +12,8 @@ manage:
 
 edit:
   path:     /{id}/edit
-  defaults: { _controller: ContentType:index }
+  defaults: { _controller: ContentType:edit }
 
-api:
-  type:         rest
-  prefix:       /api
-  resource:     "routing.api.yml"
+edit_fields:
+  path:     /{id}/fields/edit
+  defaults: { _controller: ContentType:editFields }

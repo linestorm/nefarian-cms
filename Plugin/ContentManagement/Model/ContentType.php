@@ -28,16 +28,16 @@ class ContentType
     protected $description;
 
     /**
-     * @var ContentField[]
+     * @var ContentTypeField[]
      */
-    protected $fields;
+    protected $typeFields;
 
     /**
      * Initialisation
      */
     function __construct()
     {
-        $this->fields = new ArrayCollection();
+        $this->typeFields = new ArrayCollection();
     }
 
     /**
@@ -80,6 +80,28 @@ class ContentType
         return $this->name;
     }
 
+    /**
+     * @param ContentTypeField $typeField
+     */
+    public function addTypeFields(ContentTypeField $typeField)
+    {
+        $this->typeFields[] = $typeField;
+    }
 
+    /**
+     * @param ContentTypeField $typeField
+     */
+    public function removeTypeFields(ContentTypeField $typeField)
+    {
+        $this->typeFields->removeElement($typeField);
+    }
+
+    /**
+     * @return ContentTypeField[]
+     */
+    public function getTypeFields()
+    {
+        return $this->typeFields;
+    }
 
 } 

@@ -4,10 +4,11 @@ parameters:
 
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
+  nefarian_core.routing.api_loader.class:    Nefarian\CmsBundle\Router\ApiLoader
 
   # Theming
-  nefarian_core.theme_manager.class: Nefarian\CmsBundle\Theme\ThemeManager
-  nefarian_core.theme_loader.class:  Nefarian\CmsBundle\Twig\Loader\ThemeLoader
+  nefarian_core.theme_manager.class:  Nefarian\CmsBundle\Theme\ThemeManager
+  nefarian_core.theme_loader.class:   Nefarian\CmsBundle\Twig\Loader\ThemeLoader
   nefarian_core.plugin_loader.class:  Nefarian\CmsBundle\Twig\Loader\PluginLoader
 
   # override the asset factory
@@ -28,6 +29,10 @@ services:
   # Plugin - Routing
   nefarian_core.routing.plugin_loader:
     class: %nefarian_core.routing.plugin_loader.class%
+    tags:
+      - { name: routing.loader }
+  nefarian_core.routing.api_loader:
+    class: %nefarian_core.routing.api_loader.class%
     tags:
       - { name: routing.loader }
 

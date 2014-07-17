@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Yaml\Parser;
 
-class PluginLoader extends Loader
+class ApiLoader extends Loader
 {
     /**
      * All resources
@@ -51,7 +51,6 @@ class PluginLoader extends Loader
         $routes = new RouteCollection();
         foreach($this->resources as $pluginName => $routeResources)
         {
-            $plugin = $this->plugins[$pluginName];
             $pluginRoutes = new RouteCollection();
             foreach($routeResources as $routeResource)
             {
@@ -64,15 +63,11 @@ class PluginLoader extends Loader
             // prefix all the routes with the plugin base
             foreach($pluginRoutes->all() as $name => $route)
             {
-                $defaultController = $route->getDefault('_controller');
-                list($controller, $method) = explode(':', $defaultController);
-                $controller = $plugin->getNamespace().'\\Controller\\'.$controller.'Controller';
-                $route->setDefault('_controller', $controller.'::'.$method.'Action');
-                $routes->add('nefarian_plugin_' . $pluginName . '_' . $name, $route);
+                $routes->add('nefarian_api_' . $pluginName . '_' . $name, $route);
             }
         }
 
-        $routes->addPrefix('/_cms/admin/plugins/');
+        $routes->addPrefix('/api');
 
         return $routes;
     }
@@ -85,7 +80,7 @@ class PluginLoader extends Loader
      */
     public function supports($resource, $type = null)
     {
-        return 'nefarian_plugins' === $type;
+        return 'nefarian_api' === $type;
     }
 
 

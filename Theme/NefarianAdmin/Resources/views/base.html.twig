@@ -37,10 +37,11 @@
     <script type="text/javascript">
         window.Nefarian = {};
     </script>
+    {% set page_modules = page_modules|default([]) %}
     {% block head_javascripts %}
         {{
             include('NefarianCmsBundle::requirejs.html.twig', {
-                requirejs_module: ['cms/core/api', 'theme/nefarian_admin/main']
+                requirejs_module: ['cms/core/api', 'theme/nefarian_admin/main']|merge(page_modules)
             })
         }}
     {% endblock %}

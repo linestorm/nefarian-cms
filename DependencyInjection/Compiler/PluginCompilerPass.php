@@ -24,6 +24,7 @@ class PluginCompilerPass implements CompilerPassInterface
         $plugins = $container->getParameter('nefarian_core.plugins');
 
         $pluginRouterDefinition = $container->getDefinition('nefarian_core.routing.plugin_loader');
+        $apiRouterDefinition    = $container->getDefinition('nefarian_core.routing.api_loader');
         $menuManagerDefinition  = $container->getDefinition('nefarian_core.menu_manager');
         $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
 
@@ -44,6 +45,13 @@ class PluginCompilerPass implements CompilerPassInterface
             if(file_exists($routingResource))
             {
                 $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
+            }
+
+            // register the plugins with the router
+            $routingResource = $plugin->getPath() . '/routing.api.yml';
+            if(file_exists($routingResource))
+            {
+                $apiRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
             }
 
 
@@ -88,7 +96,7 @@ class PluginCompilerPass implements CompilerPassInterface
             $modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine';
             if(file_exists($modelPath))
             {
-                $mappings = array(
+                $mappings    = array(
                     $modelPath => $plugin->getNamespace() . '\Model',
                 );
                 $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');

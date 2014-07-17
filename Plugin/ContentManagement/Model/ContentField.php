@@ -23,16 +23,82 @@ class ContentField
     protected $category;
 
     /**
-     * @var ContentType[]
+     * @var ContentTypeField[]
      */
-    protected $types;
+    protected $typeFields;
 
     /**
      * Initialisation
      */
     function __construct()
     {
-        $this->types = new ArrayCollection();
+        $this->typeFields = new ArrayCollection();
     }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param ContentTypeField $typeField
+     */
+    public function addTypeFields(ContentTypeField $typeField)
+    {
+        $this->typeFields[] = $typeField;
+    }
+
+    /**
+     * @param ContentTypeField $typeField
+     */
+    public function removeTypeFields(ContentTypeField $typeField)
+    {
+        $this->typeFields->removeElement($typeField);
+    }
+
+    /**
+     * @return ContentTypeField[]
+     */
+    public function getTypeFields()
+    {
+        return $this->typeFields;
+    }
+
+
 
 } 

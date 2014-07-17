@@ -26,9 +26,9 @@ class ContentType extends BaseContentType
     protected $id;
 
     /**
-     * @var ContentField[]
+     * @var ContentTypeField[]
      *
-     * @ORM\ManyToMany(targetEntity="ContentField", mappedBy="fields", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ContentTypeField", mappedBy="contentType", cascade={"persist"})
      */
-    protected $types;
+    protected $typeFields;
 } 

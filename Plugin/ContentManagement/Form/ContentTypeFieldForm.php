@@ -6,35 +6,30 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ContentTypeForm extends AbstractType
+class ContentTypeFieldForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
-            ->add('description', 'text', array(
-                'required' => false
+            ->add('contentField', 'entity', array(
+                'class' => 'Nefarian\CmsBundle\Entity\ContentField',
+                'property' => 'name',
             ))
-            ->add('typeFields', 'collection', array(
-                'label'        => 'Fields',
-                'type'         => new ContentTypeFieldForm(),
-                'allow_add'    => true,
-                'allow_delete' => true,
-            ));
+            ->add('order', 'hidden')
+        ;
     }
 
-    /**name
-     *
+    /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Nefarian\CmsBundle\Entity\ContentType'
+            'data_class' => 'Nefarian\CmsBundle\Entity\ContentTypeField'
         ));
     }
 
@@ -43,6 +38,6 @@ class ContentTypeForm extends AbstractType
      */
     public function getName()
     {
-        return 'nefarian_plugin_content_management_content_type';
+        return 'nefarian_plugin_content_management_content_type_field';
     }
 }

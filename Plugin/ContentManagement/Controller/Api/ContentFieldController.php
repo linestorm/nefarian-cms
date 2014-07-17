@@ -11,7 +11,7 @@ use FOS\RestBundle\Controller\Annotations\RouteResource;
  *
  * @package Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api
  *
- * @RouteResource("content-field")
+ * @RouteResource("Field")
  */
 class ContentFieldController extends Controller implements ClassResourceInterface
 {
