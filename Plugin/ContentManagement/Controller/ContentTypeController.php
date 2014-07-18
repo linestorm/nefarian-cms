@@ -15,7 +15,7 @@ class ContentTypeController extends Controller
     public function indexAction()
     {
         $em           = $this->getDoctrine()->getManager();
-        $contentTypes = $em->getRepository('NefarianCmsBundle:ContentType')->findAll();
+        $contentTypes = $em->getRepository('PluginContentManagement:ContentType')->findAll();
 
         return $this->render('@plugin_content_management/ContentType/index.html.twig', array(
             'contentTypes' => $contentTypes,
@@ -47,7 +47,7 @@ class ContentTypeController extends Controller
     public function editAction($id)
     {
         $em          = $this->getDoctrine()->getManager();
-        $contentType = $em->getRepository('NefarianCmsBundle:ContentType')->find($id);
+        $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
 
         $form = $this->createForm(new ContentTypeForm(), $contentType, array(
             'attr'   => array(
@@ -66,7 +66,7 @@ class ContentTypeController extends Controller
     public function editFieldsAction($id)
     {
         $em          = $this->getDoctrine()->getManager();
-        $contentType = $em->getRepository('NefarianCmsBundle:ContentType')->find($id);
+        $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
 
         $form = $this->createForm(new ContentTypeForm(), $contentType, array(
             'attr'   => array(

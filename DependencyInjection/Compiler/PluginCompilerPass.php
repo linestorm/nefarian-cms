@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
 use Nefarian\CmsBundle\Plugin\PluginCompiler;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -27,6 +28,7 @@ class PluginCompilerPass implements CompilerPassInterface
         $apiRouterDefinition    = $container->getDefinition('nefarian_core.routing.api_loader');
         $menuManagerDefinition  = $container->getDefinition('nefarian_core.menu_manager');
         $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
+        $twigLoaderDefinition   = $container->findDefinition('twig.loader.plugin_loader');
 
         foreach($plugins as $pluginClass)
         {
@@ -56,8 +58,7 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
             // Add the default plugin template path to the twig loader
-            $loader = $container->findDefinition('twig.loader.plugin_loader');
-            $loader->addMethodCall('addPlugin', array($pluginReference));
+            $twigLoaderDefinition->addMethodCall('addPlugin', array($pluginReference));
 
 
             // tell asstic where the plugin assets are
@@ -92,16 +93,61 @@ class PluginCompilerPass implements CompilerPassInterface
             }
 
 
-            // TODO: Load module entities
             $modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine';
-            if(file_exists($modelPath))
+            if(is_dir($modelPath))
             {
+                // set the validations mappings
+                $mappings = array(
+                    'xml'  => 'xml',
+                    'yaml' => 'yml'
+                );
+                foreach($mappings as $mapping => $extension)
+                {
+                    if(!$container->hasParameter('validator.mapping.loader.' . $mapping . '_files_loader.mapping_files'))
+                    {
+                        continue;
+                    }
+
+                    $files          = $container->getParameter('validator.mapping.loader.' . $mapping . '_files_loader.mapping_files');
+                    $validationPath = 'Resources/config/validation.orm.' . $extension;
+
+                    $file = $path . DIRECTORY_SEPARATOR . $validationPath;
+                    if(is_file($file))
+                    {
+                        $files[] = realpath($file);
+                        $container->addResource(new FileResource($file));
+                    }
+
+                    $container->setParameter('validator.mapping.loader.' . $mapping . '_files_loader.mapping_files', $files);
+                }
+
                 $mappings    = array(
                     $modelPath => $plugin->getNamespace() . '\Model',
                 );
                 $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
                 $doctinePass->process($container);
+
+                $mappings    = array(
+                    $modelPath => $plugin->getNamespace() . '\Entity',
+                );
+                $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
+                $doctinePass->process($container);
             }
+
+            // register our entity mappings
+            $doctrineConfigurationDefinition = $container->findDefinition('doctrine.orm.mappings_nefarian');
+            $doctrineConfigurationDefinition->addMethodCall('addPlugin', array(
+                $pluginReference,
+            ));
+            $doctrineConfigurationDefinition = $container->findDefinition('doctrine.orm.');
+
+            /*$doctrineConfig = $container->getExtensionConfig('doctrine');
+            $doctrineConfig['orm']['mappings']['plugin_' . $plugin->getName()] = array(
+                'type'   => 'php',
+                'dir'    => $plugin->getPath() . '/Entity',
+                'alias'  => 'Plugin' . $this->toCamelCase($plugin->getName()),
+                'bundle' => false
+            );*/
 
 
             // TODO: Load module services?

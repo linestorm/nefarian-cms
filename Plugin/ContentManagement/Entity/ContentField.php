@@ -1,20 +1,20 @@
 <?php
 
-namespace Nefarian\CmsBundle\Entity;
+namespace Nefarian\CmsBundle\Plugin\ContentManagement\Entity;
 
-use Nefarian\CmsBundle\Plugin\ContentManagement\Model\ContentType as BaseContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Model\ContentField as BaseContentField;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class ContentType
+ * Class ContentFieldType
  *
  * @package Nefarian\CmsBundle\Entity
  * @author  Andy Thorne <contrabandvr@gmail.com>
  *
- * @ORM\Table(name="content_type")
+ * @ORM\Table(name="content_field")
  * @ORM\Entity
  */
-class ContentType extends BaseContentType
+class ContentField extends BaseContentField
 {
     /**
      * @var integer
@@ -28,7 +28,7 @@ class ContentType extends BaseContentType
     /**
      * @var ContentTypeField[]
      *
-     * @ORM\OneToMany(targetEntity="ContentTypeField", mappedBy="contentType", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ContentTypeField", mappedBy="contentField", cascade={"persist"})
      */
     protected $typeFields;
 } 

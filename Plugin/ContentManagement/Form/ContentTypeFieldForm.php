@@ -15,6 +15,7 @@ class ContentTypeFieldForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('name', 'text')
             ->add('contentField', 'entity', array(
                 'class' => 'Nefarian\CmsBundle\Entity\ContentField',
                 'property' => 'name',

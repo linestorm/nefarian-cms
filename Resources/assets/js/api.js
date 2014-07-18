@@ -170,15 +170,12 @@
                     var html = '<p>An error occured when saving the form.</p><div id="FormErrors" class="alert alert-danger">';
                     if(e.status === 400){
                         if(e.responseJSON){
-                            var errors = _parseError(e.responseJSON.errors);
+                            var errors = _parseError(e.responseJSON.errors, null, true);
                             var str = '';
                             for(var i in errors){
-                                if(i.toLowerCase() == 'children')
-                                    continue;
                                 if(errors[i].length){
                                     html += "<p class=''><strong style='text-transform:capitalize;'>"+i+":</strong> "+errors[i].join(', ')+"</p>";
                                 }
-
                             }
                             $('#FormErrors').html(str).slideDown();
                         } else {
@@ -190,24 +187,37 @@
                     html += '</div>';
 
                     $formModal.find('.modal-message').html(html);
-                    callback_failure.call(this, e,b,c,$formModal);
+                    if('function' === typeof callback_failure){
+                        callback_failure.call(this, e,b,c,$formModal);
+                    }
                 }
             });
         };
 
-        var _parseError = function(e, p){
-            if(p === undefined){
+        var _parseError = function(e, p, flatten){
+            if(flatten === undefined){
+                flatten = false;
+            }
+
+            if(!p){
                 p = 'error';
             }
             var errors = {}, childErrors;
             for(var i in e){
                 if(i === 'errors'){
                     errors[p] = e[i];
-                } else if ("string" === typeof e[i] || e[i] instanceof Array){
+                } else if (i !== 'children' && ("string" === typeof e[i] || e[i] instanceof Array)){
                     errors[i] = e[i];
+                } else if(i === 'children' && e[i] instanceof Array && !flatten){
+                    errors[p] = []
+                    for(var j in e[i]){
+                        errors[p].push(_parseError(e[i][j], p, flatten));
+                    }
                 } else {
-                    childErrors = _parseError(e[i], i);
-                    for (var attrname in childErrors) { errors[attrname] = childErrors[attrname]; }
+                    childErrors = _parseError(e[i], i, flatten);
+                    for(var j in childErrors){
+                        errors[j] = childErrors[j];
+                    }
                 }
             }
 

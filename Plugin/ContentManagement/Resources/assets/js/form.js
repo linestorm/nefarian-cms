@@ -24,6 +24,8 @@ define(['jquery', 'jqueryui', 'bootstrap', 'cms/core/api'], function ($, ui, bs,
 
             var $template = $(template);
 
+            $template.find('input[name*="[order]"]').val(i);
+
             ++typeFieldCount;
             $typeFieldTable.append($template);
 

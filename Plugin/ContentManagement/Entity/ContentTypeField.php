@@ -1,6 +1,6 @@
 <?php
 
-namespace Nefarian\CmsBundle\Entity;
+namespace Nefarian\CmsBundle\Plugin\ContentManagement\Entity;
 
 use Nefarian\CmsBundle\Plugin\ContentManagement\Model\ContentTypeField as BaseContentTypeField;
 use Doctrine\ORM\Mapping as ORM;

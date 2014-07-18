@@ -9,15 +9,14 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @TODO    : Permissioning
- * @TODO    : Form URL Targets
- * @TODO    : putAction
- * @TODO    : deleteAction
+ * @TODO: Permissioning
  *
  * Class AbstractApiController
  *
@@ -25,12 +24,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 abstract class AbstractApiController extends Controller implements ClassResourceInterface, ApiControllerInterface
 {
-    const METHOD_GET    = 0;
-    const METHOD_NEW    = 1;
-    const METHOD_EDIT   = 2;
-    const METHOD_POST   = 3;
-    const METHOD_PUT    = 4;
-    const METHOD_DELETE = 5;
+    /** @var int */const METHOD_GET    = 0;
+    /** @var int */const METHOD_NEW    = 1;
+    /** @var int */const METHOD_EDIT   = 2;
+    /** @var int */const METHOD_POST   = 3;
+    /** @var int */const METHOD_PUT    = 4;
+    /** @var int */const METHOD_DELETE = 5;
 
     /**
      * Configure the query builder
@@ -54,6 +53,29 @@ abstract class AbstractApiController extends Controller implements ClassResource
     {
         return '@theme/Api/form.html.twig';
     }
+
+    /**
+     * @param Form $form
+     * @param      $errors
+     *
+     * @return FormError[]
+     */
+    protected function bubbleError(Form $form, &$errors)
+    {
+        if(!is_array($errors))
+            $errors = array();
+
+        if(!$form->isRoot())
+        {
+            $errors[$form->getName()] = $form->getErrors();
+        }
+
+        foreach($form->all() as $child)
+        {
+            $errors = $this->bubbleError($child, $errors[$form->getName()]);
+        }
+    }
+
 
     /**
      * [GET] Get all entities
@@ -114,11 +136,9 @@ abstract class AbstractApiController extends Controller implements ClassResource
     /**
      * [GET] Get a form for a new entity
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function newAction(Request $request)
+    public function newAction()
     {
         $class  = $this->getEntityClass();
         $entity = new $class();
@@ -219,24 +239,25 @@ abstract class AbstractApiController extends Controller implements ClassResource
         return $this->get('fos_rest.view_handler')->handle($view);
     }
 
+    /**
+     * [PUT] Save a form
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @throws NotFoundHttpException
+     * @return Response
+     */
     public function putAction(Request $request, $id)
     {
         /** @var EntityManager $em */
-        $class = $this->getEntityClass();
-        $em    = $this->getDoctrine()->getManager();
+        $class  = $this->getEntityClass();
+        $em     = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository($class)->find($id);
 
-        try
+        if(!$entity instanceof $class)
         {
-            $qb = $em->getRepository($class)
-                ->createQueryBuilder('e');
-            $this->setupQueryBuilder($qb);
-
-            $entity = $qb->andWhere('e.id = ?1')->setParameter(1, $id)
-                ->getQuery()->getSingleResult();
-        }
-        catch(NoResultException $e)
-        {
-            throw $this->createNotFoundException('Entity Not Found', $e);
+            throw $this->createNotFoundException('Entity Not Found');
         }
 
         $payload = json_decode($request->getContent(), true);
@@ -252,9 +273,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
             $em->persist($entity);
             $em->flush();
 
-            $view = View::create($entity, 201, array(
-                'location' => $this->getUrl(self::METHOD_GET, $entity)
-            ));
+            $view = View::create($entity, 200);
         }
         else
         {
@@ -264,7 +283,31 @@ abstract class AbstractApiController extends Controller implements ClassResource
         return $this->get('fos_rest.view_handler')->handle($view);
     }
 
-    public function deleteAction(Request $request, $id)
+    /**
+     * [DELETE] Delete a node
+     *
+     * @param $id
+     *
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function deleteAction($id)
     {
+        /** @var EntityManager $em */
+        $class  = $this->getEntityClass();
+        $em     = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository($class)->find($id);
+
+        if(!$entity instanceof $class)
+        {
+            throw $this->createNotFoundException('Entity Not Found');
+        }
+
+        $em->remove($entity);
+        $em->flush();
+
+        $view = View::create(null, 204);
+
+        return $this->get('fos_rest.view_handler')->handle($view);
     }
 }
