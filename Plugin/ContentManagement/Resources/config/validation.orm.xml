@@ -17,10 +17,10 @@
 
     <property name="typeFields">
       <constraint name="Valid"/>
-      <constraint name="Count">
+      <!--<constraint name="Count">
         <option name="min">1</option>
         <option name="minMessage">You must specify at least one field</option>
-      </constraint>
+      </constraint>-->
     </property>
 
   </class>

@@ -87,6 +87,14 @@ class PluginCompiler
     }
 
     /**
+     * @return string
+     */
+    public function getCamelName()
+    {
+        return $this->toCamelCase($this->name);
+    }
+
+    /**
      * Get the base path
      *
      * @return mixed
@@ -173,5 +181,21 @@ class PluginCompiler
         }
 
         return array();
+    }
+
+
+    /**
+     * Convert a plugin name to camel case
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    private function toCamelCase($name)
+    {
+        $name   = preg_replace('/[^a-zA-Z0-9]/', ' ', $name);
+        $string = ucwords(strtolower($name));
+
+        return str_replace(' ', '', $string);
     }
 } 

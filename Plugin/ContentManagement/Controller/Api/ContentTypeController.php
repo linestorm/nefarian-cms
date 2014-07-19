@@ -30,7 +30,7 @@ class ContentTypeController extends AbstractApiController implements ClassResour
      */
     function getEntityClass()
     {
-        return '\Nefarian\CmsBundle\Entity\ContentType';
+        return 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType';
     }
 
     /**

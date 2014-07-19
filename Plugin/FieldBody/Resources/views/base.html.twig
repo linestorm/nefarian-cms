@@ -1,0 +1,7 @@
+{% extends '@theme/layout.html.twig' %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="#"><i class="fa-bars"></i> Fields</a></li>
+    <li><a href="{{ url('nefarian_plugin_field_body_index') }}"><i class="fa-file-text-o"></i> Body</a></li>
+{% endblock %}

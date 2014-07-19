@@ -14,6 +14,11 @@ class FieldBodyController extends Controller
 {
     public function indexAction()
     {
+        $em           = $this->getDoctrine()->getManager();
+        $contentTypes = $em->getRepository('PluginFieldBody:FieldBody')->findAll();
 
+        return $this->render('@plugin_field_body/Field/index.html.twig', array(
+            'contentTypes' => $contentTypes,
+        ));
     }
 } 

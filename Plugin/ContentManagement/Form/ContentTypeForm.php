@@ -24,17 +24,18 @@ class ContentTypeForm extends AbstractType
                 'type'         => new ContentTypeFieldForm(),
                 'allow_add'    => true,
                 'allow_delete' => true,
+                'by_reference' => false,
             ));
     }
 
-    /**name
+    /**
      *
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Nefarian\CmsBundle\Entity\ContentType'
+            'data_class' => 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType'
         ));
     }
 

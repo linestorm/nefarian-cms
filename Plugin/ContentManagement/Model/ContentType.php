@@ -83,15 +83,16 @@ class ContentType
     /**
      * @param ContentTypeField $typeField
      */
-    public function addTypeFields(ContentTypeField $typeField)
+    public function addTypeField(ContentTypeField $typeField)
     {
         $this->typeFields[] = $typeField;
+        $typeField->setContentType($this);
     }
 
     /**
      * @param ContentTypeField $typeField
      */
-    public function removeTypeFields(ContentTypeField $typeField)
+    public function removeTypeField(ContentTypeField $typeField)
     {
         $this->typeFields->removeElement($typeField);
     }

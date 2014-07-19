@@ -2,7 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller;
 
-use Nefarian\CmsBundle\Entity\ContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,6 +49,11 @@ class ContentTypeController extends Controller
         $em          = $this->getDoctrine()->getManager();
         $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
 
+        if(!$contentType instanceof ContentType)
+        {
+            throw $this->createNotFoundException('Content Type Not Found');
+        }
+
         $form = $this->createForm(new ContentTypeForm(), $contentType, array(
             'attr'   => array(
                 'class' => 'api-save'
@@ -67,6 +72,11 @@ class ContentTypeController extends Controller
     {
         $em          = $this->getDoctrine()->getManager();
         $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
+
+        if(!$contentType instanceof ContentType)
+        {
+            throw $this->createNotFoundException('Content Type Not Found');
+        }
 
         $form = $this->createForm(new ContentTypeForm(), $contentType, array(
             'attr'   => array(

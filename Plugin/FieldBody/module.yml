@@ -1,2 +1,8 @@
 name: field_body
 category: field
+
+content_fields:
+  body:
+    class: Nefarian\CmsBundle\Plugin\FieldBody\Model\FieldBody
+    limit: 1
+    limit_required: true

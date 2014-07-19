@@ -93,8 +93,7 @@ class PluginCompilerPass implements CompilerPassInterface
             }
 
 
-            $modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine';
-            if(is_dir($modelPath))
+            if(is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine'))
             {
                 // set the validations mappings
                 $mappings = array(
@@ -127,48 +126,20 @@ class PluginCompilerPass implements CompilerPassInterface
                 $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
                 $doctinePass->process($container);
 
-                $mappings    = array(
-                    $modelPath => $plugin->getNamespace() . '\Entity',
-                );
-                $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
-                $doctinePass->process($container);
+                if(is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/entity/doctrine'))
+                {
+                    $mappings    = array(
+                        $modelPath => $plugin->getNamespace() . '\Entity',
+                    );
+                    $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
+                    $doctinePass->process($container);
+                }
             }
-
-            // register our entity mappings
-            $doctrineConfigurationDefinition = $container->findDefinition('doctrine.orm.mappings_nefarian');
-            $doctrineConfigurationDefinition->addMethodCall('addPlugin', array(
-                $pluginReference,
-            ));
-            $doctrineConfigurationDefinition = $container->findDefinition('doctrine.orm.');
-
-            /*$doctrineConfig = $container->getExtensionConfig('doctrine');
-            $doctrineConfig['orm']['mappings']['plugin_' . $plugin->getName()] = array(
-                'type'   => 'php',
-                'dir'    => $plugin->getPath() . '/Entity',
-                'alias'  => 'Plugin' . $this->toCamelCase($plugin->getName()),
-                'bundle' => false
-            );*/
 
 
             // TODO: Load module services?
         }
 
-    }
-
-
-    /**
-     * Convert a plugin name to camel case
-     *
-     * @param $name
-     *
-     * @return mixed
-     */
-    private function toCamelCase($name)
-    {
-        $name   = preg_replace('/[^a-zA-Z0-9]/', ' ', $name);
-        $string = ucwords(strtolower($name));
-
-        return str_replace(' ', '', $string);
     }
 
 

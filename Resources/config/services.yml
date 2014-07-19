@@ -78,11 +78,3 @@ services:
     class: %templating.loader.filesystem.class%
     arguments:
       - @templating.locator.theme_locator
-
-
-  #
-  # Doctrine - mappings
-  doctrine.orm.mappings_nefarian:
-    class: Nefarian\CmsBundle\Doctrine\DoctrineOrmMapping
-    arguments:
-      - @doctrine.orm.default_entity_manager

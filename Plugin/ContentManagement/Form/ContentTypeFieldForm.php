@@ -17,7 +17,7 @@ class ContentTypeFieldForm extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('contentField', 'entity', array(
-                'class' => 'Nefarian\CmsBundle\Entity\ContentField',
+                'class' => 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentField',
                 'property' => 'name',
             ))
             ->add('order', 'hidden')
@@ -30,7 +30,7 @@ class ContentTypeFieldForm extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Nefarian\CmsBundle\Entity\ContentTypeField'
+            'data_class' => 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField'
         ));
     }
 

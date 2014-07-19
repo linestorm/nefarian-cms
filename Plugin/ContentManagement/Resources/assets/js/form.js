@@ -21,14 +21,12 @@ define(['jquery', 'jqueryui', 'bootstrap', 'cms/core/api'], function ($, ui, bs,
         $addTypeFieldButton.on('click', function (e) {
             var template = $addTypeFieldButton.data('prototype');
             template = template.replace(/__name__/g, typeFieldCount);
+            ++typeFieldCount;
 
             var $template = $(template);
+            $template.find('input[name*="[order]"]').val(typeFieldCount);
 
-            $template.find('input[name*="[order]"]').val(i);
-
-            ++typeFieldCount;
             $typeFieldTable.append($template);
-
             $typeFieldTable.sortable('refresh');
         });
 
