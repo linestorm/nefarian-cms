@@ -1,0 +1,7 @@
+fields:
+  body:
+    class:   Nefarian\CmsBundle\Plugin\FieldBody\Entity\FieldBody
+    handler: Nefarian\CmsBundle\Plugin\FieldBody\Handler\FieldBodyHandler
+    properties:
+      limit: 1
+      limit_required: true

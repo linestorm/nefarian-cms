@@ -4,6 +4,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api;
 
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nefarian\CmsBundle\Controller\AbstractApiController;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
 use Symfony\Component\Form\Form;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
@@ -60,5 +61,21 @@ class ContentTypeController extends AbstractApiController implements ClassResour
         return '';
     }
 
+    /**
+     * @param ContentType $entity
+     */
+    protected function postCreate($entity)
+    {
+        /*
+        $em = $this->getDoctrine()->getManager();
+
+        $metadata = $em->getClassMetadata($field->getEntityClass());
+        $name     = $metadata->getTableName() . '_' . $entity->getName();
+        $metadata->setPrimaryTable(array('name' => $name));
+
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->createSchema(array($metadata));
+        */
+    }
 
 } 

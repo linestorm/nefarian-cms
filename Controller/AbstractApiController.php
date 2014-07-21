@@ -31,6 +31,9 @@ abstract class AbstractApiController extends Controller implements ClassResource
     /** @var int */const METHOD_PUT    = 4;
     /** @var int */const METHOD_DELETE = 5;
 
+    /** @var int */const TYPE_PRE      = 0;
+    /** @var int */const TYPE_POST     = 1;
+
     /**
      * Configure the query builder
      *
@@ -224,8 +227,12 @@ abstract class AbstractApiController extends Controller implements ClassResource
         {
             $entity = $form->getData();
 
+            $this->preCreate($entity);
+
             $em->persist($entity);
             $em->flush();
+
+            $this->postCreate($entity);
 
             $view = View::create($entity, 201, array(
                 'location' => $this->getUrl(self::METHOD_GET, $entity)
@@ -270,8 +277,12 @@ abstract class AbstractApiController extends Controller implements ClassResource
         {
             $entity = $form->getData();
 
+            $this->preUpdate($entity);
+
             $em->persist($entity);
             $em->flush();
+
+            $this->postUpdate($entity);
 
             $view = View::create($entity, 200);
         }
@@ -303,11 +314,51 @@ abstract class AbstractApiController extends Controller implements ClassResource
             throw $this->createNotFoundException('Entity Not Found');
         }
 
+        $this->preDelete($entity);
+
         $em->remove($entity);
         $em->flush();
+
+        $this->postDelete();
 
         $view = View::create(null, 204);
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }
+
+    protected function preGet()
+    {}
+
+    protected function postGet()
+    {}
+
+    protected function preNew()
+    {}
+
+    protected function postNew()
+    {}
+
+    protected function preEdit()
+    {}
+
+    protected function postEdit()
+    {}
+
+    protected function preCreate($entity)
+    {}
+
+    protected function postCreate($entity)
+    {}
+
+    protected function preUpdate($entity)
+    {}
+
+    protected function postUpdate($entity)
+    {}
+
+    protected function preDelete($entity)
+    {}
+
+    protected function postDelete()
+    {}
 }

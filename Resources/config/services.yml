@@ -1,6 +1,8 @@
 parameters:
-  nefarian_core.config_manager.class: Nefarian\CmsBundle\Configuration\ConfigManager
-  nefarian_core.menu_manager.class: Nefarian\CmsBundle\Menu\MenuManager
+  nefarian_core.config_manager.class:        Nefarian\CmsBundle\Configuration\ConfigManager
+  nefarian_core.menu_manager.class:          Nefarian\CmsBundle\Menu\MenuManager
+  nefarian_core.content_manager.class:       Nefarian\CmsBundle\Content\ContentManager
+  nefarian_core.content_field_manager.class: Nefarian\CmsBundle\Content\Field\ContentFieldManager
 
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
@@ -14,6 +16,9 @@ parameters:
   # override the asset factory
   assetic.asset_factory.class: Nefarian\CmsBundle\Assetic\Factory\NefarianAssetFactory
 
+  # Doctrine
+  nefarian_core.content_fields.doctrine.mapping.listener.class: Nefarian\CmsBundle\Doctrine\FieldMappingListener
+
 services:
 
   #
@@ -24,6 +29,14 @@ services:
 
   nefarian_core.menu_manager:
     class: %nefarian_core.menu_manager.class%
+
+  nefarian_core.content_manager:
+    class: %nefarian_core.content_manager.class%
+    arguments:
+      - @nefarian_core.content_field_manager
+
+  nefarian_core.content_field_manager:
+    class: %nefarian_core.content_field_manager.class%
 
   #
   # Plugin - Routing
@@ -78,3 +91,14 @@ services:
     class: %templating.loader.filesystem.class%
     arguments:
       - @templating.locator.theme_locator
+
+  #
+  # Doctrine - Mapping listener to modify relationships
+  nefarian_core.content_fields.doctrine.mapping.listener:
+    class: %nefarian_core.content_fields.doctrine.mapping.listener.class%
+    arguments:
+      - @nefarian_core.content_field_manager
+    tags:
+      - { name: doctrine.event_listener, event: loadClassMetadata }
+      - { name: doctrine.event_listener, event: postUpdate }
+      - { name: doctrine.event_listener, event: preUpdate }

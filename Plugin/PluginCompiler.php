@@ -3,6 +3,9 @@
 namespace Nefarian\CmsBundle\Plugin;
 
 use Nefarian\CmsBundle\DependencyInjection\Compiler\Exception\PluginConfigNotFound;
+use Nefarian\CmsBundle\DependencyInjection\Nefarian as Configurations;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -13,6 +16,10 @@ use Symfony\Component\Yaml\Parser;
  */
 class PluginCompiler
 {
+    const CONFIG_MODULE = 'module';
+    const CONFIG_MENU   = 'menu';
+    const CONFIG_FIELDS = 'fields';
+
     /**
      * @var string
      */
@@ -22,6 +29,11 @@ class PluginCompiler
      * @var Parser
      */
     private $parser;
+
+    /**
+     * @var Processor
+     */
+    private $processor;
 
     /**
      * @var string
@@ -58,9 +70,18 @@ class PluginCompiler
     function __construct($class)
     {
         $this->class = $class;
-        $this->parser = new Parser();
     }
 
+    /**
+     * Prepare the object for serialisation
+     */
+    function __sleep()
+    {
+        // We don't want to serialise the compiler elements, so unset them
+        $this->processor = null;
+        $this->parser    = null;
+        $this->metaClass = null;
+    }
 
     /**
      * Boot the plugin
@@ -69,11 +90,15 @@ class PluginCompiler
      */
     public function compile()
     {
-        $this->metaClass = new \ReflectionClass($this->class);
-        $this->path = pathinfo($this->metaClass->getFileName(), PATHINFO_DIRNAME);
+        $this->parser    = new Parser();
+        $this->processor = new Processor();
 
-        $this->loadConfig();
-        $this->load('menu');
+        $this->metaClass = new \ReflectionClass($this->class);
+        $this->path      = pathinfo($this->metaClass->getFileName(), PATHINFO_DIRNAME);
+
+        $this->loadModuleConfig();
+        $this->loadMenuConfig();
+        $this->loadFieldsConfig();
 
         return $this;
     }
@@ -123,53 +148,98 @@ class PluginCompiler
     }
 
     /**
-     * Load a yaml file
+     * Parse a/array of config files
      *
-     * @param $name
-     * @param $file
+     * @param string|array $files
      *
      * @return array
      */
-    private function load($name, $file=null)
+    protected function parse($files)
     {
-        if(!$file)
-            $file = $name.'.yml';
-
-        $this->configs[$name] = array();
-
-        // Read the administration routing config
-        $path = $this->path . DIRECTORY_SEPARATOR . $file;
-        if(file_exists($path))
+        if(!is_array($files))
         {
-            return $this->configs[$name] = $this->parser->parse(file_get_contents($path));
+            $files = array($files);
         }
 
-        return array();
+        $configs = array();
+
+        foreach($files as $file)
+        {
+            if(is_file($dir = $this->path . '/' . $file))
+            {
+                $configs[] = $this->parser->parse(file_get_contents($dir));
+            }
+
+        }
+
+        return $configs;
+    }
+
+    /**
+     * Load a yaml file
+     *
+     * @param string|array           $configs
+     * @param ConfigurationInterface $configuration
+     *
+     * @internal param $name
+     * @return array
+     */
+    protected function load($configs, ConfigurationInterface $configuration)
+    {
+        if(!is_array($configs))
+        {
+            $configs = array($configs);
+        }
+
+        $parsedConfigs = $this->parse($configs);
+
+        return $this->processor->processConfiguration(
+            $configuration,
+            $parsedConfigs
+        );
     }
 
     /**
      * @throws PluginConfigNotFound
      * @return array
      */
-    private function loadConfig()
+    protected function loadModuleConfig()
     {
-        $config = $this->load('module');
-
-        if(count($config) === 0 || !array_key_exists('name', $config))
-        {
-            throw new PluginConfigNotFound($config);
-        }
+        $configuration = new Configurations\ModuleConfiguration();
+        $config        = $this->load('module.yml', $configuration);
 
         $this->name = $config['name'];
 
-        return $config;
+        return $this->configs[self::CONFIG_MODULE] = $config;
+    }
+
+    /**
+     * @return array
+     */
+    protected function loadMenuConfig()
+    {
+        $configuration = new Configurations\MenuConfiguration();
+        $config        = $this->load('menu.yml', $configuration);
+
+        return $this->configs[self::CONFIG_MENU] = $config;
+    }
+
+    /**
+     * @return array
+     */
+    protected function loadFieldsConfig()
+    {
+        $configuration = new Configurations\FieldsConfiguration();
+        $config        = $this->load('content_fields.yml', $configuration);
+
+        return $this->configs[self::CONFIG_FIELDS] = $config;
     }
 
 
     /**
      * Get a config array
      *
-     * @param $name
+     * @param string $name One of the PluginCompiler::CONFIG_* constants
      *
      * @return array
      */
@@ -191,7 +261,7 @@ class PluginCompiler
      *
      * @return mixed
      */
-    private function toCamelCase($name)
+    protected function toCamelCase($name)
     {
         $name   = preg_replace('/[^a-zA-Z0-9]/', ' ', $name);
         $string = ucwords(strtolower($name));

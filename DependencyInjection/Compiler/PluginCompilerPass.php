@@ -25,6 +25,7 @@ class PluginCompilerPass implements CompilerPassInterface
         $plugins = $container->getParameter('nefarian_core.plugins');
 
         $pluginRouterDefinition = $container->getDefinition('nefarian_core.routing.plugin_loader');
+        $fieldManagerDefinition = $container->getDefinition('nefarian_core.content_field_manager');
         $apiRouterDefinition    = $container->getDefinition('nefarian_core.routing.api_loader');
         $menuManagerDefinition  = $container->getDefinition('nefarian_core.menu_manager');
         $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
@@ -42,12 +43,14 @@ class PluginCompilerPass implements CompilerPassInterface
             $pluginDefinition->addArgument($plugin->getName());
             $pluginReference = new Reference($pluginDefinitionId);
 
+
             // register the plugins with the router
             $routingResource = $plugin->getPath() . '/routing.admin.yml';
             if(file_exists($routingResource))
             {
                 $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
             }
+
 
             // register the plugins with the router
             $routingResource = $plugin->getPath() . '/routing.api.yml';
@@ -79,8 +82,8 @@ class PluginCompilerPass implements CompilerPassInterface
             }
 
 
-            // TODO: Load module menu
-            $menu = $plugin->getConfig('menu');
+            // TODO: Finish loading module menu
+            $menu = $plugin->getConfig($plugin::CONFIG_MENU);
             foreach($menu as $item)
             {
                 $menuManagerDefinition->addMethodCall('addLink', array(
@@ -93,6 +96,7 @@ class PluginCompilerPass implements CompilerPassInterface
             }
 
 
+            // load all the entity mappings, if they exist
             if(is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine'))
             {
                 // set the validations mappings
@@ -136,8 +140,21 @@ class PluginCompilerPass implements CompilerPassInterface
                 }
             }
 
+            // load in all the content fields
+            $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
+            $class = 'Nefarian\CmsBundle\Content\Field\Field';
+            foreach($fieldsConfig['fields'] as $fieldName => $fieldConfig)
+            {
+                $sId = 'nefarian_core.content_field.'.$fieldName;
+                $fieldDefinition = $container->register($sId, $class);
+                $fieldDefinition->setArguments(array($fieldName, $fieldConfig));
+                $fieldManagerDefinition->addMethodCall('addField', array(new Reference($sId)));
+            }
 
-            // TODO: Load module services?
+            /**
+             * @TODO: dump cached
+             * @see http://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
+             */
         }
 
     }

@@ -1,0 +1,11 @@
+#parameters:
+#  nefarian.plugins.content_management.doctrine.mapping.listener.class:
+#
+#services:
+#
+#  #
+#  # Doctrine - Mapping listener to modify relationships
+#  nefarian.plugins.content_management.doctrine.mapping.listener:
+#    class: %nefarian.plugins.content_management.doctrine.mapping.listener.class%
+#    tags:
+#      - { name: doctrine.event_listener, event: loadClassMetadata }

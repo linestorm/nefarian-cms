@@ -28,6 +28,14 @@ class ContentField
     protected $typeFields;
 
     /**
+     * This is dynamically updated to relate to the Field type
+     *
+     * @see Nefarian\CmsBundle\Doctrine\FieldMappingListener
+     * @var object
+     */
+    protected $field;
+
+    /**
      * Initialisation
      */
     function __construct()

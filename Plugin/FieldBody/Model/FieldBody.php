@@ -1,6 +1,7 @@
 <?php
 
 namespace Nefarian\CmsBundle\Plugin\FieldBody\Model;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Model\Node;
 
 /**
@@ -25,6 +26,11 @@ class FieldBody
      * @var Node
      */
     protected $node;
+
+    /**
+     * @var ContentType
+     */
+    protected $contentType;
 
     /**
      * @return int
@@ -64,6 +70,22 @@ class FieldBody
     public function getNode()
     {
         return $this->node;
+    }
+
+    /**
+     * @param ContentType $contentType
+     */
+    public function setContentType(ContentType $contentType)
+    {
+        $this->contentType = $contentType;
+    }
+
+    /**
+     * @return ContentType
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
     }
 
 
