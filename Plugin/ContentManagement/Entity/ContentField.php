@@ -13,22 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="content_field")
  * @ORM\Entity
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="field", type="string")
+ * @-ORM\DiscriminatorMap({"person" = "Person", "employee" = "Employee"})
  */
 class ContentField extends BaseContentField
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    protected $id;
-
-    /**
-     * @var ContentTypeField[]
-     *
-     * @ORM\OneToMany(targetEntity="ContentTypeField", mappedBy="contentField", cascade={"persist"})
-     */
-    protected $typeFields;
 } 

@@ -58,11 +58,9 @@ class PluginCompiler
     private $class;
 
     /**
-     * Routing config
-     *
-     * @var array
+     * @var Plugin
      */
-    private $routing = array();
+    private $plugin;
 
     /**
      * @param string $class
@@ -81,6 +79,7 @@ class PluginCompiler
         $this->processor = null;
         $this->parser    = null;
         $this->metaClass = null;
+        $this->plugin    = null;
     }
 
     /**
@@ -95,6 +94,7 @@ class PluginCompiler
 
         $this->metaClass = new \ReflectionClass($this->class);
         $this->path      = pathinfo($this->metaClass->getFileName(), PATHINFO_DIRNAME);
+        $this->plugin    = new $this->class();
 
         $this->loadModuleConfig();
         $this->loadMenuConfig();
@@ -205,12 +205,7 @@ class PluginCompiler
      */
     protected function loadModuleConfig()
     {
-        $configuration = new Configurations\ModuleConfiguration();
-        $config        = $this->load('module.yml', $configuration);
-
-        $this->name = $config['name'];
-
-        return $this->configs[self::CONFIG_MODULE] = $config;
+        $this->name = $this->plugin->getName();
     }
 
     /**
@@ -219,7 +214,7 @@ class PluginCompiler
     protected function loadMenuConfig()
     {
         $configuration = new Configurations\MenuConfiguration();
-        $config        = $this->load('menu.yml', $configuration);
+        $config        = $this->load('Resources/config/menu.yml', $configuration);
 
         return $this->configs[self::CONFIG_MENU] = $config;
     }
@@ -230,7 +225,7 @@ class PluginCompiler
     protected function loadFieldsConfig()
     {
         $configuration = new Configurations\FieldsConfiguration();
-        $config        = $this->load('content_fields.yml', $configuration);
+        $config        = $this->load('Resources/config/content_fields.yml', $configuration);
 
         return $this->configs[self::CONFIG_FIELDS] = $config;
     }

@@ -4,7 +4,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-class ContentField
+abstract class ContentField
 {
 
     /**
@@ -28,10 +28,8 @@ class ContentField
     protected $typeFields;
 
     /**
-     * This is dynamically updated to relate to the Field type
-     *
      * @see Nefarian\CmsBundle\Doctrine\FieldMappingListener
-     * @var object
+     * @var string
      */
     protected $field;
 
@@ -108,6 +106,19 @@ class ContentField
         return $this->typeFields;
     }
 
+    /**
+     * @param string $field
+     */
+    public function setField($field)
+    {
+        $this->field = $field;
+    }
 
-
+    /**
+     * @return string
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
 } 

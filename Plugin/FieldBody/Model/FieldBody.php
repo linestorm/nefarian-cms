@@ -1,8 +1,7 @@
 <?php
 
 namespace Nefarian\CmsBundle\Plugin\FieldBody\Model;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Model\BaseFieldEntity;
+
 use Nefarian\CmsBundle\Plugin\ContentManagement\Model\Node;
 
 /**
@@ -11,7 +10,7 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Model\Node;
  * @package Nefarian\CmsBundle\Plugin\FieldBody\Model
  * @author  Andy Thorne <contrabandvr@gmail.com>
  */
-class FieldBody extends BaseFieldEntity
+class FieldBody
 {
     /**
      * @var int

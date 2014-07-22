@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -37,6 +38,11 @@ class Node
      * @var ContentType
      */
     protected $contentType;
+
+    /**
+     * @var ContentType
+     */
+    protected $contentFields;
 
     /**
      * @var boolean
@@ -87,6 +93,12 @@ class Node
      * @var \DateTime
      */
     protected $editedOn;
+
+    function __construct()
+    {
+        $this->contentFields = new ArrayCollection();
+    }
+
 
     /**
      * @return int
@@ -320,6 +332,29 @@ class Node
         return $this->title;
     }
 
+    /**
+     * @return ContentType
+     */
+    public function getContentFields()
+    {
+        return $this->contentFields;
+    }
+
+    /**
+     * @param ContentField $contentField
+     */
+    public function addContentField(ContentField $contentField)
+    {
+        $this->contentFields[] = $contentField;
+    }
+
+    /**
+     * @param ContentField $contentField
+     */
+    public function removeContentField(ContentField $contentField)
+    {
+        $this->contentFields->removeElement($contentField);
+    }
 
 
 } 

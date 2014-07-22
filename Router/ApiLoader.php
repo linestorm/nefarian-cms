@@ -54,7 +54,7 @@ class ApiLoader extends Loader
             $pluginRoutes = new RouteCollection();
             foreach($routeResources as $routeResource)
             {
-                $resourceRoutes = $this->import($routeResource);
+                $resourceRoutes = $this->import($routeResource, 'rest');
                 $pluginRoutes->addCollection($resourceRoutes);
             }
 

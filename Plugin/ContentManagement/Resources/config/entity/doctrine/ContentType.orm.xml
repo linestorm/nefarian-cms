@@ -4,7 +4,8 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                     http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType" table="content_type">
+    <entity name="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType" table="content_type"
+            repository-class="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Repository\ContentTypeRepository">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO" />
         </id>

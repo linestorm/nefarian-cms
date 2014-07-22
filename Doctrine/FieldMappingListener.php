@@ -18,24 +18,12 @@ class FieldMappingListener implements EventSubscriber
      */
     protected $fieldManager;
 
-    protected $proxyDir;
-
-    protected $proxyNamespace;
-
-    protected $autoGenerate;
-
     /**
      * @param ContentFieldManager $fieldManager
-     * @param string              $proxyDir
-     * @param string              $proxyNamespace
-     * @param string              $autoGenerate
      */
-    function __construct(ContentFieldManager $fieldManager, $proxyDir, $proxyNamespace, $autoGenerate)
+    function __construct(ContentFieldManager $fieldManager)
     {
         $this->fieldManager   = $fieldManager;
-        $this->proxyDir       = $proxyDir;
-        $this->proxyNamespace = $proxyNamespace;
-        $this->autoGenerate   = $autoGenerate;
     }
 
     /**
@@ -55,44 +43,26 @@ class FieldMappingListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
-        return;
-        /*
-        $entity        = $eventArgs->getEmptyInstance();
-        $classMetadata = $eventArgs->getClassMetadata();
-        $className     = $classMetadata->getReflectionClass()->getName();
-        $em            = $eventArgs->getEntityManager();
+        $classMetadata   = $eventArgs->getClassMetadata();
+        $reflectionClass = $classMetadata->getReflectionClass();
+        $className       = $reflectionClass->getName();
+        $em              = $eventArgs->getEntityManager();
 
-        var_dump($className);
+        if($className !== 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentField')
+        {
+            return;
+        }
 
+        // map all the fields into content type
         foreach($this->fieldManager->getFields() as $field)
         {
-            if($className == $field->getEntityClass())
-            {
-                $proxyFactory = new ProxyFactory($eventArgs->getEntityManager(), $this->proxyDir, $this->proxyNamespace, $this->autoGenerate);
+            //$property = $reflectionClass->getProperty('_fields');
+            //$name = substr($field->getEntityClass(), strrpos($field->getEntityClass(), '\\') + 1);
 
-                $metadata = $em->getClassMetadata($field->getEntityClass());
-                $name     = $metadata->getTableName() . '___' . $field->getName();
-                $metadata->setPrimaryTable(array('name' => $name));
-
-                var_dump($proxyFactory->generateProxyClasses(array($classMetadata)));
-            }
+            $classMetadata->setDiscriminatorMap(array(
+                $field->getName() => $field->getEntityClass(),
+            ));
         }
-                /** @var ClassMetadataInfo $classMetadata * /
-                $i  = 0;
-                foreach($this->fieldManager->getFields() as $field)
-                {
-                    $metadata = $em->getClassMetadata($field->getEntityClass());
-                    $name     = $metadata->getTableName() . '___' . $field->getName();
-                    $metadata->setPrimaryTable(array('name' => $name));
-
-                    //$schemaTool = new SchemaTool($em);
-                    //$schemaTool->createSchema(array($metadata));
-
-                    var_dump($proxyFactory->generateProxyClasses(array($classMetadata)));
-
-                    ++$i;
-                }
-        */
     }
 
     /**

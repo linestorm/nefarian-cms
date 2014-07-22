@@ -40,12 +40,11 @@ class PluginCompilerPass implements CompilerPassInterface
             // configure the plugin service
             $pluginDefinitionId = 'nefarian.plugin.' . $plugin->getName();
             $pluginDefinition   = $container->register($pluginDefinitionId, $pluginClass);
-            $pluginDefinition->addArgument($plugin->getName());
             $pluginReference = new Reference($pluginDefinitionId);
 
 
             // register the plugins with the router
-            $routingResource = $plugin->getPath() . '/routing.admin.yml';
+            $routingResource = $path . DIRECTORY_SEPARATOR . 'Resources/config/routing/routing.admin.yml';
             if(file_exists($routingResource))
             {
                 $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
@@ -53,7 +52,7 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
             // register the plugins with the router
-            $routingResource = $plugin->getPath() . '/routing.api.yml';
+            $routingResource = $path . DIRECTORY_SEPARATOR . 'Resources/config/routing/routing.api.yml';
             if(file_exists($routingResource))
             {
                 $apiRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));

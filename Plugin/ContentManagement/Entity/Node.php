@@ -16,19 +16,4 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Node extends BaseNode
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    protected $id;
-
-    /**
-     * @var ContentType
-     *
-     * @ORM\ManyToOne(targetEntity="ContentType", cascade={"persist"})
-     */
-    protected $contentType;
 } 

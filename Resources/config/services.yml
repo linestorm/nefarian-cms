@@ -35,6 +35,11 @@ services:
     arguments:
       - @nefarian_core.content_field_manager
 
+  nefarian_core.content_type_manager:
+    class: %nefarian_core.content_manager.class%
+    arguments:
+      - @nefarian_core.content_field_manager
+
   nefarian_core.content_field_manager:
     class: %nefarian_core.content_field_manager.class%
 
@@ -98,10 +103,17 @@ services:
     class: %nefarian_core.content_fields.doctrine.mapping.listener.class%
     arguments:
       - @nefarian_core.content_field_manager
-      - %doctrine.orm.proxy_dir%
-      - Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field
-      - %doctrine.orm.auto_generate_proxy_classes%
     tags:
       - { name: doctrine.event_listener, event: loadClassMetadata }
       - { name: doctrine.event_listener, event: postUpdate }
       - { name: doctrine.event_listener, event: preUpdate }
+
+  #
+  # Forms - field collection
+  nefarian_core.form.type.field_collection:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type\FieldCollectionType
+    arguments:
+        - @nefarian_core.content_field_manager
+    tags:
+        - { name: form.type, alias: field_collection }
+

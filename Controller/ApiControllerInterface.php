@@ -7,6 +7,24 @@ use Symfony\Component\Form\AbstractType;
 
 interface ApiControllerInterface
 {
+    /** @var int */
+    const METHOD_GET = 0;
+    /** @var int */
+    const METHOD_NEW = 1;
+    /** @var int */
+    const METHOD_EDIT = 2;
+    /** @var int */
+    const METHOD_POST = 3;
+    /** @var int */
+    const METHOD_PUT = 4;
+    /** @var int */
+    const METHOD_DELETE = 5;
+
+    /** @var int */
+    const TYPE_PRE = 0;
+    /** @var int */
+    const TYPE_POST = 1;
+
     /**
      * Get the form type
      *

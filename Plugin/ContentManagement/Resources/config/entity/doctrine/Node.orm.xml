@@ -8,6 +8,8 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO" />
         </id>
+        <one-to-many target-entity="ContentField" field="contentFields">
+        </one-to-many>
         <many-to-one target-entity="ContentType" field="contentType">
             <cascade>
                 <cascade-persist/>

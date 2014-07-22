@@ -12,5 +12,11 @@ use Nefarian\CmsBundle\Plugin\Plugin;
  */
 class ContentManagementPlugin extends Plugin
 {
-
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'content_management';
+    }
 } 

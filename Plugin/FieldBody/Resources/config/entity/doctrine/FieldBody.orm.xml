@@ -5,7 +5,8 @@
                     http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <entity name="Nefarian\CmsBundle\Plugin\FieldBody\Entity\FieldBody" table="field_body">
-        <id name="id" type="integer" column="id">
+      <field name="body" type="string" column="body" nullable="false" />
+        <!--<id name="id" type="integer" column="id">
             <generator strategy="AUTO" />
         </id>
         <many-to-many target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node" field="node" >
@@ -28,7 +29,7 @@
               <join-column/>
             </inverse-join-columns>
           </join-table>
-        </many-to-many>
+        </many-to-many>-->
 
     </entity>
 </doctrine-mapping>

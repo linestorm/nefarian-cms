@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
 
 /**
  * Class ContentType
@@ -37,7 +38,7 @@ class ContentType
      */
     function __construct()
     {
-        $this->typeFields = new ArrayCollection();
+        $this->typeFields   = new ArrayCollection();
     }
 
     /**

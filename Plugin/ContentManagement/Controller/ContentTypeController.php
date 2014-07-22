@@ -2,6 +2,8 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NoResultException;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,12 +48,27 @@ class ContentTypeController extends Controller
 
     public function editAction($id)
     {
+        /** @var EntityManager $em */
         $em          = $this->getDoctrine()->getManager();
         $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
 
-        if(!$contentType instanceof ContentType)
+        try
         {
-            throw $this->createNotFoundException('Content Type Not Found');
+            $dql         = "
+                SELECT
+                  ct, tf, cf
+                FROM
+                  PluginContentManagement:ContentType ct
+                LEFT JOIN ct.typeFields tf
+                LEFT JOIN tf.contentField cf
+                WHERE
+                  ct.id = ?1
+            ";
+            $contentType = $em->createQuery($dql)->setParameter(1, $id)->getSingleResult();
+        }
+        catch(NoResultException $e)
+        {
+            throw $this->createNotFoundException('Content Type Not Found', $e);
         }
 
         $form = $this->createForm(new ContentTypeForm(), $contentType, array(

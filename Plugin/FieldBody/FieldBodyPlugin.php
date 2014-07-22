@@ -12,5 +12,12 @@ use Nefarian\CmsBundle\Plugin\Plugin;
  */
 class FieldBodyPlugin extends Plugin
 {
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'field_body';
+    }
 
 } 

@@ -39,7 +39,7 @@ class NodeController extends Controller
      */
     public function newAction($id)
     {
-        $em          = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
         /** @var ContentType $contentType */
         $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
 
@@ -49,35 +49,22 @@ class NodeController extends Controller
         }
 
         $fieldManager = $this->get('nefarian_core.content_field_manager');
-        $newContentType = new Node();
+        $node         = new Node();
 
-        $form = $this->createForm(new NodeForm($contentType, $fieldManager), $newContentType, array(
+        $form = $this->createForm(new NodeForm($fieldManager, $contentType), $node, array(
             'attr'   => array(
                 'class' => 'api-save'
             ),
             'method' => 'POST',
-            'action' => $this->generateUrl('nefarian_api_content_management_post_type'),
+            'action' => $this->generateUrl('nefarian_api_content_management_post_type_node', array(
+                'contentType' => $contentType->getId()
+            )),
         ));
-
-        $fieldForms = array();
-        $fieldViews = array();
-        // get the content type fields
-        foreach($contentType->getTypeFields() as $fieldType)
-        {
-            $field = $fieldManager->getField($fieldType->getContentField()->getName());
-            $entityClass = $field->getEntityClass();
-            $formClass = $field->getForm();
-
-            $fieldForms[] = $fieldForm = $this->createForm(new $formClass($contentType), new $entityClass());
-            $fieldViews = $fieldForm->createView();
-        }
 
         return $this->render('@plugin_content_management/Node/new.html.twig', array(
             'contentType' => $contentType,
             'form'        => $form->createView(),
-            'fieldForms'  => $fieldViews,
         ));
     }
-
 
 } 

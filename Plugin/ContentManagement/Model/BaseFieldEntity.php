@@ -2,7 +2,6 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
-
 Abstract class BaseFieldEntity
 {
     /**

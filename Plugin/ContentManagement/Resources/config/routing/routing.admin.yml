@@ -27,3 +27,9 @@ node_create:
   defaults: { _controller: Node:new }
   requirements:
     id: \d+
+
+node_edit:
+  path: /node/{id}
+  defaults: { _controller: Node:edit }
+  requirements:
+    id: \d+

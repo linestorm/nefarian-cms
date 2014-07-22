@@ -8,7 +8,7 @@ namespace Nefarian\CmsBundle\Plugin;
  * @package Nefarian\CmsBundle\Plugin
  * @author  Andy Thorne <contrabandvr@gmail.com>
  */
-class Plugin
+abstract class Plugin
 {
     /**
      * @var string
@@ -36,12 +36,10 @@ class Plugin
     private $meta;
 
     /**
-     * @param string $name
+     * initialiser
      */
-    function __construct($name)
+    function __construct()
     {
-        $this->name = $name;
-
         $this->meta = new \ReflectionClass($this);
         $this->path = pathinfo($this->meta->getFileName(), PATHINFO_DIRNAME);
         $this->namespace = $this->meta->getNamespaceName();
@@ -50,10 +48,7 @@ class Plugin
     /**
      * @return string
      */
-    public function getName()
-    {
-        return $this->name;
-    }
+    abstract public function getName();
 
     /**
      * Get the base path
@@ -82,5 +77,6 @@ class Plugin
     {
         return $this->routes;
     }
+
 
 } 

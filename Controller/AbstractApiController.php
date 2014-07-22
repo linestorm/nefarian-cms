@@ -9,14 +9,12 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @TODO: Permissioning
+ * @TODO    : Permissioning
  *
  * Class AbstractApiController
  *
@@ -24,15 +22,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 abstract class AbstractApiController extends Controller implements ClassResourceInterface, ApiControllerInterface
 {
-    /** @var int */const METHOD_GET    = 0;
-    /** @var int */const METHOD_NEW    = 1;
-    /** @var int */const METHOD_EDIT   = 2;
-    /** @var int */const METHOD_POST   = 3;
-    /** @var int */const METHOD_PUT    = 4;
-    /** @var int */const METHOD_DELETE = 5;
-
-    /** @var int */const TYPE_PRE      = 0;
-    /** @var int */const TYPE_POST     = 1;
 
     /**
      * Configure the query builder
@@ -55,28 +44,6 @@ abstract class AbstractApiController extends Controller implements ClassResource
     function getFormTemplate($method)
     {
         return '@theme/Api/form.html.twig';
-    }
-
-    /**
-     * @param Form $form
-     * @param      $errors
-     *
-     * @return FormError[]
-     */
-    protected function bubbleError(Form $form, &$errors)
-    {
-        if(!is_array($errors))
-            $errors = array();
-
-        if(!$form->isRoot())
-        {
-            $errors[$form->getName()] = $form->getErrors();
-        }
-
-        foreach($form->all() as $child)
-        {
-            $errors = $this->bubbleError($child, $errors[$form->getName()]);
-        }
     }
 
 
@@ -219,8 +186,10 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
         $payload = json_decode($request->getContent(), true);
 
-        $formType = $this->getForm();
-        $form     = $this->createForm($formType);
+        $class     = $this->getEntityClass();
+        $newEntity = new $class();
+        $formType  = $this->getForm();
+        $form      = $this->createForm($formType, $newEntity);
         $form->submit($payload[$formType->getName()]);
 
         if($form->isValid())
@@ -327,38 +296,50 @@ abstract class AbstractApiController extends Controller implements ClassResource
     }
 
     protected function preGet()
-    {}
+    {
+    }
 
     protected function postGet()
-    {}
+    {
+    }
 
     protected function preNew()
-    {}
+    {
+    }
 
     protected function postNew()
-    {}
+    {
+    }
 
     protected function preEdit()
-    {}
+    {
+    }
 
     protected function postEdit()
-    {}
+    {
+    }
 
     protected function preCreate($entity)
-    {}
+    {
+    }
 
     protected function postCreate($entity)
-    {}
+    {
+    }
 
     protected function preUpdate($entity)
-    {}
+    {
+    }
 
     protected function postUpdate($entity)
-    {}
+    {
+    }
 
     protected function preDelete($entity)
-    {}
+    {
+    }
 
     protected function postDelete()
-    {}
+    {
+    }
 }
