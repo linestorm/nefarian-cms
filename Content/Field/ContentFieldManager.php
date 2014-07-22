@@ -35,7 +35,12 @@ class ContentFieldManager
      */
     public function getField($name)
     {
-        return $this->fields[$name];
+        if(array_key_exists($name, $this->fields))
+        {
+            return $this->fields[$name];
+        }
+
+        return null;
     }
 
 } 

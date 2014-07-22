@@ -9,3 +9,9 @@ list:
   title: All Content Types
   description: Add, Edit and Delete Content Types
   parent: self.index
+
+node_new:
+  route: node_create_select
+  title: New Node
+  description: Create a new content node
+  parent: ~

@@ -98,6 +98,9 @@ services:
     class: %nefarian_core.content_fields.doctrine.mapping.listener.class%
     arguments:
       - @nefarian_core.content_field_manager
+      - %doctrine.orm.proxy_dir%
+      - Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field
+      - %doctrine.orm.auto_generate_proxy_classes%
     tags:
       - { name: doctrine.event_listener, event: loadClassMetadata }
       - { name: doctrine.event_listener, event: postUpdate }

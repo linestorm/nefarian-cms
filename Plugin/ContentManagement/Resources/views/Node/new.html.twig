@@ -1,0 +1,32 @@
+{% extends '@plugin_content_management/Node/base.html.twig' %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugin_content_management_node_create_select') }}"><i class="fa-file"></i> Create</a></li>
+{% endblock %}
+
+
+{% block page_title %}
+    New {{ contentType.name }} Node
+{% endblock %}
+
+{% block page_desc %}
+
+{% endblock %}
+
+{% block plugin %}
+    {{ form_start(form) }}
+    {{ form_rest(form) }}
+    {% for fieldForm in fieldForms %}
+        {% form_theme fieldForm '@theme_nefarian_admin/Form/fields.html.twig' %}
+        {{ form_row(fieldForm) }}
+    {% endfor %}
+
+    <div class="form-group">
+        <button class="btn btn-default">
+            <i class="fa-save"></i> Create
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}

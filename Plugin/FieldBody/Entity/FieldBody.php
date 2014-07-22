@@ -17,4 +17,4 @@ use Doctrine\ORM\Mapping as ORM;
 class FieldBody extends BaseFieldBody
 {
 
-} 
+}

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block plugin %}
-    <a class="btn btn-default" href="{{ url('nefarian_plugin_content_management_new') }}">
+    <a class="btn btn-default" href="{{ url('nefarian_plugin_content_management_content_type_new') }}">
         <i class="fa-plus"></i> New Content Type
     </a>
 
@@ -26,13 +26,13 @@
                         <td></td>
                         <td>
                             <div class="btn-group">
-                                <a href="{{ url('nefarian_plugin_content_management_edit', {id: contentType.id}) }}" class="btn btn-default">Edit</a>
+                                <a href="{{ url('nefarian_plugin_content_management_content_type_edit', {id: contentType.id}) }}" class="btn btn-default">Edit</a>
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ url('nefarian_plugin_content_management_edit', {id: contentType.id}) }}">View</a></li>
+                                    <li><a href="{{ url('nefarian_plugin_content_management_content_type_edit', {id: contentType.id}) }}">View</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#" class="text-danger"><i class="fa-trash-o"></i> Delete</a></li>
                                 </ul>

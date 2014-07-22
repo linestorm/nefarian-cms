@@ -10,6 +10,11 @@ interface FieldInterface
     public function getName();
 
     /**
+     * @return mixed
+     */
+    public function getForm();
+
+    /**
      * @return array
      */
     public function getProperties();

@@ -44,12 +44,16 @@ class NodeForm extends AbstractType
             ))
         ;
 
-        $typeFields = $this->contentType->getTypeFields();
+        /*$typeFields = $this->contentType->getTypeFields();
         foreach($typeFields as $typeField)
         {
-            $type = $typeField->getContentType();
-            $field = $this->fieldManager->getField($type);
-        }
+            $contentField = $typeField->getContentField();
+            $field = $this->fieldManager->getField($contentField->getName());
+            $class = $field->getForm();
+            /** @var AbstractType $form * /
+            $form = new $class($this->contentType);
+            $builder->add('form', $form);
+        }*/
     }
 
     /**
@@ -59,7 +63,7 @@ class NodeForm extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType'
+            'data_class' => 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node'
         ));
     }
 
@@ -68,6 +72,6 @@ class NodeForm extends AbstractType
      */
     public function getName()
     {
-        return 'nefarian_plugin_content_management_content_type';
+        return 'nefarian_plugin_content_management_node';
     }
 }

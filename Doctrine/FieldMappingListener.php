@@ -1,5 +1,4 @@
 <?php
-
 namespace Nefarian\CmsBundle\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
@@ -7,9 +6,10 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Proxy\ProxyFactory;
 use Doctrine\ORM\Tools\SchemaTool;
 use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Model\FieldEntityInterface;
 
 class FieldMappingListener implements EventSubscriber
 {
@@ -18,12 +18,24 @@ class FieldMappingListener implements EventSubscriber
      */
     protected $fieldManager;
 
+    protected $proxyDir;
+
+    protected $proxyNamespace;
+
+    protected $autoGenerate;
+
     /**
      * @param ContentFieldManager $fieldManager
+     * @param string              $proxyDir
+     * @param string              $proxyNamespace
+     * @param string              $autoGenerate
      */
-    function __construct(ContentFieldManager $fieldManager)
+    function __construct(ContentFieldManager $fieldManager, $proxyDir, $proxyNamespace, $autoGenerate)
     {
-        $this->fieldManager = $fieldManager;
+        $this->fieldManager   = $fieldManager;
+        $this->proxyDir       = $proxyDir;
+        $this->proxyNamespace = $proxyNamespace;
+        $this->autoGenerate   = $autoGenerate;
     }
 
     /**
@@ -44,31 +56,43 @@ class FieldMappingListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         return;
-
+        /*
+        $entity        = $eventArgs->getEmptyInstance();
         $classMetadata = $eventArgs->getClassMetadata();
         $className     = $classMetadata->getReflectionClass()->getName();
+        $em            = $eventArgs->getEntityManager();
 
-        if($className != "Nefarian\\CmsBundle\\Plugin\\ContentManagement\\Entity\\ContentField")
-        {
-            return;
-        }
+        var_dump($className);
 
-        /** @var ClassMetadataInfo $classMetadata */
-        $em = $eventArgs->getEntityManager();
-        $i  = 0;
         foreach($this->fieldManager->getFields() as $field)
         {
-            $metadata = $em->getClassMetadata($field->getEntityClass());
-            $name     = $metadata->getTableName() . '_' . $i;
-            $metadata->setPrimaryTable(array('name' => $name));
+            if($className == $field->getEntityClass())
+            {
+                $proxyFactory = new ProxyFactory($eventArgs->getEntityManager(), $this->proxyDir, $this->proxyNamespace, $this->autoGenerate);
 
-            $schemaTool = new SchemaTool($em);
-            $schemaTool->createSchema(array($metadata));
+                $metadata = $em->getClassMetadata($field->getEntityClass());
+                $name     = $metadata->getTableName() . '___' . $field->getName();
+                $metadata->setPrimaryTable(array('name' => $name));
 
-            ++$i;
+                var_dump($proxyFactory->generateProxyClasses(array($classMetadata)));
+            }
         }
+                /** @var ClassMetadataInfo $classMetadata * /
+                $i  = 0;
+                foreach($this->fieldManager->getFields() as $field)
+                {
+                    $metadata = $em->getClassMetadata($field->getEntityClass());
+                    $name     = $metadata->getTableName() . '___' . $field->getName();
+                    $metadata->setPrimaryTable(array('name' => $name));
 
-        return;
+                    //$schemaTool = new SchemaTool($em);
+                    //$schemaTool->createSchema(array($metadata));
+
+                    var_dump($proxyFactory->generateProxyClasses(array($classMetadata)));
+
+                    ++$i;
+                }
+        */
     }
 
     /**
@@ -78,18 +102,24 @@ class FieldMappingListener implements EventSubscriber
     {
         $entity = $event->getEntity();
 
-        if($entity instanceof ContentTypeField)
+        if($entity instanceof FieldEntityInterface)
         {
+            die("here");
             $em        = $event->getEntityManager();
             $fieldName = $entity->getContentField()->getName();
             $field     = $this->fieldManager->getField($fieldName);
+
+            /** @var ClassMetadataInfo $metadata */
             var_dump($field->getEntityClass());
-            $metadata  = $em->getClassMetadata($field->getEntityClass());
-            $name      = $metadata->getTableName() . '___' . $entity->getName();
+            $metadata = $em->getClassMetadata($field->getEntityClass());
+            $name     = $metadata->getTableName() . '___' . $entity->getName();
             $metadata->setPrimaryTable(array('name' => $name));
+            $metadata->setIdentifier(array(
+                'id'
+            ));
 
             $schemaTool = new SchemaTool($em);
-            $schemaTool->createSchema(array($metadata));
+            //$schemaTool->createSchema(array($metadata));
             $schemaTool->updateSchema(array($metadata), true);
 
         }

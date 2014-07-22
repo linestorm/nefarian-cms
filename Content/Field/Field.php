@@ -15,6 +15,11 @@ class Field implements FieldInterface
     protected $class;
 
     /**
+     * @var string
+     */
+    protected $form;
+
+    /**
      * @var array
      */
     protected $properties;
@@ -27,6 +32,7 @@ class Field implements FieldInterface
     {
         $this->name       = $name;
         $this->class      = $properties['class'];
+        $this->form       = $properties['form'];
         $this->properties = $properties['properties'];
     }
 
@@ -36,6 +42,14 @@ class Field implements FieldInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForm()
+    {
+        return $this->form;
     }
 
     /**

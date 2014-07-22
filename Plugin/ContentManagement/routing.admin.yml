@@ -2,18 +2,28 @@ index:
   path:     /
   defaults: { _controller: ContentType:index }
 
-new:
-  path:     /new
+content_type_new:
+  path:     /content/new
   defaults: { _controller: ContentType:new }
 
-manage:
-  path:     /manage
+content_type_manage:
+  path:     /content/manage
   defaults: { _controller: ContentType:index }
 
-edit:
-  path:     /{id}/edit
+content_type_edit:
+  path:     /content/{id}/edit
   defaults: { _controller: ContentType:edit }
 
-edit_fields:
-  path:     /{id}/fields/edit
+content_type_edit_fields:
+  path:     /content/type/{id}/fields/edit
   defaults: { _controller: ContentType:editFields }
+
+node_create_select:
+  path: /node/create
+  defaults: { _controller: Node:newSelect }
+
+node_create:
+  path: /node/{id}/create
+  defaults: { _controller: Node:new }
+  requirements:
+    id: \d+

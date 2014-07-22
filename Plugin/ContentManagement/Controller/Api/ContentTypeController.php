@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api;
 
+use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nefarian\CmsBundle\Controller\AbstractApiController;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
@@ -54,7 +55,7 @@ class ContentTypeController extends AbstractApiController implements ClassResour
                 break;
 
             case self::METHOD_GET:
-                return $this->generateUrl('nefarian_plugin_content_management_edit', array( 'id' => $entity->getId() ));
+                return $this->generateUrl('nefarian_plugin_content_management_content_type_edit', array( 'id' => $entity->getId() ));
                 break;
         }
 
@@ -64,11 +65,14 @@ class ContentTypeController extends AbstractApiController implements ClassResour
     /**
      * @param ContentType $entity
      */
-    protected function postCreate($entity)
+    protected function postUpdate($entity)
     {
-        /*
+        /* * @var EntityManager $em * /
         $em = $this->getDoctrine()->getManager();
 
+        $fields = $em->getRepository('Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField')->findAll();
+        var_dump($fields);
+        /*
         $metadata = $em->getClassMetadata($field->getEntityClass());
         $name     = $metadata->getTableName() . '_' . $entity->getName();
         $metadata->setPrimaryTable(array('name' => $name));
