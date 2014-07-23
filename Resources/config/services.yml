@@ -2,7 +2,7 @@ parameters:
   nefarian_core.config_manager.class:        Nefarian\CmsBundle\Configuration\ConfigManager
   nefarian_core.menu_manager.class:          Nefarian\CmsBundle\Menu\MenuManager
   nefarian_core.content_manager.class:       Nefarian\CmsBundle\Content\ContentManager
-  nefarian_core.content_field_manager.class: Nefarian\CmsBundle\Content\Field\ContentFieldManager
+  nefarian_core.content_field_manager.class: Nefarian\CmsBundle\Content\Field\FieldManager
 
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader

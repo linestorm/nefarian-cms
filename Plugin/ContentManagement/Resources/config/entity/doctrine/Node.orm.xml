@@ -8,9 +8,13 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO" />
         </id>
-        <one-to-many target-entity="ContentField" field="contentFields">
+        <one-to-many target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent" field="contents" mapped-by="node" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
         </one-to-many>
-        <many-to-one target-entity="ContentType" field="contentType">
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType" field="contentType">
             <cascade>
                 <cascade-persist/>
             </cascade>

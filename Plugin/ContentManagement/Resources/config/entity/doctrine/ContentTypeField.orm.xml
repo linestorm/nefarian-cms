@@ -10,7 +10,7 @@
         </id>
         <many-to-one target-entity="ContentType" field="contentType" inversed-by="typeFields">
         </many-to-one>
-        <many-to-one target-entity="ContentField" field="contentField" inversed-by="typeFields">
+        <many-to-one target-entity="Field" field="field" inversed-by="typeFields">
         </many-to-one>
     </entity>
 </doctrine-mapping>

@@ -2,7 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form;
 
-use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
+use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,15 +16,15 @@ class NodeContentTypeForm extends AbstractType
     protected $contentType;
 
     /**
-     * @var ContentFieldManager
+     * @var FieldManager
      */
     protected $fieldManager;
 
     /**
      * @param ContentType         $contentType
-     * @param ContentFieldManager $fieldManager
+     * @param FieldManager $fieldManager
      */
-    function __construct(ContentType $contentType, ContentFieldManager $fieldManager)
+    function __construct(ContentType $contentType, FieldManager $fieldManager)
     {
         $this->contentType  = $contentType;
         $this->fieldManager = $fieldManager;

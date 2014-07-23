@@ -2,10 +2,8 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldBody\Entity;
 
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentField;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
-use Nefarian\CmsBundle\Plugin\FieldBody\Model\FieldBody as BaseFieldBody;
 use Doctrine\ORM\Mapping as ORM;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
 
 /**
  * Class FieldBody
@@ -16,9 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="field_body")
  */
-class FieldBody extends ContentField
+class FieldBody extends NodeContent
 {
-
     /**
      * @var int
      */
@@ -28,11 +25,6 @@ class FieldBody extends ContentField
      * @var string
      */
     protected $body;
-
-    /**
-     * @var Node
-     */
-    protected $node;
 
     /**
      * @return int
@@ -56,21 +48,5 @@ class FieldBody extends ContentField
     public function getBody()
     {
         return $this->body;
-    }
-
-    /**
-     * @param Node $node
-     */
-    public function setNode(Node $node)
-    {
-        $this->node = $node;
-    }
-
-    /**
-     * @return Node
-     */
-    public function getNode()
-    {
-        return $this->node;
     }
 }

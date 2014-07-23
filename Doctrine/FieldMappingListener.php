@@ -8,20 +8,20 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\ProxyFactory;
 use Doctrine\ORM\Tools\SchemaTool;
-use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
+use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Model\FieldEntityInterface;
 
 class FieldMappingListener implements EventSubscriber
 {
     /**
-     * @var ContentFieldManager
+     * @var FieldManager
      */
     protected $fieldManager;
 
     /**
-     * @param ContentFieldManager $fieldManager
+     * @param FieldManager $fieldManager
      */
-    function __construct(ContentFieldManager $fieldManager)
+    function __construct(FieldManager $fieldManager)
     {
         $this->fieldManager   = $fieldManager;
     }
@@ -43,12 +43,13 @@ class FieldMappingListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
+        /** @var ClassMetadataInfo $classMetadata */
         $classMetadata   = $eventArgs->getClassMetadata();
         $reflectionClass = $classMetadata->getReflectionClass();
         $className       = $reflectionClass->getName();
         $em              = $eventArgs->getEntityManager();
 
-        if($className !== 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentField')
+        if($className !== 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field')
         {
             return;
         }
@@ -56,9 +57,10 @@ class FieldMappingListener implements EventSubscriber
         // map all the fields into content type
         foreach($this->fieldManager->getFields() as $field)
         {
-            //$property = $reflectionClass->getProperty('_fields');
-            //$name = substr($field->getEntityClass(), strrpos($field->getEntityClass(), '\\') + 1);
 
+            $classMetadata->setDiscriminatorColumn(array(
+                'name' => 'discriminator_field'
+            ));
             $classMetadata->setDiscriminatorMap(array(
                 $field->getName() => $field->getEntityClass(),
             ));
@@ -76,7 +78,7 @@ class FieldMappingListener implements EventSubscriber
         {
             die("here");
             $em        = $event->getEntityManager();
-            $fieldName = $entity->getContentField()->getName();
+            $fieldName = $entity->getField()->getName();
             $field     = $this->fieldManager->getField($fieldName);
 
             /** @var ClassMetadataInfo $metadata */

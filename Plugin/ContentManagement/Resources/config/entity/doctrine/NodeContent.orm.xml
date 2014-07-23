@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                    http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent" table="node_content"
+            inheritance-type="JOINED">
+        <discriminator-column name="discriminator_field" />
+        <!-- discriminator map is dynamically inserted -->
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node" field="node" inversed-by="contents">
+        </many-to-one>
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field" field="field">
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

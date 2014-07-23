@@ -2,29 +2,15 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
-class ContentTypeField
+use Doctrine\Common\Collections\ArrayCollection;
+
+abstract class NodeContent
 {
+
     /**
      * @var int
      */
     protected $id;
-
-    /**
-     * @var ContentType
-     */
-    protected $contentType;
-
-    /**
-     * @var Field
-     */
-    protected $field;
-
-    /**
-     * @TODO: implement
-     *
-     * @ var DisplayType
-     * protected $displayType;
-     */
 
     /**
      * @var string
@@ -32,9 +18,22 @@ class ContentTypeField
     protected $name;
 
     /**
-     * @var int
+     * @var Node
      */
-    protected $order;
+    protected $node;
+
+    /**
+     * @var Field
+     */
+    protected $field;
+
+    /**
+     * Initialisation
+     */
+    function __construct()
+    {
+        $this->typeFields = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -61,19 +60,19 @@ class ContentTypeField
     }
 
     /**
-     * @param int $order
+     * @param Node $node
      */
-    public function setOrder($order)
+    public function setNode(Node $node)
     {
-        $this->order = $order;
+        $this->node = $node;
     }
 
     /**
-     * @return int
+     * @return Node
      */
-    public function getOrder()
+    public function getNode()
     {
-        return $this->order;
+        return $this->node;
     }
 
     /**
@@ -91,23 +90,6 @@ class ContentTypeField
     {
         return $this->field;
     }
-
-    /**
-     * @param ContentType $contentType
-     */
-    public function setContentType(ContentType $contentType)
-    {
-        $this->contentType = $contentType;
-    }
-
-    /**
-     * @return ContentType
-     */
-    public function getContentType()
-    {
-        return $this->contentType;
-    }
-
 
 
 } 

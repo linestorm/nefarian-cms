@@ -1,7 +1,7 @@
 <?php
 namespace Nefarian\CmsBundle\Plugin\FieldBody\Form;
 
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -15,16 +15,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class FieldBodyForm extends AbstractType
 {
     /**
-     * @var ContentType
+     * @var Field
      */
-    protected $contentType;
+    protected $Field;
 
     /**
-     * @param ContentType $contentType
+     * @param Field $Field
      */
-    function __construct(ContentType $contentType)
+    function __construct(Field $Field)
     {
-        $this->contentType = $contentType;
+        $this->Field = $Field;
     }
 
 
@@ -35,7 +35,9 @@ class FieldBodyForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('body', 'textarea');
+            ->add('name', 'hidden')
+            ->add('body', 'textarea')
+        ;
     }
 
     /**

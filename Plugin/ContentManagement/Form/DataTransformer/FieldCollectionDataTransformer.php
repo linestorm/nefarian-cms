@@ -38,7 +38,6 @@ class FieldCollectionDataTransformer implements DataTransformerInterface
     public function transform($value)
     {
         return $value;
-        // TODO: Implement transform() method.
     }
 
     /**
@@ -68,7 +67,6 @@ class FieldCollectionDataTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         return $value;
-        // TODO: Implement reverseTransform() method.
     }
 
 } 

@@ -203,7 +203,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
             $this->postCreate($entity);
 
-            $view = View::create($entity, 201, array(
+            $view = View::create(null, 201, array(
                 'location' => $this->getUrl(self::METHOD_GET, $entity)
             ));
         }

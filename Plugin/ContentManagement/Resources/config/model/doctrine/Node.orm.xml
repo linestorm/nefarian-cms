@@ -9,12 +9,12 @@
         <field name="description" type="string" column="description" length="100" nullable="true" />
 
         <field name="published" type="boolean" column="published" nullable="false" />
-        <field name="publishedOn" type="datetime" column="published_on" nullable="false"/>
+        <field name="publishedOn" type="datetime" column="published_on" nullable="true"/>
 
         <field name="deleted" type="boolean" column="deleted" nullable="false" />
-        <field name="deletedOn" type="datetime" column="deleted_on" nullable="false"/>
+        <field name="deletedOn" type="datetime" column="deleted_on" nullable="true"/>
 
-        <field name="editedOn" type="datetime" column="edited_on" nullable="false"/>
+        <field name="editedOn" type="datetime" column="edited_on" nullable="true"/>
 
         <field name="createdOn" type="datetime" column="created_on" nullable="false"/>
 

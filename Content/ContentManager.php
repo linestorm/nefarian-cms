@@ -2,19 +2,19 @@
 
 namespace Nefarian\CmsBundle\Content;
 
-use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
+use Nefarian\CmsBundle\Content\Field\FieldManager;
 
 class ContentManager
 {
     /**
-     * @var ContentFieldManager
+     * @var FieldManager
      */
     protected $fieldManager;
 
     /**
-     * @param ContentFieldManager $fieldManager
+     * @param FieldManager $fieldManager
      */
-    function __construct(ContentFieldManager $fieldManager)
+    function __construct(FieldManager $fieldManager)
     {
         $this->fieldManager = $fieldManager;
     }

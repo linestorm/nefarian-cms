@@ -4,13 +4,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-/**
- * Class ContentType
- *
- * @package Nefarian\CmsBundle\Entity
- * @author  Andy Thorne <contrabandvr@gmail.com>
- */
-class ContentType
+abstract class Field
 {
     /**
      * @var int
@@ -25,7 +19,7 @@ class ContentType
     /**
      * @var string
      */
-    protected $description;
+    protected $category;
 
     /**
      * @var ContentTypeField[]
@@ -49,22 +43,6 @@ class ContentType
     }
 
     /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * @param string $name
      */
     public function setName($name)
@@ -81,12 +59,28 @@ class ContentType
     }
 
     /**
+     * @param string $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
      * @param ContentTypeField $typeField
      */
     public function addTypeField(ContentTypeField $typeField)
     {
         $this->typeFields[] = $typeField;
-        $typeField->setContentType($this);
+        $typeField->setField($this);
     }
 
     /**
@@ -104,5 +98,4 @@ class ContentType
     {
         return $this->typeFields;
     }
-
 } 

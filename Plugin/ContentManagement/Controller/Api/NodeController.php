@@ -9,6 +9,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nefarian\CmsBundle\Controller\ApiControllerInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\NodeForm;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,13 +118,14 @@ class NodeController extends Controller implements ClassResourceInterface, ApiCo
 
         if($form->isValid())
         {
+            /** @var Node $entity */
             $entity = $form->getData();
-
+            var_dump($entity->getContents());
             $em->persist($entity);
             $em->flush();
 
-            $view = View::create($entity, 201, array(
-                'location' => $this->getUrl(self::METHOD_GET, $entity)
+            $view = View::create($entity, 200, array(
+                //'location' => $this->getUrl(self::METHOD_GET, $entity)
             ));
         }
         else

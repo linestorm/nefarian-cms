@@ -49,18 +49,17 @@ class ContentTypeController extends Controller
     public function editAction($id)
     {
         /** @var EntityManager $em */
-        $em          = $this->getDoctrine()->getManager();
-        $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
+        $em = $this->getDoctrine()->getManager();
 
         try
         {
-            $dql         = "
+            $dql = "
                 SELECT
-                  ct, tf, cf
+                  ct, tf
                 FROM
                   PluginContentManagement:ContentType ct
-                LEFT JOIN ct.typeFields tf
-                LEFT JOIN tf.contentField cf
+                LEFT JOIN
+                  ct.typeFields tf
                 WHERE
                   ct.id = ?1
             ";

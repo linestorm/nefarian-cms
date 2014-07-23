@@ -26,16 +26,16 @@ class ContentTypeField extends BaseContentTypeField
     protected $id;
 
     /**
-     * @var ContentField
+     * @var Field
      *
-     * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="typeFields", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Field", inversedBy="typeFields", cascade={"persist"})
      */
     protected $contentType;
 
     /**
-     * @var ContentField
+     * @var Field
      *
-     * @ORM\ManyToOne(targetEntity="ContentField", inversedBy="typeFields", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Field", inversedBy="typeFields", cascade={"persist"})
      */
-    protected $contentField;
+    protected $field;
 } 

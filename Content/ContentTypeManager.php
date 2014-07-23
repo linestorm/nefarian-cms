@@ -3,14 +3,14 @@
 namespace Nefarian\CmsBundle\Content;
 
 use Doctrine\ORM\EntityManager;
-use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
+use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Content\Field\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 
 class ContentTypeManager
 {
     /**
-     * @var ContentFieldManager
+     * @var FieldManager
      */
     protected $fieldManager;
 
@@ -21,9 +21,9 @@ class ContentTypeManager
 
     /**
      * @param EntityManager       $em
-     * @param ContentFieldManager $fieldManager
+     * @param FieldManager $fieldManager
      */
-    function __construct(EntityManager $em, ContentFieldManager $fieldManager)
+    function __construct(EntityManager $em, FieldManager $fieldManager)
     {
         $this->em           = $em;
         $this->fieldManager = $fieldManager;

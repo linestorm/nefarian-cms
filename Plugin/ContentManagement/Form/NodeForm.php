@@ -2,7 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form;
 
-use Nefarian\CmsBundle\Content\Field\ContentFieldManager;
+use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Content\Field\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Symfony\Component\Form\AbstractType;
@@ -19,15 +19,15 @@ class NodeForm extends AbstractType
     protected $contentType;
 
     /**
-     * @var ContentFieldManager
+     * @var FieldManager
      */
     protected $fieldManager;
 
     /**
-     * @param ContentFieldManager $fieldManager
+     * @param FieldManager $fieldManager
      * @param ContentType         $contentType
      */
-    function __construct(ContentFieldManager $fieldManager, ContentType $contentType = null)
+    function __construct(FieldManager $fieldManager, ContentType $contentType = null)
     {
         $this->contentType  = $contentType;
         $this->fieldManager = $fieldManager;
@@ -49,21 +49,27 @@ class NodeForm extends AbstractType
                 $node->setContentType($this->contentType);
             }
 
-            $typeFields = $node->getContentType()->getTypeFields();
-            foreach($typeFields as $typeField)
+            /*
+            if(!$node->getFields())
             {
-                $contentField = $typeField->getContentField();
-                $field        = $this->fieldManager->getField($contentField->getName());
-                if($field instanceof Field)
+                $typeFields = $node->getContentType()->getTypeFields();
+                foreach($typeFields as $typeField)
                 {
-                    $class = $field->getEntityClass();
-                    $node->addContentField(new $class());
+                    $Field = $typeField->getField();
+                    $field        = $this->fieldManager->getField($Field->getName());
+                    if($field instanceof Field)
+                    {
+                        $class = $field->getEntityClass();
+                        $node->addField(new $class());
+                    }
                 }
             }
+            */
 
-            $form->add('contentFields', 'field_collection', array(
+            $form->add('contents', 'field_collection', array(
                 'label' => false,
                 'content_type'  => $node->getContentType(),
+                'by_reference' => false,
             ));
         });
 
@@ -71,6 +77,12 @@ class NodeForm extends AbstractType
             ->add('title', 'text')
             ->add('description', 'text', array(
                 'required' => false
+            ))
+            ->add('path', 'text')
+            ->add('published', 'checkbox')
+            ->add('publishedOn', 'datetime', array(
+                'date_widget' => 'single_text',
+                'time_widget' => 'single_text',
             ))
         ;
     }

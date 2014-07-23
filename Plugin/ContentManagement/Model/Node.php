@@ -40,14 +40,14 @@ class Node
     protected $contentType;
 
     /**
-     * @var ContentType
+     * @var NodeContent[]
      */
-    protected $contentFields;
+    protected $contents;
 
     /**
      * @var boolean
      */
-    protected $published;
+    protected $published = true;
 
     /**
      * @var \DateTime
@@ -96,7 +96,10 @@ class Node
 
     function __construct()
     {
-        $this->contentFields = new ArrayCollection();
+        // setup default values
+        $this->contents = new ArrayCollection();
+        $this->createdOn = new \DateTime();
+        $this->publishedOn = new \DateTime();
     }
 
 
@@ -333,27 +336,28 @@ class Node
     }
 
     /**
-     * @return ContentType
+     * @return NodeContent
      */
-    public function getContentFields()
+    public function getContents()
     {
-        return $this->contentFields;
+        return $this->contents;
     }
 
     /**
-     * @param ContentField $contentField
+     * @param NodeContent $nodeContent
      */
-    public function addContentField(ContentField $contentField)
+    public function addContent(NodeContent $nodeContent)
     {
-        $this->contentFields[] = $contentField;
+        $this->contents[] = $nodeContent;
+        $nodeContent->setNode($this);
     }
 
     /**
-     * @param ContentField $contentField
+     * @param NodeContent $nodeContent
      */
-    public function removeContentField(ContentField $contentField)
+    public function removeContent(NodeContent $nodeContent)
     {
-        $this->contentFields->removeElement($contentField);
+        $this->contents->removeElement($nodeContent);
     }
 
 
