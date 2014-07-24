@@ -89,16 +89,12 @@ class PluginCompilerPass implements CompilerPassInterface
 
                 $menuManagerDefinition->addMethodCall('addCategory', array(
                     $menuName,
-                    $plugin,
+                    $pluginReference,
                     $menu['title'],
                     $menu['icon'],
                     $menu['description'],
-                    $menu['links'],
+                    $menu['items'],
                 ));
-
-                foreach($menu['items'] as $item)
-                {
-                }
             }
 
 

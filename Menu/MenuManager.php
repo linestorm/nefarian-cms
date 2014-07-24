@@ -33,7 +33,7 @@ class MenuManager
         foreach($links as $link)
         {
             $link['route'] = 'nefarian_plugin_' . $plugin->getName() . '_' . $link['route'];
-            $this->addLink($category, $link['title'], $link['route'], $link['description']);
+            $category->addLink($link);
         }
     }
 
@@ -48,6 +48,14 @@ class MenuManager
         {
             return $this->categories[$name];
         }
+    }
+
+    /**
+     * @return MenuCategory[]
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 
 
@@ -76,6 +84,18 @@ class MenuManager
     public function getLinks()
     {
         return $this->links;
+    }
+
+    /**
+     * Get all the links
+     *
+     * @param MenuCategory $category
+     *
+     * @return array
+     */
+    public function getCategoryLinks(MenuCategory $category)
+    {
+        return $this->links[$category->getName()];
     }
 
 } 

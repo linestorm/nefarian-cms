@@ -37,15 +37,22 @@ class MenuCategory
      */
     function __construct($name, $title, $description, $icon)
     {
-        $this->name        = $name
+        $this->name        = $name;
         $this->title       = $title;
         $this->description = $description;
         $this->icon        = $icon;
     }
 
+    /**
+     * @param $link
+     */
     public function addLink($link)
     {
-        $links[] = $link;
+        $this->links[] = array(
+            'title'       => $link['title'],
+            'route'       => $link['route'],
+            'description' => $link['description'],
+        );
     }
 
     /**

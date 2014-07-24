@@ -21,7 +21,7 @@ class MenuConfiguration implements ConfigurationInterface
             ->prototype('array')
                 ->children()
                     ->scalarNode('title')->isRequired()->end()
-                    ->scalarNode('description')->end()
+                    ->scalarNode('description')->defaultValue('')->end()
                     ->scalarNode('icon')->isRequired()->end()
                     ->arrayNode('items')
                         ->prototype('array')
