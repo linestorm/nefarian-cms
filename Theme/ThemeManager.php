@@ -12,9 +12,11 @@ class ThemeManager
     protected $themes = array();
 
     /**
+     * @TODO: make this a setting
+     *
      * @var string
      */
-    protected $adminThemeName = 'nefarian_admin';
+    protected $adminThemeName = 'nefarian_admin_dark';
 
     /**
      * @param ThemeInterface $theme

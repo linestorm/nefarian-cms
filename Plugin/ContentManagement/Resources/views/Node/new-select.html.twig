@@ -8,6 +8,11 @@
     Choose a content type to base your node on
 {% endblock %}
 
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugin_content_management_node_create_select') }}">Create</a></li>
+{% endblock %}
+
 {% block plugin %}
     {% for contentType in contentTypes %}
         {% if loop.index % 4 == 1 %}<div class="row">{% endif %}

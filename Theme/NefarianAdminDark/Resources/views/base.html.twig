@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    {% if form|default(false) %}
+        {% form_theme form '@theme_nefarian_admin_dark/Form/fields.html.twig' %}
+    {% endif %}
+
+    <title>{% block meta_title %}LineStorm CMS Admin Panel{% endblock %}</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <!-- START META -->
+    {% block head_meta %}
+
+    {% endblock %}
+    <!-- END META -->
+
+    <!-- START STYLESHEETS -->
+    {% stylesheets
+        filter="compass" output="css/cms/core/main.css"
+        "@theme_nefarian_admin_dark/Resources/assets/sass/main.scss"
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+    {% block head_stylesheets %}
+
+    {% endblock %}
+    <!-- END STYLESHEETS -->
+
+    <!-- START JAVASCRIPTS -->
+    <script type="text/javascript">
+        window.Nefarian = {};
+    </script>
+    {% set page_modules = page_modules|default([]) %}
+    {% block head_javascripts %}
+        {{
+            include('NefarianCmsBundle::requirejs.html.twig', {
+                requirejs_module: ['cms/core/api', 'theme/nefarian_admin_dark/main']|merge(page_modules)
+            })
+        }}
+    {% endblock %}
+    <!-- END JAVASCRIPTS -->
+
+</head>
+<body class="theme-default main-menu-animated">
+
+    <div id="main-wrapper">
+
+
+    <!-- 2. $MAIN_NAVIGATION ===========================================================================
+
+        Main navigation
+    -->
+    <div id="main-navbar" class="navbar navbar-inverse" role="navigation">
+        <!-- Main menu toggle -->
+        <button type="button" id="main-menu-toggle"><i class="navbar-icon fa fa-bars icon"></i><span class="hide-menu-text">HIDE MENU</span></button>
+
+        <div class="navbar-inner">
+            <!-- Main navbar header -->
+            <div class="navbar-header">
+
+                <!-- Logo -->
+                <a href="index.html" class="navbar-brand">
+                    {% block header %}Nefarian{% endblock %}
+                </a>
+
+                <!-- Main navbar toggle -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse"><i class="navbar-icon fa fa-bars"></i></button>
+
+            </div> <!-- / .navbar-header -->
+
+            <div id="main-navbar-collapse" class="collapse navbar-collapse main-navbar-collapse">
+                <div>
+
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">First item</a></li>
+                                <li><a href="#">Second item</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Third item</a></li>
+                            </ul>
+                        </li>
+                    </ul> <!-- / .navbar-nav -->
+
+                    <div class="right clearfix">
+                        <ul class="nav navbar-nav pull-right right-navbar-nav">
+                            <li class="nav-icon-btn nav-icon-btn-danger dropdown">
+                                <a href="#notifications" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="label">5</span>
+                                    <i class="nav-icon fa fa-bullhorn"></i>
+                                    <span class="small-screen-text">Notifications</span>
+                                </a>
+
+                                <!-- NOTIFICATIONS -->
+
+                                <div class="dropdown-menu widget-notifications no-padding" style="width: 300px">
+                                    <div class="notifications-list" id="main-navbar-notifications">
+
+                                        <!--
+                                        <div class="notification">
+                                            <div class="notification-title text-danger">SYSTEM</div>
+                                            <div class="notification-description"><strong>Error 500</strong>: Syntax error in index.php at line <strong>461</strong>.</div>
+                                            <div class="notification-ago">12h ago</div>
+                                            <div class="notification-icon fa fa-hdd-o bg-danger"></div>
+                                        </div>  / .notification -->
+
+                                    </div> <!-- / .notifications-list -->
+                                    <a href="#" class="notifications-link">MORE NOTIFICATIONS</a>
+                                </div> <!-- / .dropdown-menu -->
+                            </li>
+
+                            <li class="nav-icon-btn nav-icon-btn-success dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="label">10</span>
+                                    <i class="nav-icon fa fa-envelope"></i>
+                                    <span class="small-screen-text">Income messages</span>
+                                </a>
+
+                                <!-- MESSAGES -->
+
+                                <div class="dropdown-menu widget-messages-alt no-padding" style="width: 300px;">
+                                    <div class="messages-list" id="main-navbar-messages">
+
+                                        <!--
+                                       <div class="message">
+                                           <img src="assets/demo/avatars/2.jpg" alt="" class="message-avatar">
+                                           <a href="#" class="message-subject">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</a>
+                                           <div class="message-description">
+                                               from <a href="#">Robert Jang</a>
+                                               &nbsp;&nbsp;·&nbsp;&nbsp;
+                                               2h ago
+                                           </div>
+                                       </div> / .message -->
+
+                                    </div> <!-- / .messages-list -->
+                                    <a href="#" class="messages-link">MORE MESSAGES</a>
+                                </div> <!-- / .dropdown-menu -->
+                            </li>
+
+                            <li>
+                                <form class="navbar-form pull-left">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                </form>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="{{ url('fos_user_profile_edit') }}" class="dropdown-toggle user-menu" data-toggle="dropdown">
+                                    <img src="{{ app.user }}" alt="">
+                                    <span>John Doe</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#"><span class="label label-warning pull-right">New</span>Profile</a></li>
+                                    <li><a href="#"><span class="badge badge-primary pull-right">New</span>Account</a></li>
+                                    <li><a href="#"><i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{{ url('fos_user_security_logout') }}"><i class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;Log Out</a></li>
+                                </ul>
+                            </li>
+                        </ul> <!-- / .navbar-nav -->
+                    </div> <!-- / .right -->
+                </div>
+            </div> <!-- / #main-navbar-collapse -->
+        </div> <!-- / .navbar-inner -->
+    </div> <!-- / #main-navbar -->
+
+    <div id="main-menu" role="navigation">
+        <div id="main-menu-inner">
+
+            <div class="menu-content top" id="menu-content-demo">
+                <div>
+                    <div class="text-bg"><span class="text-slim">Welcome,</span> <span class="text-semibold">Andy</span></div>
+
+                    <img src="assets/demo/avatars/1.jpg" alt="" class="">
+                    <div class="btn-group">
+                        <a href="#" class="btn btn-xs btn-primary btn-outline dark"><i class="fa fa-envelope"></i></a>
+                        <a href="#" class="btn btn-xs btn-primary btn-outline dark"><i class="fa fa-user"></i></a>
+                        <a href="#" class="btn btn-xs btn-primary btn-outline dark"><i class="fa fa-cog"></i></a>
+                        <a href="#" class="btn btn-xs btn-danger btn-outline dark"><i class="fa fa-power-off"></i></a>
+                    </div>
+                    <a href="#" class="close">&times;</a>
+                </div>
+            </div>
+
+            <ul class="navigation">
+                {% block nav %}
+
+                {% endblock %}
+            </ul>
+
+        </div>
+    </div>
+
+
+    <div id="content-wrapper">
+
+        <ul class="breadcrumb breadcrumb-page">
+            <li><a href="{# { url('linestorm_cms_admin_index') } #}"><i class="fa-home"></i> Home</a></li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+
+        <div class="page-header">
+            <h1>{% block page_title %}{% endblock %}</h1>
+            <p class="text-muted">
+                {% block page_desc %}{% endblock %}
+            </p>
+        </div>
+        {% block body %}
+
+        {% endblock %}
+
+    </div>
+
+    <div id="main-menu-bg"></div>
+    </div>
+
+</body>
+</html>

@@ -1,17 +1,11 @@
-index:
-  route: index
-  title: Content
-  description: Content management
-  parent: ~
-
-list:
-  route: index
+content_types:
+  route: content_type_manage
   title: All Content Types
   description: Add, Edit and Delete Content Types
   parent: self.index
 
-node_new:
-  route: node_create_select
-  title: New Node
-  description: Create a new content node
+nodes:
+  route: node_index
+  title: View Nodes
+  description: View all content nodes
   parent: ~

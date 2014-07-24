@@ -17,6 +17,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class NodeController extends Controller
 {
+    public function indexAction()
+    {
+        $em    = $this->getDoctrine()->getManager();
+        $nodes = $em->getRepository('PluginContentManagement:Node')->findAll();
+
+        return $this->render('@plugin_content_management/Node/index.html.twig', array(
+            'nodes' => $nodes,
+        ));
+    }
+
     /**
      * @return Response
      */
@@ -57,8 +67,8 @@ class NodeController extends Controller
             ),
             'method' => 'POST',
             'action' => $this->generateUrl('nefarian_api_content_management_post_type_node', array(
-                'contentType' => $contentType->getId()
-            )),
+                    'contentType' => $contentType->getId()
+                )),
         ));
 
         return $this->render('@plugin_content_management/Node/new.html.twig', array(

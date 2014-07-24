@@ -22,6 +22,10 @@ node_create_select:
   path: /node/create
   defaults: { _controller: Node:newSelect }
 
+node_index:
+  path: /node/
+  defaults: { _controller: Node:index }
+
 node_create:
   path: /node/{id}/create
   defaults: { _controller: Node:new }
@@ -29,7 +33,7 @@ node_create:
     id: \d+
 
 node_edit:
-  path: /node/{id}
+  path: /node/{id}/edit
   defaults: { _controller: Node:edit }
   requirements:
     id: \d+
