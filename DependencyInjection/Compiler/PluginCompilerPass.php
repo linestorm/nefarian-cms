@@ -82,16 +82,23 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
             // TODO: Finish loading module menu
-            $menu = $plugin->getConfig($plugin::CONFIG_MENU);
-            foreach($menu as $item)
+            $menus = $plugin->getConfig($plugin::CONFIG_MENU);
+            foreach($menus as $menuName => $menu)
             {
-                $menuManagerDefinition->addMethodCall('addLink', array(
-                    $plugin->getName(),
-                    $item['title'],
-                    'nefarian_plugin_' . $plugin->getName() . '_' . $item['route'],
-                    isset($item['description']) ? $item['description'] : null,
-                    isset($item['parent']) ? $item['parent'] : null,
+                $menu['title'];
+
+                $menuManagerDefinition->addMethodCall('addCategory', array(
+                    $menuName,
+                    $plugin,
+                    $menu['title'],
+                    $menu['icon'],
+                    $menu['description'],
+                    $menu['links'],
                 ));
+
+                foreach($menu['items'] as $item)
+                {
+                }
             }
 
 

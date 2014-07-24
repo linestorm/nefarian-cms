@@ -1,11 +1,14 @@
-content_types:
-  route: content_type_manage
-  title: All Content Types
-  description: Add, Edit and Delete Content Types
-  parent: self.index
+root:
+  title: Content Management
+  icon: dashboard
 
-nodes:
-  route: node_index
-  title: View Nodes
-  description: View all content nodes
-  parent: ~
+  items:
+    content_types:
+      route: content_type_manage
+      title: All Content Types
+      description: Add, Edit and Delete Content Types
+
+    nodes:
+      route: node_index
+      title: View Nodes
+      description: View all content nodes

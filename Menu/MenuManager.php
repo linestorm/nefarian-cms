@@ -3,6 +3,8 @@
 namespace Nefarian\CmsBundle\Menu;
 
 // TODO: decide what this should do!
+use Nefarian\CmsBundle\Plugin\Plugin;
+
 class MenuManager
 {
 
@@ -12,19 +14,56 @@ class MenuManager
     protected $links = array();
 
     /**
+     * @var MenuCategory[]
+     */
+    protected $categories = array();
+
+    /**
+     * @param string $id
+     * @param Plugin $plugin
+     * @param string $title
+     * @param string $icon
+     * @param string $description
+     * @param array  $links
+     */
+    public function addCategory($id, Plugin $plugin, $title, $icon, $description = '', array $links = array())
+    {
+        $this->categories[$id] = $category = new MenuCategory($id, $title, $icon, $description);
+
+        foreach($links as $link)
+        {
+            $link['route'] = 'nefarian_plugin_' . $plugin->getName() . '_' . $link['route'];
+            $this->addLink($category, $link['title'], $link['route'], $link['description']);
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return MenuCategory
+     */
+    public function getCategory($name)
+    {
+        if(array_key_exists($name, $this->categories))
+        {
+            return $this->categories[$name];
+        }
+    }
+
+
+    /**
      * Add a link to the link stack
      *
-     * @param string $plugin
-     * @param string $title
-     * @param string $route
-     * @param string $description
-     * @param null   $parent
+     * @param MenuCategory $category
+     * @param string       $title
+     * @param string       $route
+     * @param string       $description
      */
-    public function addLink($plugin, $title, $route, $description = '', $parent = null)
+    public function addLink(MenuCategory $category, $title, $route, $description = '')
     {
-        $this->links[$plugin][] = array(
-            'title' => $title,
-            'route' => $route,
+        $this->links[$category->getName()][] = array(
+            'title'       => $title,
+            'route'       => $route,
             'description' => $description,
         );
     }
