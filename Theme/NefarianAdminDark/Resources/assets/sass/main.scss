@@ -1,100 +1,102 @@
 @import "compass";
 
-// Note: Some variables are overriding in the "pixel-admin-scss/_variables.scss" file
-
 // ### Variables
-@import "./pixel-admin-scss/variables";
+@import "./theme/variables";
 $icon-font-path: "/vendor/sass-bootstrap/fonts/";
 $fa-font-path: "/vendor/font-awesome/fonts";
+
+
+@import "custom";
+
 @import "vendor/sass-bootstrap/lib/bootstrap";
 @import "vendor/font-awesome/scss/font-awesome";
 
-// ### Animate.css
-// @import "./libs/animate.scss";
+@import "animate";
 
-// ### Pixel Admin"s stylesheets
-@import "./pixel-admin-scss/mixins";
-@import "./pixel-admin-scss/base";
-@import "./pixel-admin-scss/main_navbar";
-@import "./pixel-admin-scss/main_menu";
-@import "./pixel-admin-scss/navbar";
-@import "./pixel-admin-scss/buttons";
-@import "./pixel-admin-scss/progress_bars";
-@import "./pixel-admin-scss/labels";
-@import "./pixel-admin-scss/badges";
-@import "./pixel-admin-scss/breadcrumb";
-@import "./pixel-admin-scss/alerts";
-@import "./pixel-admin-scss/tables";
-@import "./pixel-admin-scss/navs";
-@import "./pixel-admin-scss/dropdowns";
-@import "./pixel-admin-scss/button_groups";
-@import "./pixel-admin-scss/pagination";
-@import "./pixel-admin-scss/list_groups";
-@import "./pixel-admin-scss/forms";
-@import "./pixel-admin-scss/input_groups";
-@import "./pixel-admin-scss/panels";
-@import "./pixel-admin-scss/wells";
-@import "./pixel-admin-scss/popovers";
-@import "./pixel-admin-scss/tooltips";
-@import "./pixel-admin-scss/modals";
-@import "./pixel-admin-scss/accordions";
-@import "./pixel-admin-scss/notes";
-@import "./pixel-admin-scss/counters";
-@import "./pixel-admin-scss/colors";
-@import "./pixel-admin-scss/stats";
-@import "./pixel-admin-scss/utils";
+@import "./theme/mixins";
+@import "./theme/base";
+@import "./theme/main_navbar";
+@import "./theme/main_menu";
+@import "./theme/navbar";
+@import "./theme/buttons";
+@import "./theme/progress_bars";
+@import "./theme/labels";
+@import "./theme/badges";
+@import "./theme/breadcrumb";
+@import "./theme/alerts";
+@import "./theme/tables";
+@import "./theme/navs";
+@import "./theme/dropdowns";
+@import "./theme/button_groups";
+@import "./theme/pagination";
+@import "./theme/list_groups";
+@import "./theme/forms";
+@import "./theme/input_groups";
+@import "./theme/panels";
+@import "./theme/wells";
+@import "./theme/popovers";
+@import "./theme/tooltips";
+@import "./theme/modals";
+@import "./theme/accordions";
+@import "./theme/notes";
+@import "./theme/counters";
+@import "./theme/colors";
+@import "./theme/stats";
+@import "./theme/utils";
 
-@import "./pixel-admin-scss/demo";
+@import "./theme/pages/signup";
+
+@import "./theme/pages/signin";
 
 // jQuery UI
 //
 
-@import "./pixel-admin-scss/plugins/jquery_ui/common";
-@import "./pixel-admin-scss/plugins/jquery_ui/sliders";
-@import "./pixel-admin-scss/plugins/jquery_ui/accordions";
-@import "./pixel-admin-scss/plugins/jquery_ui/autocomplete";
-@import "./pixel-admin-scss/plugins/jquery_ui/menus";
-@import "./pixel-admin-scss/plugins/jquery_ui/spinners";
-@import "./pixel-admin-scss/plugins/jquery_ui/progress_bars";
-@import "./pixel-admin-scss/plugins/jquery_ui/tabs";
-@import "./pixel-admin-scss/plugins/jquery_ui/datepicker";
-@import "./pixel-admin-scss/plugins/jquery_ui/tooltips";
+@import "./theme/plugins/jquery_ui/common";
+@import "./theme/plugins/jquery_ui/sliders";
+@import "./theme/plugins/jquery_ui/accordions";
+@import "./theme/plugins/jquery_ui/autocomplete";
+@import "./theme/plugins/jquery_ui/menus";
+@import "./theme/plugins/jquery_ui/spinners";
+@import "./theme/plugins/jquery_ui/progress_bars";
+@import "./theme/plugins/jquery_ui/tabs";
+@import "./theme/plugins/jquery_ui/datepicker";
+@import "./theme/plugins/jquery_ui/tooltips";
 
 
 // Plugins
-//
 
-@import "./pixel-admin-scss/plugins/pa.switcher";
-@import "./pixel-admin-scss/plugins/pa.limiter";
-@import "./pixel-admin-scss/plugins/pa.expanding_input";
-@import "./pixel-admin-scss/plugins/pa.wizard";
-@import "./pixel-admin-scss/plugins/pa.file_input";
-@import "./pixel-admin-scss/plugins/jquery.select2";
-@import "./pixel-admin-scss/plugins/bootstrap_datepicker";
-@import "./pixel-admin-scss/plugins/bootstrap_timepicker";
-@import "./pixel-admin-scss/plugins/bootstrap_datepaginator";
-@import "./pixel-admin-scss/plugins/bootstrap_tabdrop";
-@import "./pixel-admin-scss/plugins/jquery.minicolors";
+@import "./theme/plugins/pa.switcher";
+@import "./theme/plugins/pa.limiter";
+@import "./theme/plugins/pa.expanding_input";
+@import "./theme/plugins/pa.wizard";
+@import "./theme/plugins/pa.file_input";
+@import "./theme/plugins/jquery.select2";
+@import "./theme/plugins/bootstrap_datepicker";
+@import "./theme/plugins/bootstrap_timepicker";
+@import "./theme/plugins/bootstrap_datepaginator";
+@import "./theme/plugins/bootstrap_tabdrop";
+@import "./theme/plugins/jquery.minicolors";
 // {
-@import "./pixel-admin-scss/plugins/bootstrap_editable/bootstrap_editable";
-@import "./pixel-admin-scss/plugins/bootstrap_editable/address";
-@import "./pixel-admin-scss/plugins/bootstrap_editable/typeahead";
+@import "./theme/plugins/bootstrap_editable/bootstrap_editable";
+@import "./theme/plugins/bootstrap_editable/address";
+@import "./theme/plugins/bootstrap_editable/typeahead";
 // }
-@import "./pixel-admin-scss/plugins/bootbox";
-@import "./pixel-admin-scss/plugins/jquery.datatables";
-@import "./pixel-admin-scss/plugins/jquery.growl";
-@import "./pixel-admin-scss/plugins/dropzone";
-@import "./pixel-admin-scss/plugins/summernote";
-@import "./pixel-admin-scss/plugins/bootstrap_markdown";
-@import "./pixel-admin-scss/plugins/jquery.sparkline";
-@import "./pixel-admin-scss/plugins/easy_pie_chart";
-@import "./pixel-admin-scss/plugins/morris";
-@import "./pixel-admin-scss/plugins/jquery.flot";
-@import "./pixel-admin-scss/plugins/slim_scroll";
+@import "./theme/plugins/bootbox";
+@import "./theme/plugins/jquery.datatables";
+@import "./theme/plugins/jquery.growl";
+@import "./theme/plugins/dropzone";
+@import "./theme/plugins/summernote";
+@import "./theme/plugins/bootstrap_markdown";
+@import "./theme/plugins/jquery.sparkline";
+@import "./theme/plugins/easy_pie_chart";
+@import "./theme/plugins/morris";
+@import "./theme/plugins/jquery.flot";
+@import "./theme/plugins/slim_scroll";
 
-@import "./pixel-admin-scss/themes/default/default";
+@import "./theme/themes/default/default";
 
-@import "animate";
+@import "custom";
+@import "./widgets/menu_widget";
 
 [class*="fa-"] {
     display: inline-block;

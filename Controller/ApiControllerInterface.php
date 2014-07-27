@@ -19,6 +19,8 @@ interface ApiControllerInterface
     const METHOD_PUT = 4;
     /** @var int */
     const METHOD_DELETE = 5;
+    /** @var int */
+    const METHOD_VIEW_ALL = 6;
 
     /** @var int */
     const TYPE_PRE = 0;
@@ -67,4 +69,6 @@ interface ApiControllerInterface
      * @return mixed
      */
     function getUrl($method, $entity = null);
+
+    function hasPermission($method);
 } 

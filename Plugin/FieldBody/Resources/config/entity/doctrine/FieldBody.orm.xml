@@ -6,7 +6,7 @@
 
     <entity name="Nefarian\CmsBundle\Plugin\FieldBody\Entity\FieldBody" table="field_body">
 
-      <field name="body" type="string" column="body" nullable="false" />
+        <field name="body" type="string" column="body" nullable="false"/>
 
     </entity>
 </doctrine-mapping>

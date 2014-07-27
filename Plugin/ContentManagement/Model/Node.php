@@ -70,11 +70,6 @@ class Node
     protected $createdBy;
 
     /**
-     * @var boolean
-     */
-    protected $deleted = false;
-
-    /**
      * @var UserInterface
      */
     protected $deletedBy;
@@ -157,22 +152,6 @@ class Node
     public function getCreatedOn()
     {
         return $this->createdOn;
-    }
-
-    /**
-     * @param boolean $deleted
-     */
-    public function setDeleted($deleted)
-    {
-        $this->deleted = $deleted;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getDeleted()
-    {
-        return $this->deleted;
     }
 
     /**

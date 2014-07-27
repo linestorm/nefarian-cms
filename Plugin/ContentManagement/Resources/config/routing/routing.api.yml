@@ -9,4 +9,3 @@ api_content_field:
 api_node:
   type:         rest
   resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\NodeController
-  parent:       api_content_type

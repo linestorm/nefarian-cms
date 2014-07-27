@@ -1,5 +1,5 @@
 {% extends '@plugin_content_management/base.html.twig' %}
-{% set page_modules = ['cms/content_management/form'] %}
+{% set page_modules = ['cms/content_management/type/form'] %}
 
 {% block page_title %}
     {{ contentType.name }} Content Type
@@ -15,12 +15,18 @@
 {% endblock %}
 
 {% block plugin %}
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="active"><a href="{{ path('nefarian_plugin_content_management_content_type_edit', {id: contentType.id}) }}">Content Type</a></li>
-        <li><a href="{{ path('nefarian_plugin_content_management_content_type_edit_fields', {id: contentType.id}) }}">Fields</a></li>
-        <li><a href="#">Health</a></li>
-    </ul>
-    {% block tab %}
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="{{ path('nefarian_plugin_content_management_content_type_edit', {id: contentType.id}) }}">Content Type</a></li>
+                <li><a href="{{ path('nefarian_plugin_content_management_content_type_edit_fields', {id: contentType.id}) }}">Fields</a></li>
+                <li><a href="#">Health</a></li>
+            </ul>
+            <div class="tab-content tab-content-bordered">
+                {% block tab %}
 
-    {% endblock %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

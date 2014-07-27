@@ -62,24 +62,31 @@ class ContentTypeController extends AbstractApiController implements ClassResour
         return '';
     }
 
-    /**
-     * @param ContentType $entity
-     */
-    protected function postUpdate($entity)
+    function hasPermission($method)
     {
-        /* * @var EntityManager $em * /
-        $em = $this->getDoctrine()->getManager();
+        $userManager = $this->get('nefarian_core.user_manager');
+        switch($method)
+        {
+            case self::METHOD_NEW:
+            case self::METHOD_POST:
+                return $userManager->hasPermission($this->getUser(), 'content.type.create');
+                break;
 
-        $fields = $em->getRepository('Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField')->findAll();
-        var_dump($fields);
-        /*
-        $metadata = $em->getClassMetadata($field->getEntityClass());
-        $name     = $metadata->getTableName() . '_' . $entity->getName();
-        $metadata->setPrimaryTable(array('name' => $name));
+            case self::METHOD_EDIT:
+            case self::METHOD_PUT:
+                return $userManager->hasPermission($this->getUser(), 'content.type.update');
+                break;
 
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema(array($metadata));
-        */
+            case self::METHOD_DELETE:
+                return $userManager->hasPermission($this->getUser(), 'content.type.delete');
+                break;
+
+            case self::METHOD_GET:
+                return $userManager->hasPermission($this->getUser(), 'content.type.get');
+                break;
+        }
+
+        return false;
     }
 
 } 

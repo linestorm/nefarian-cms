@@ -32,10 +32,10 @@ class MenuCategory
     /**
      * @param $name
      * @param $title
-     * @param $description
      * @param $icon
+     * @param $description
      */
-    function __construct($name, $title, $description, $icon)
+    function __construct($name, $title, $icon, $description='')
     {
         $this->name        = $name;
         $this->title       = $title;

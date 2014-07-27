@@ -1,11 +1,39 @@
-#parameters:
-#  nefarian.plugins.content_management.doctrine.mapping.listener.class:
-#
-#services:
-#
-#  #
-#  # Doctrine - Mapping listener to modify relationships
-#  nefarian.plugins.content_management.doctrine.mapping.listener:
-#    class: %nefarian.plugins.content_management.doctrine.mapping.listener.class%
+parameters:
+  nefarian.plugins.content_management.doctrine.field_listener.class: Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener\FieldEventListener
+  nefarian.plugins.content_management.doctrine.node_listener.class:  Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener\NodeEventListener
+
+  nefarian.plugins.content_management.form.type.field_collection.class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type\FieldCollectionType
+
+
+services:
+
+  #
+  # Doctrine - Mapping listener to modify relationships
+  nefarian.plugins.content_management.doctrine.field_listener:
+    class: %nefarian.plugins.content_management.doctrine.field_listener.class%
+    arguments:
+      - @nefarian_core.content_field_manager
+    tags:
+      - { name: doctrine.event_listener, event: loadClassMetadata }
+      - { name: doctrine.event_listener, event: postUpdate }
+      - { name: doctrine.event_listener, event: preUpdate }
+
+
+  #
+  # Doctrine - Map node listener
+#  nefarian.plugins.content_management.doctrine.node_listener:
+#    class: %nefarian.plugins.content_management.doctrine.node_listener.class%
+#    arguments:
+#      - @security.context
 #    tags:
-#      - { name: doctrine.event_listener, event: loadClassMetadata }
+#      - { name: doctrine.event_subscriber }
+
+
+  #
+  # Forms - field collection
+  nefarian.plugins.content_management.form.type.field_collection:
+    class: %nefarian.plugins.content_management.form.type.field_collection.class%
+    arguments:
+        - @nefarian_core.content_field_manager
+    tags:
+        - { name: form.type, alias: field_collection }

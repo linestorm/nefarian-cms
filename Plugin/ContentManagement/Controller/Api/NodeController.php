@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nefarian\CmsBundle\Controller\AbstractApiController;
 use Nefarian\CmsBundle\Controller\ApiControllerInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
@@ -14,6 +15,9 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Form\NodeForm;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class ContentTypeController
@@ -22,7 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @FOSRest\RouteResource("Node")
  */
-class NodeController extends Controller implements ClassResourceInterface, ApiControllerInterface
+class NodeController extends AbstractApiController implements ClassResourceInterface, ApiControllerInterface
 {
 
     /**
@@ -71,12 +75,16 @@ class NodeController extends Controller implements ClassResourceInterface, ApiCo
     {
         switch($method)
         {
+            case self::METHOD_VIEW_ALL:
+                return $this->generateUrl('nefarian_plugin_content_management_content_type_manage');
+                break;
+
             case self::METHOD_POST:
                 return $this->generateUrl('nefarian_api_content_management_post_type_node');
                 break;
 
             case self::METHOD_PUT:
-                return $this->generateUrl('nefarian_api_content_management_put_type_node', array('id' => $entity->getId()));
+                return $this->generateUrl('nefarian_api_content_management_put_node', array('id' => $entity->getId()));
                 break;
 
             case self::METHOD_DELETE:
@@ -91,15 +99,48 @@ class NodeController extends Controller implements ClassResourceInterface, ApiCo
         return '';
     }
 
+    function hasPermission($method)
+    {
+        $userManager = $this->get('nefarian_core.user_manager');
+        switch($method)
+        {
+            case self::METHOD_NEW:
+            case self::METHOD_POST:
+                return $userManager->hasPermission($this->getUser(), 'content.type.create');
+                break;
+
+            case self::METHOD_EDIT:
+            case self::METHOD_PUT:
+            return $userManager->hasPermission($this->getUser(), 'content.type.update');
+                break;
+
+            case self::METHOD_DELETE:
+                return $userManager->hasPermission($this->getUser(), 'content.type.delete');
+                break;
+
+            case self::METHOD_GET:
+                return $userManager->hasPermission($this->getUser(), 'content.type.get');
+                break;
+        }
+
+        return false;
+    }
+
     /**
      * @param Request     $request
      * @param ContentType $contentType
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws AccessDeniedException
+     * @throws NotFoundHttpException
+     * @return Response
      */
-    public function postAction(Request $request, ContentType $contentType)
+    public function postTypeAction(Request $request, ContentType $contentType)
     {
+        if(!$this->authenticate(self::METHOD_POST))
+        {
+            throw new AccessDeniedException();
+        }
+
         if(!$contentType instanceof ContentType)
         {
             throw $this->createNotFoundException('Content Type Not Found');
@@ -120,7 +161,6 @@ class NodeController extends Controller implements ClassResourceInterface, ApiCo
         {
             /** @var Node $entity */
             $entity = $form->getData();
-            var_dump($entity->getContents());
             $em->persist($entity);
             $em->flush();
 
@@ -135,6 +175,5 @@ class NodeController extends Controller implements ClassResourceInterface, ApiCo
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }
-
 
 } 

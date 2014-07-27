@@ -5,6 +5,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form;
 use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Content\Field\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -13,10 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class NodeForm extends AbstractType
 {
-    /**
-     * @var ContentType
-     */
-    protected $contentType;
 
     /**
      * @var FieldManager
@@ -25,11 +22,9 @@ class NodeForm extends AbstractType
 
     /**
      * @param FieldManager $fieldManager
-     * @param ContentType         $contentType
      */
-    function __construct(FieldManager $fieldManager, ContentType $contentType = null)
+    function __construct(FieldManager $fieldManager)
     {
-        $this->contentType  = $contentType;
         $this->fieldManager = $fieldManager;
     }
 
@@ -44,31 +39,14 @@ class NodeForm extends AbstractType
             $node = $event->getData();
             $form = $event->getForm();
 
-            if($this->contentType instanceof ContentType)
+            if(!$node instanceof Node)
             {
-                $node->setContentType($this->contentType);
+                throw new \Exception('Form entity must be of type Node');
             }
-
-            /*
-            if(!$node->getFields())
-            {
-                $typeFields = $node->getContentType()->getTypeFields();
-                foreach($typeFields as $typeField)
-                {
-                    $Field = $typeField->getField();
-                    $field        = $this->fieldManager->getField($Field->getName());
-                    if($field instanceof Field)
-                    {
-                        $class = $field->getEntityClass();
-                        $node->addField(new $class());
-                    }
-                }
-            }
-            */
 
             $form->add('contents', 'field_collection', array(
                 'label' => false,
-                'content_type'  => $node->getContentType(),
+                'node'  => $node,
                 'by_reference' => false,
             ));
         });

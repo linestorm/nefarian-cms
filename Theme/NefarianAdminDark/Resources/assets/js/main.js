@@ -1,8 +1,138 @@
+define(['jquery', 'bootstrap'], function ($, bs) {
 
-define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_admin_dark/utils'], function ($, bs, app, utils) {
+    var _expanded = false,
+        _this = this,
+        $menu = $('#main-menu'),
+        $menuToggle = $('#main-menu-toggle'),
+        $body = $('body'),
+        $navi = $menu.find('ul.navigation'),
+        $dropdowns = $navi.find('> .mm-dropdown > ul'),
+        menuTimer,
 
-    (function() {
-        PixelAdmin.MainMenu = function() {
+        fnHide = function () {
+            this.removeClass('open');
+            this.find('> ul').attr('style', '');
+        },
+
+        fnShow = function () {
+            this.addClass('open');
+            this.find('> ul').attr('style', '');
+        },
+
+        _handleClick = function () {
+            var li = (this.type == 'li') ? $(this) : $(this).closest('li'),
+                ul = li.find('> ul'),
+                w = $body.width(),
+                isOpen = li.hasClass('open');
+
+            if (w > 768 || w < 480) {
+
+                if (isOpen) {
+                    ul.slideUp(300, $.proxy(fnHide, li));
+                } else {
+                    $navi.find('> .open').each(function () {
+                        $lli = $(this);
+                        if (li[0] != this)
+                            $lli.find('> ul').slideUp(300, $.proxy(fnHide, $lli));
+                    });
+                    ul.slideDown(300, $.proxy(fnShow, li));
+                }
+
+            }
+
+            return false;
+        },
+
+        _handleHover = function () {
+            var li = (this.type == 'li') ? $(this) : $(this).closest('li'),
+                ul = li.find('> ul'),
+                w = $body.width(),
+                isOpen = li.hasClass('open');
+
+            if (w > 480 && w < 768 || $body.hasClass('mmc')) {
+
+                if (isOpen) {
+                    li.off('mouseenter mouseleave').on('mouseenter', (function (_li) {
+                            return function () {
+                                clearTimeout(_this.menuTimer);
+                            };
+                        })(li)).on('mouseleave', (function (_li) {
+                            return function () {
+                                return _this.menuTimer = setTimeout(function () {
+                                    return _li.removeClass('open');
+                                }, 200);
+                            };
+                        })(li));
+                } else {
+                    _this.menuTimer = undefined;
+                    $navi.find('> .open').each(function () {
+                        if (li[0] != this) {
+                            fnHide.call($(this));
+                        }
+                    });
+
+                    li.addClass('open');
+                }
+
+            }
+        }
+
+        ;
+
+    $body.addClass('main-menu-animated animate-mm-sm animate-mm-md animate-mm-lg');
+    $menu.find('.navigation > .mm-dropdown').addClass('mm-dropdown-root');
+
+    $navi.find('> .mm-dropdown > ul').addClass('mmc-dropdown-delay animated');
+    $navi.find('> li > a > .mm-text').addClass('mmc-dropdown-delay animated fadeIn');
+    $menu.find('.menu-content').addClass('animated fadeIn');
+
+    $navi.find('> li').each(function(){
+        var $li = $(this),
+            $ul = $li.find('> ul'),
+            $title = $ul.find('> .mmc-title');
+        if (!$title.length) {
+            $title = $('<div class="mmc-title"></div>').text($li.find('> a > .mm-text').text());
+            $ul.prepend($title);
+        }
+    });
+
+    $dropdowns.addClass('mmc-dropdown-delay animated');
+    if ($body.hasClass('main-menu-right') || ($body.hasClass('right-to-left') && !$body.hasClass('main-menu-right'))) {
+        $dropdowns.addClass('fadeInRight');
+    } else {
+        $dropdowns.addClass('fadeInLeft');
+    }
+
+    $menuToggle.on('click', function () {
+        var btn = $(this),
+            isExpanded  = $body.hasClass('mme'),
+            isCollapsed = $body.hasClass('mmc'),
+            w = $body.width();
+        if (w > 768) {
+            $body.removeClass('mme');
+            if(isCollapsed){
+                $body.removeClass('mmc');
+            } else {
+                $body.addClass('mmc');
+            }
+        } else {
+            $body.removeClass('mmc');
+            if(isExpanded){
+                $body.removeClass('mme');
+            } else {
+                $body.addClass('mme');
+            }
+        }
+    });
+
+    $menu.on('click', '.mm-dropdown > a', _handleClick);
+
+    $menu.on('mouseenter', '.mm-dropdown > a', _handleHover)
+        .on('mouseleave', '.mm-dropdown > a', _handleHover);
+
+
+    var f = (function () {
+        PixelAdmin.MainMenu = function () {
             this._screen = null;
             this._last_screen = null;
             this._animate = false;
@@ -17,66 +147,10 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
          * Initialize plugin.
          */
 
-        PixelAdmin.MainMenu.prototype.init = function() {
-            var self, state;
-            this.$menu = $('#main-menu');
-            if (!this.$menu.length) {
-                return;
-            }
-            this.$body = $('body');
-            this.menu = this.$menu[0];
-            this.$ssw_point = $('#small-screen-width-point');
-            this.$tsw_point = $('#tablet-screen-width-point');
-            self = this;
-            if (PixelAdmin.settings.main_menu.store_state) {
-                state = this._getMenuState();
-                document.body.className += ' disable-mm-animation';
-                if (state !== null) {
-                    this.$body[state === 'collapsed' ? 'addClass' : 'removeClass']('mmc');
-                }
-                setTimeout((function(_this) {
-                    return function() {
-                        return elRemoveClass(document.body, 'disable-mm-animation');
-                    };
-                })(this), 20);
-            }
-            this.setupAnimation();
-            $(window).on('resize.pa.mm', $.proxy(this.onResize, this));
-            this.onResize();
-            this.$menu.find('.navigation > .mm-dropdown').addClass('mm-dropdown-root');
-            if (PixelAdmin.settings.main_menu.detect_active) {
-                this.detectActiveItem();
-            }
-            if ($.support.transition) {
-                this.$menu.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', $.proxy(this._onAnimationEnd, this));
-            }
-            $('#main-menu-toggle').on('click', $.proxy(this.toggle, this));
-            /*$('#main-menu-inner').slimScroll({
-                height: '100%'
-            }).on('slimscrolling', (function(_this) {
-                    return function() {
-                        return _this.closeCurrentDropdown(true);
-                    };
-                })(this));*/
-            this.$menu.on('click', '.mm-dropdown > a', function() {
-                var li;
-                li = this.parentNode;
-                if (elHasClass(li, 'mm-dropdown-root') && self._collapsed()) {
-                    if (elHasClass(li, 'mmc-dropdown-open')) {
-                        if (elHasClass(li, 'freeze')) {
-                            self.closeCurrentDropdown(true);
-                        } else {
-                            self.freezeDropdown(li);
-                        }
-                    } else {
-                        self.openDropdown(li, true);
-                    }
-                } else {
-                    self.toggleSubmenu(li);
-                }
-                return false;
-            });
-            this.$menu.find('.navigation').on('mouseenter.pa.mm-dropdown', '.mm-dropdown-root', function() {
+        PixelAdmin.MainMenu.prototype.init = function () {
+
+
+            this.$menu.find('.navigation').on('mouseenter.pa.mm-dropdown', '.mm-dropdown-root',function () {
                 self.clearCloseTimer();
                 if (self._dropdown_li === this) {
                     return;
@@ -84,19 +158,15 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
                 if (self._collapsed() && (!self._dropdown_li || !elHasClass(self._dropdown_li, 'freeze'))) {
                     return self.openDropdown(this);
                 }
-            }).on('mouseleave.pa.mm-dropdown', '.mm-dropdown-root', function() {
-                return self._close_timer = setTimeout(function() {
+            }).on('mouseleave.pa.mm-dropdown', '.mm-dropdown-root', function () {
+                return self._close_timer = setTimeout(function () {
                     return self.closeCurrentDropdown();
                 }, PixelAdmin.settings.main_menu.dropdown_close_delay);
             });
             return this;
         };
 
-        PixelAdmin.MainMenu.prototype._collapsed = function() {
-            return (this._screen === 'desktop' && elHasClass(document.body, 'mmc')) || (this._screen !== 'desktop' && !elHasClass(document.body, 'mme'));
-        };
-
-        PixelAdmin.MainMenu.prototype.onResize = function() {
+        PixelAdmin.MainMenu.prototype.onResize = function () {
             this._screen = getScreenSize(this.$ssw_point, this.$tsw_point);
             this._animate = PixelAdmin.settings.main_menu.disable_animation_on.indexOf(screen) === -1;
             if (this._dropdown_li) {
@@ -104,8 +174,8 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
             }
             if ((this._screen === 'small' && this._last_screen !== this._screen) || (this._screen === 'tablet' && this._last_screen === 'small')) {
                 document.body.className += ' disable-mm-animation';
-                setTimeout((function(_this) {
-                    return function() {
+                setTimeout((function (_this) {
+                    return function () {
                         return elRemoveClass(document.body, 'disable-mm-animation');
                     };
                 })(this), 20);
@@ -113,21 +183,21 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
             return this._last_screen = this._screen;
         };
 
-        PixelAdmin.MainMenu.prototype.clearCloseTimer = function() {
+        PixelAdmin.MainMenu.prototype.clearCloseTimer = function () {
             if (this._close_timer) {
                 clearTimeout(this._close_timer);
                 return this._close_timer = null;
             }
         };
 
-        PixelAdmin.MainMenu.prototype._onAnimationEnd = function(e) {
+        PixelAdmin.MainMenu.prototype._onAnimationEnd = function (e) {
             if (this._screen !== 'desktop' || e.target.id !== 'main-menu') {
                 return;
             }
             return $(window).trigger('resize');
         };
 
-        PixelAdmin.MainMenu.prototype.toggle = function() {
+        PixelAdmin.MainMenu.prototype.toggle = function () {
             var cls, collapse;
             cls = this._screen === 'small' || this._screen === 'tablet' ? 'mme' : 'mmc';
             if (elHasClass(document.body, cls)) {
@@ -149,67 +219,16 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
             }
         };
 
-        PixelAdmin.MainMenu.prototype.toggleSubmenu = function(li) {
-            this[elHasClass(li, 'open') ? 'collapseSubmenu' : 'expandSubmenu'](li);
-            return false;
-        };
 
-        PixelAdmin.MainMenu.prototype.collapseSubmenu = function(li) {
-            var $li, $ul;
-            $li = $(li);
-            $ul = $li.find('> ul');
-            if (this._animate) {
-                $ul.animate({
-                    height: 0
-                }, PixelAdmin.settings.main_menu.animation_speed, (function(_this) {
-                    return function() {
-                        elRemoveClass(li, 'open');
-                        $ul.attr('style', '');
-                        return $li.find('.mm-dropdown.open').removeClass('open').find('> ul').attr('style', '');
-                    };
-                })(this));
-            } else {
-                elRemoveClass(li, 'open');
-            }
-            return false;
-        };
-
-        PixelAdmin.MainMenu.prototype.expandSubmenu = function(li) {
-            var $li, $ul, h, ul;
-            $li = $(li);
-            if (PixelAdmin.settings.main_menu.accordion) {
-                this.collapseAllSubmenus(li);
-            }
-            if (this._animate) {
-                $ul = $li.find('> ul');
-                ul = $ul[0];
-                ul.className += ' get-height';
-                h = $ul.height();
-                elRemoveClass(ul, 'get-height');
-                ul.style.display = 'block';
-                ul.style.height = '0px';
-                li.className += ' open';
-                return $ul.animate({
-                    height: h
-                }, PixelAdmin.settings.main_menu.animation_speed, (function(_this) {
-                    return function() {
-                        return $ul.attr('style', '');
-                    };
-                })(this));
-            } else {
-                return li.className += ' open';
-            }
-        };
-
-        PixelAdmin.MainMenu.prototype.collapseAllSubmenus = function(li) {
+        PixelAdmin.MainMenu.prototype.collapseAllSubmenus = function (li) {
             var self;
             self = this;
-            return $(li).parent().find('> .mm-dropdown.open').each(function() {
+            return $(li).parent().find('> .mm-dropdown.open').each(function () {
                 return self.collapseSubmenu(this);
             });
         };
 
-        PixelAdmin.MainMenu.prototype.openDropdown = function(li, freeze) {
+        PixelAdmin.MainMenu.prototype.openDropdown = function (li, freeze) {
             var $li, $title, $ul, $wrapper, max_height, min_height, title_h, top, ul, w_height, wrapper;
             if (freeze == null) {
                 freeze = false;
@@ -267,13 +286,13 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
                 this.freezeDropdown(li);
             }
             if (!freeze) {
-                $ul.on('mouseenter', (function(_this) {
-                        return function() {
+                $ul.on('mouseenter', (function (_this) {
+                        return function () {
                             return _this.clearCloseTimer();
                         };
-                    })(this)).on('mouseleave', (function(_this) {
-                        return function() {
-                            return _this._close_timer = setTimeout(function() {
+                    })(this)).on('mouseleave', (function (_this) {
+                        return function () {
+                            return _this._close_timer = setTimeout(function () {
                                 return _this.closeCurrentDropdown();
                             }, PixelAdmin.settings.main_menu.dropdown_close_delay);
                         };
@@ -283,7 +302,7 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
             return this.menu.appendChild(ul);
         };
 
-        PixelAdmin.MainMenu.prototype.closeCurrentDropdown = function(force) {
+        PixelAdmin.MainMenu.prototype.closeCurrentDropdown = function (force) {
             var $dropdown, $wrapper;
             if (force == null) {
                 force = false;
@@ -312,11 +331,11 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
             return this._dropdown_li = null;
         };
 
-        PixelAdmin.MainMenu.prototype.freezeDropdown = function(li) {
+        PixelAdmin.MainMenu.prototype.freezeDropdown = function (li) {
             return li.className += ' freeze';
         };
 
-        PixelAdmin.MainMenu.prototype.setupAnimation = function() {
+        PixelAdmin.MainMenu.prototype.setupAnimation = function () {
             var $mm, $mm_nav, d_body, dsbl_animation_on;
             d_body = document.body;
             dsbl_animation_on = PixelAdmin.settings.main_menu.disable_animation_on;
@@ -334,72 +353,21 @@ define(['jquery', 'bootstrap', 'theme/nefarian_admin_dark/app', 'theme/nefarian_
             d_body.className += dsbl_animation_on.indexOf('small') === -1 ? ' animate-mm-sm' : ' dont-animate-mm-content-sm';
             d_body.className += dsbl_animation_on.indexOf('tablet') === -1 ? ' animate-mm-md' : ' dont-animate-mm-content-md';
             d_body.className += dsbl_animation_on.indexOf('desktop') === -1 ? ' animate-mm-lg' : ' dont-animate-mm-content-lg';
-            return window.setTimeout(function() {
+            return window.setTimeout(function () {
                 return elRemoveClass(d_body, 'dont-animate-mm-content');
             }, 500);
         };
 
-        PixelAdmin.MainMenu.prototype.detectActiveItem = function() {
-            var a, bubble, links, nav, predicate, url, _i, _len, _results;
-            url = (document.location + '').replace(/\#.*?$/, '');
-            predicate = PixelAdmin.settings.main_menu.detect_active_predicate;
-            nav = $('#main-menu .navigation');
-            nav.find('li').removeClass('open active');
-            links = nav[0].getElementsByTagName('a');
-            bubble = (function(_this) {
-                return function(li) {
-                    li.className += ' active';
-                    if (!elHasClass(li.parentNode, 'navigation')) {
-                        li = li.parentNode.parentNode;
-                        li.className += ' open';
-                        return bubble(li);
-                    }
-                };
-            })(this);
-            _results = [];
-            for (_i = 0, _len = links.length; _i < _len; _i++) {
-                a = links[_i];
-                if (a.href.indexOf('#') === -1 && predicate(a.href, url)) {
-                    bubble(a.parentNode);
-                    break;
-                } else {
-                    _results.push(void 0);
-                }
-            }
-            return _results;
-        };
-
-
-        /*
-         * Load menu state.
-         */
-
-        PixelAdmin.MainMenu.prototype._getMenuState = function() {
-            return PixelAdmin.getStoredValue(PixelAdmin.settings.main_menu.store_state_key, null);
-        };
-
-
-        /*
-         * Store menu state.
-         */
-
-        PixelAdmin.MainMenu.prototype._storeMenuState = function(is_collapsed) {
-            if (!PixelAdmin.settings.main_menu.store_state) {
-                return;
-            }
-            return PixelAdmin.storeValue(PixelAdmin.settings.main_menu.store_state_key, is_collapsed ? 'collapsed' : 'expanded');
-        };
-
         PixelAdmin.MainMenu.Constructor = PixelAdmin.MainMenu;
 
-        PixelAdmin.addInitializer(function() {
+        PixelAdmin.addInitializer(function () {
             return PixelAdmin.initPlugin('main_menu', new PixelAdmin.MainMenu);
         });
 
-    }).call(this);
+    });
+    //.call(this);
 
-
-    var init = [];
-    PixelAdmin.start(init);
+    // var init = [];
+    //PixelAdmin.start(init);
 
 });

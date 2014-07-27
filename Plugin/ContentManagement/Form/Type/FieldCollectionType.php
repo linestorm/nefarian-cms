@@ -2,9 +2,9 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type;
 
-use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Content\Field\Field;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
+use Nefarian\CmsBundle\Content\Field\FieldManager;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\DataTransformer\FieldCollectionDataTransformer;
 use Symfony\Component\Form\AbstractType;
@@ -33,22 +33,36 @@ class FieldCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $i = 0;
-        if($options['content_type'] instanceof ContentType)
+        if($options['node'] instanceof Node)
         {
-            foreach($options['content_type']->getTypeFields() as $typeField)
+            $node        = $options['node'];
+            $contentType = $node->getContentType();
+            $contents    = $node->getContents();
+
+            foreach($contentType->getTypeFields() as $typeField)
             {
                 $fieldEntity = $typeField->getField();
-                $field = $this->fieldManager->getField($fieldEntity->getName());
+                $field       = $this->fieldManager->getField($fieldEntity->getName());
                 if($field instanceof Field)
                 {
                     $formClass = $field->getForm();
                     $dataClass = $field->getEntityClass();
+
+                    $node->getContents();
                     /** @var NodeContent $entity */
-                    $entity = new $dataClass();
-                    $entity->setField($fieldEntity);
-                    $builder->add($typeField->getName(), new $formClass($fieldEntity), array(
-                        'label' => false,
-                        'data'  => $entity,
+                    if($contents[$i])
+                    {
+                        $entity = $contents[$i];
+                    }
+                    else
+                    {
+                        $entity = new $dataClass();
+                        $entity->setField($fieldEntity);
+                    }
+
+                    $builder->add($i, new $formClass($fieldEntity), array(
+                        'label'        => false,
+                        'data'         => $entity,
                         'by_reference' => false,
                     ));
                     ++$i;
@@ -65,7 +79,7 @@ class FieldCollectionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(
-            'content_type'
+            'node'
         ));
     }
 

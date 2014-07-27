@@ -3,6 +3,7 @@ parameters:
   nefarian_core.menu_manager.class:          Nefarian\CmsBundle\Menu\MenuManager
   nefarian_core.content_manager.class:       Nefarian\CmsBundle\Content\ContentManager
   nefarian_core.content_field_manager.class: Nefarian\CmsBundle\Content\Field\FieldManager
+  nefarian_core.user_manager:                Nefarian\CmsBundle\User\UserManager
 
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
@@ -15,9 +16,6 @@ parameters:
 
   # override the asset factory
   assetic.asset_factory.class: Nefarian\CmsBundle\Assetic\Factory\NefarianAssetFactory
-
-  # Doctrine
-  nefarian_core.content_fields.doctrine.mapping.listener.class: Nefarian\CmsBundle\Doctrine\FieldMappingListener
 
 services:
 
@@ -42,6 +40,9 @@ services:
 
   nefarian_core.content_field_manager:
     class: %nefarian_core.content_field_manager.class%
+
+  nefarian_core.user_manager:
+    class: %nefarian_core.user_manager%
 
   #
   # Plugin - Routing
@@ -96,24 +97,4 @@ services:
     class: %templating.loader.filesystem.class%
     arguments:
       - @templating.locator.theme_locator
-
-  #
-  # Doctrine - Mapping listener to modify relationships
-  nefarian_core.content_fields.doctrine.mapping.listener:
-    class: %nefarian_core.content_fields.doctrine.mapping.listener.class%
-    arguments:
-      - @nefarian_core.content_field_manager
-    tags:
-      - { name: doctrine.event_listener, event: loadClassMetadata }
-      - { name: doctrine.event_listener, event: postUpdate }
-      - { name: doctrine.event_listener, event: preUpdate }
-
-  #
-  # Forms - field collection
-  nefarian_core.form.type.field_collection:
-    class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type\FieldCollectionType
-    arguments:
-        - @nefarian_core.content_field_manager
-    tags:
-        - { name: form.type, alias: field_collection }
 

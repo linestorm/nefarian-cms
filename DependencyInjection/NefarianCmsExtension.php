@@ -32,6 +32,18 @@ class NefarianCmsExtension extends Extension implements PrependExtensionInterfac
 
         $container->setParameter("nefarian_core.entity_manager", $config['entity_manager']);
         $container->setParameter("nefarian_core.backend_type_orm", $config['backend_type'] === 'orm');
+
+        $plugins = $config['plugins'];
+
+        foreach($plugins as $plugin)
+        {
+            $meta = new \ReflectionClass($plugin);
+            $service  = dirname($meta->getFileName()).'/Resources/config/services.yml';
+            if(file_exists($service))
+            {
+                $loader->import($service);
+            }
+        }
     }
 
     /**

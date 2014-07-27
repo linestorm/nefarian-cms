@@ -64,21 +64,64 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
             // tell asstic where the plugin assets are
-            $jsAssets = @glob($plugin->getPath() . '/Resources/assets/js/*.js');
-            if(count($jsAssets))
+            $folder = $path . '/Resources/assets/js';
+            if(is_dir($folder))
             {
-                foreach($jsAssets as $jsAsset)
-                {
-                    $destination = str_replace($plugin->getPath() . '/Resources/assets/js/', '', $jsAsset);
-                    $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination), array(
-                        $jsAsset,
-                        array('?uglifyjs2'),
-                        array(
-                            'output' => 'js/cms/' . $plugin->getName() . '/' . $destination
-                        ),
-                    )));
+                $dir = new \RecursiveDirectoryIterator($folder);
+                $ite = new \RecursiveIteratorIterator($dir);
+                $fileList = new \RegexIterator($ite, '/.+\.js/', \RegexIterator::GET_MATCH);
+                foreach($fileList as $files) {
+                    foreach($files as $file) {
+                        $destination = str_replace($plugin->getPath() . '/Resources/assets/js/', '', $file);
+                        $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination), array(
+                            $file,
+                            array('?uglifyjs2'),
+                            array(
+                                'output' => 'js/cms/' . $plugin->getName() . '/' . $destination
+                            ),
+                        )));
+                    }
                 }
             }
+
+            $folder = $path . '/Resources/assets/img';
+            if(is_dir($folder))
+            {
+                $maps = array(
+                    '.jpg'  => 'jpegoptim',
+                    '.jpeg' => 'jpegoptim',
+                    '.png'  => 'optipng',
+                    '.gif'  => null,
+                );
+                foreach($maps as $ext => $app)
+                {
+                    if($app)
+                    {
+                        $app = array('?' . $app);
+                    }
+                    else
+                    {
+                        $app = array();
+                    }
+
+                    $dir = new \RecursiveDirectoryIterator($folder);
+                    $ite = new \RecursiveIteratorIterator($dir);
+                    $fileList = new \RegexIterator($ite, '/.+\.'.$ext.'/', \RegexIterator::GET_MATCH);
+                    foreach($fileList as $files) {
+                        foreach($files as $file) {
+                            $destination = str_replace($path . '/Resources/assets/img/', '', $file);
+                            $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', $ext), array('_', ''), $destination), array(
+                                $file,
+                                $app,
+                                array(
+                                    'output' => 'img/theme/' . $plugin->getName() . '/' . $destination
+                                ),
+                            )));
+                        }
+                    }
+                }
+            }
+
 
 
             // TODO: Finish loading module menu

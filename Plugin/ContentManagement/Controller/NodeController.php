@@ -61,7 +61,7 @@ class NodeController extends Controller
         $fieldManager = $this->get('nefarian_core.content_field_manager');
         $node         = new Node();
 
-        $form = $this->createForm(new NodeForm($fieldManager, $contentType), $node, array(
+        $form = $this->createForm(new NodeForm($fieldManager), $node, array(
             'attr'   => array(
                 'class' => 'api-save'
             ),
@@ -76,5 +76,26 @@ class NodeController extends Controller
             'form'        => $form->createView(),
         ));
     }
+
+    public function editAction(Node $node)
+    {
+        $fieldManager = $this->get('nefarian_core.content_field_manager');
+
+        $form = $this->createForm(new NodeForm($fieldManager), $node, array(
+            'attr'   => array(
+                'class' => 'api-save'
+            ),
+            'method' => 'PUT',
+            'action' => $this->generateUrl('nefarian_api_content_management_put_node', array(
+                'id' => $node->getId()
+            )),
+        ));
+
+        return $this->render('@plugin_content_management/Node/edit.html.twig', array(
+            'node' => $node,
+            'form' => $form->createView(),
+        ));
+    }
+
 
 } 

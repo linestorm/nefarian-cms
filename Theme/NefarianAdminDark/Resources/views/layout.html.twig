@@ -24,7 +24,7 @@
 {% block nav %}
     {% for category in nefarian_menu_manager.categories %}
         <li class="mm-dropdown">
-            <a class="" href="#-menu-{{ loop.index }}"><i class="menu-icon fa-angle-right"></i><span class="mm-text">{{ category.title }}</span></a>
+            <a class="" href="#-menu-{{ loop.index }}"><i class="menu-icon fa-{{ category.icon }}"></i><span class="mm-text">{{ category.title }}</span></a>
             <ul id="menu-{{ loop.index }}" class="">
                 {% for link in category.links %}
                     <li><a href="{{ url(link.route) }}"><span class="mm-text">{{ link.title }}</span></a></li>

@@ -8,10 +8,12 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @TODO    : Permissioning
@@ -46,6 +48,13 @@ abstract class AbstractApiController extends Controller implements ClassResource
         return '@theme/Api/form.html.twig';
     }
 
+    protected function authenticate($method)
+    {
+        if(!$this->hasPermission($method))
+        {
+            throw new AccessDeniedException();
+        }
+    }
 
     /**
      * [GET] Get all entities
@@ -78,6 +87,8 @@ abstract class AbstractApiController extends Controller implements ClassResource
      */
     public function getAction($id)
     {
+        $this->authenticate(self::METHOD_GET);
+
         /** @var EntityManager $em */
         $class = $this->getEntityClass();
         $em    = $this->getDoctrine()->getManager();
@@ -110,6 +121,8 @@ abstract class AbstractApiController extends Controller implements ClassResource
      */
     public function newAction()
     {
+        $this->authenticate(self::METHOD_NEW);
+
         $class  = $this->getEntityClass();
         $entity = new $class();
         $form   = $this->createForm($this->getForm(), $entity, array(
@@ -138,6 +151,8 @@ abstract class AbstractApiController extends Controller implements ClassResource
      */
     public function editAction($id)
     {
+        $this->authenticate(self::METHOD_EDIT);
+
         /** @var EntityManager $em */
         $class = $this->getEntityClass();
         $em    = $this->getDoctrine()->getManager();
@@ -181,6 +196,8 @@ abstract class AbstractApiController extends Controller implements ClassResource
      */
     public function postAction(Request $request)
     {
+        $this->authenticate(self::METHOD_POST);
+
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
@@ -226,6 +243,8 @@ abstract class AbstractApiController extends Controller implements ClassResource
      */
     public function putAction(Request $request, $id)
     {
+        $this->authenticate(self::METHOD_PUT);
+
         /** @var EntityManager $em */
         $class  = $this->getEntityClass();
         $em     = $this->getDoctrine()->getManager();
@@ -240,6 +259,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
         $formType = $this->getForm();
         $form     = $this->createForm($formType, $entity);
+
         $form->submit($payload[$formType->getName()]);
 
         if($form->isValid())
@@ -273,6 +293,8 @@ abstract class AbstractApiController extends Controller implements ClassResource
      */
     public function deleteAction($id)
     {
+        $this->authenticate(self::METHOD_DELETE);
+
         /** @var EntityManager $em */
         $class  = $this->getEntityClass();
         $em     = $this->getDoctrine()->getManager();
@@ -290,7 +312,9 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
         $this->postDelete();
 
-        $view = View::create(null, 204);
+        $view = View::create(null, 204, array(
+            'location' => $this->getUrl(self::METHOD_VIEW_ALL)
+        ));
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }

@@ -1,0 +1,94 @@
+#main-wrapper {
+    overflow-y: visible !important;
+}
+
+.page-header {
+    p {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+#main-menu {
+    .navigation {
+        > .mm-dropdown {
+            &.open {
+
+                @media (min-width: 481px) and (max-width: 768px) {
+
+                    &.mm-dropdown-root {
+                        > a:hover {
+                            &:after {
+                                display: none !important;
+                            }
+                        }
+                    }
+
+                    > ul {
+                        @extend .mmc-dropdown-open-ul;
+
+                        position: absolute;
+                        top: 0px;
+                        left: 56px;
+                        width: 240px;
+                        display: block !important;
+                    }
+
+                    .mmc-title,
+                    > a {
+                        background: #181b1f !important;
+                        color: #fff !important;
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+}
+
+body.mmc {
+    .navigation {
+        > .mm-dropdown {
+            &.open {
+                &.mm-dropdown-root {
+                    > a:hover {
+                        &:after {
+                            display: none !important;
+                        }
+                    }
+                }
+
+                > ul {
+                    @extend .mmc-dropdown-open-ul;
+
+                    position: absolute;
+                    top: 0px;
+                    left: 56px;
+                    width: 240px;
+                    display: block !important;
+                }
+
+                .mmc-title,
+                > a {
+                    background: #181b1f !important;
+                    color: #fff !important;
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+
+// asd
+html body.page-signin {
+    background: #131313 !important;
+
+    .signin-info {
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+        }
+    }
+}

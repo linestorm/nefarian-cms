@@ -35,7 +35,6 @@ class FieldBodyForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'hidden')
             ->add('body', 'textarea')
         ;
     }

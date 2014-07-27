@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <mapped-superclass name="Nefarian\CmsBundle\Plugin\ContentManagement\Model\Node" table="content_type">
@@ -11,13 +12,7 @@
         <field name="published" type="boolean" column="published" nullable="false" />
         <field name="publishedOn" type="datetime" column="published_on" nullable="true"/>
 
-        <field name="deleted" type="boolean" column="deleted" nullable="false" />
         <field name="deletedOn" type="datetime" column="deleted_on" nullable="true"/>
-
-        <field name="editedOn" type="datetime" column="edited_on" nullable="true"/>
-
-        <field name="createdOn" type="datetime" column="created_on" nullable="false"/>
-
     </mapped-superclass>
 
 </doctrine-mapping>
