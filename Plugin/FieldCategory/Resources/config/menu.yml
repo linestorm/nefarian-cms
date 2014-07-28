@@ -1,0 +1,8 @@
+categories:
+  title: Node Categories
+  icon: folder-open
+  items:
+    category:
+      route: categories
+      title: View Categories
+      description: View all node categories

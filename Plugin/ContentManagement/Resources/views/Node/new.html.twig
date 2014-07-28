@@ -6,6 +6,12 @@
     <li><a href="{{ url('nefarian_plugin_content_management_node_create_select') }}">Create</a></li>
 {% endblock %}
 
+{% block javascript %}
+    {% for field in fields %}
+        {% set page_modules = page_modules|merge(field.node_modules) %}
+    {% endfor %}
+    {{ parent() }}
+{% endblock %}
 
 {% block page_title %}
     New {{ contentType.name }} Node
@@ -16,65 +22,5 @@
 {% endblock %}
 
 {% block plugin %}
-    {% form_theme form '@plugin_content_management/Node/Fields/form.html.twig' %}
-    {{ form_start(form) }}
-    <div class="row">
-        <div class="col-sm-8">
-            {{ form_row(form.title) }}
-
-            {{ form_row(form.contents) }}
-            <div class="form-group">
-                <button type="submit" class="btn btn-default">
-                    <i class="fa-plus"></i> Create
-                </button>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="panel-group" id="accordion">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a class="panel-title show text-muted" data-toggle="collapse" data-parent="#accordion" href="#collapseMeta">
-                            Meta
-                        </a>
-                    </div>
-                    <div id="collapseMeta" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            {{ form_label(form.description) }}
-                            {{ form_widget(form.description) }}
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a class="panel-title show text-muted" data-toggle="collapse" data-parent="#accordion" href="#collapsePath">
-                            Path
-                        </a>
-                    </div>
-                    <div id="collapsePath" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            {{ form_label(form.path) }}
-                            {{ form_widget(form.path) }}
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a class="panel-title show text-muted" data-toggle="collapse" data-parent="#accordion" href="#collapsePublishing">
-                            Publishing
-                        </a>
-                    </div>
-                    <div id="collapsePublishing" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            {{ form_label(form.published) }}
-                            {{ form_widget(form.published) }}
-                            {{ form_label(form.publishedOn) }}
-                            {{ form_widget(form.publishedOn) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{ form_end(form) }}
+    {% include '@plugin_content_management/Node/form.html.twig' %}
 {% endblock %}

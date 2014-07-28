@@ -22,6 +22,11 @@ class Field implements FieldInterface
     /**
      * @var array
      */
+    protected $assets;
+
+    /**
+     * @var array
+     */
     protected $properties;
 
     /**
@@ -34,6 +39,7 @@ class Field implements FieldInterface
         $this->class      = $properties['class'];
         $this->form       = $properties['form'];
         $this->properties = $properties['properties'];
+        $this->assets     = $properties['assets'];
     }
 
     /**
@@ -85,5 +91,20 @@ class Field implements FieldInterface
         return $this->class;
     }
 
+    /**
+     * @param array $assets
+     */
+    public function setAssets(array $assets = array())
+    {
+        $this->assets = $assets;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAssets()
+    {
+        return $this->assets;
+    }
 
 }

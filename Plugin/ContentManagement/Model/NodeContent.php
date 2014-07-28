@@ -28,12 +28,9 @@ abstract class NodeContent
     protected $field;
 
     /**
-     * Initialisation
+     * @var ContentTypeField
      */
-    function __construct()
-    {
-        $this->typeFields = new ArrayCollection();
-    }
+    protected $fieldType;
 
     /**
      * @return int
@@ -90,6 +87,23 @@ abstract class NodeContent
     {
         return $this->field;
     }
+
+    /**
+     * @param ContentTypeField $fieldType
+     */
+    public function setFieldType(ContentTypeField $fieldType)
+    {
+        $this->fieldType = $fieldType;
+    }
+
+    /**
+     * @return ContentTypeField
+     */
+    public function getFieldType()
+    {
+        return $this->fieldType;
+    }
+
 
 
 } 

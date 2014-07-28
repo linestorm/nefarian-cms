@@ -1,0 +1,11 @@
+tags:
+  path:     /
+  defaults: { _controller: Tag:index }
+
+tag_new:
+  path:     /new
+  defaults: { _controller: Tag:new }
+
+tag_edit:
+  path:     /{id}/edit
+  defaults: { _controller: Tag:edit }

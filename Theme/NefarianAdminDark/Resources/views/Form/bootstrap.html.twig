@@ -17,16 +17,18 @@
 {% endblock form_start %}
 
 {% block form_row %}
+    {% set row_size = row_size|default('sm') %}
     {% spaceless %}
         <div class="form-group">
             {{ form_label(form) }}
             {{ form_errors(form) }}
-            <div class="col-sm-{% if label is same as(false) %}12{% else %}10{% endif %}">{{ form_widget(form) }}</div>
+            <div class="col-{{ row_size }}-{% if label is same as(false) %}12{% else %}10{% endif %}">{{ form_widget(form) }}</div>
         </div>
     {% endspaceless %}
 {% endblock form_row %}
 
 {% block form_label %}
+    {% set row_size = row_size|default('sm') %}
     {% spaceless %}
         {% if label is not sameas(false) %}
             {% if not compound %}
@@ -38,7 +40,7 @@
             {% if label is empty %}
                 {% set label = name|humanize %}
             {% endif %}
-            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' col-sm-2 control-label')|trim}) %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' col-' ~ row_size ~ '-2 control-label')|trim}) %}
             <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{ label|trans({}, translation_domain) }}
 
@@ -72,7 +74,7 @@
                 {%- set hasClass = true -%}
                 {% if attrvalue|length %}
                     {{- attrname }}="{{ attrvalue }}"
-                {% else %}
+                {% elseif attr.type not in ['checkbox', 'radio'] %}
                     {{- attrname }}="form-control {{ attrvalue }}"
                 {% endif %}
             {%- elseif attrvalue is sameas(true) -%}
@@ -81,9 +83,21 @@
                 {{- attrname }}="{{ attrvalue }}"
             {%- endif -%}
         {%- endfor -%}
-        {%- if not hasClass -%}
+        {%- if not hasClass and ((input_type|default(false) and input_type not in ['checkbox', 'radio']) or input_type is not defined) -%}
             {{- " " -}}
             {{- ' class="form-control"' -}}
         {%- endif -%}
     {% endspaceless %}
 {% endblock widget_attributes %}
+
+{% block checkbox_widget -%}
+    {% set row_size = row_size|default('sm') %}
+    {% set input_type = 'checkbox' %}
+    {{ parent() }}
+{%- endblock checkbox_widget %}
+
+{% block radio_widget -%}
+    {% set row_size = row_size|default('sm') %}
+    {% set input_type = 'radio' %}
+    {{ parent() }}
+{%- endblock radio_widget %}

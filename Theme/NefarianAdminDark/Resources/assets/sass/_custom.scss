@@ -3,9 +3,19 @@
 }
 
 .page-header {
+    position: relative;
+
     p {
         margin: 0;
         padding: 0;
+    }
+
+    .page-header-icon {
+        position: absolute;
+        right: 15px;
+        font-size: 80px;
+        color: #dedede;
+        top: 4px;
     }
 }
 

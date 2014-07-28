@@ -18,6 +18,7 @@ class MenuConfiguration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('menu');
 
         $rootNode
+            ->useAttributeAsKey('name')
             ->prototype('array')
                 ->children()
                     ->scalarNode('title')->isRequired()->end()

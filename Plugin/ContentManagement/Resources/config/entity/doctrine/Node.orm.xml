@@ -13,6 +13,7 @@
 
         <field name="editedOn" type="datetime" column="edited_on" nullable="true">
             <gedmo:timestampable on="update" />
+            <gedmo:timestampable on="change" field="contents" />
         </field>
 
         <field name="createdOn" type="datetime" column="created_on" nullable="false">
@@ -34,6 +35,7 @@
 
         <many-to-one target-entity="Nefarian\CmsBundle\Entity\User" field="editedBy">
             <gedmo:blameable on="update" />
+            <gedmo:blameable on="change" field="contents" />
         </many-to-one>
 
         <many-to-one target-entity="Nefarian\CmsBundle\Entity\User" field="createdBy">

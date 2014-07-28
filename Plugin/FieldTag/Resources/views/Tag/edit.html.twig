@@ -1,0 +1,23 @@
+{% extends '@plugin_field_tag/Tag/base.html.twig' %}
+{% set page_modules = ['cms/field_tag/tag/form'] %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugin_field_tag_tag_edit', {id: tag.id}) }}">Edit Tag</a></li>
+{% endblock %}
+
+{% block page_icon %}
+    <i class="page-header-icon fa-pencil"></i>
+{% endblock %}
+
+{% block page_title %}
+    Editing {{ tag.name }}
+{% endblock %}
+
+{% block page_desc %}
+    Modify tag
+{% endblock %}
+
+{% block plugin %}
+    {{ include('@plugin_field_tag/Tag/form.html.twig') }}
+{% endblock %}

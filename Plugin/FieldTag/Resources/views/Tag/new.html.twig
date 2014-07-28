@@ -1,0 +1,23 @@
+{% extends '@plugin_field_tag/Tag/base.html.twig' %}
+{% set page_modules = ['cms/field_tag/tag/form'] %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugin_field_tag_tag_new') }}">Create</a></li>
+{% endblock %}
+
+{% block page_icon %}
+    <i class="page-header-icon fa-plus"></i>
+{% endblock %}
+
+{% block page_title %}
+    New Tag
+{% endblock %}
+
+{% block page_desc %}
+    Create a new content node tag
+{% endblock %}
+
+{% block plugin %}
+    {{ include('@plugin_field_tag/Tag/form.html.twig') }}
+{% endblock %}

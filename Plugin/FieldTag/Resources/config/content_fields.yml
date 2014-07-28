@@ -1,0 +1,8 @@
+tag:
+  class:   Nefarian\CmsBundle\Plugin\FieldTag\Entity\FieldTag
+  form:    Nefarian\CmsBundle\Plugin\FieldTag\Form\FieldTagForm
+  assets:
+    - Resources/assets/js/node/tags.js
+  properties:
+    limit: 1
+    limit_required: true

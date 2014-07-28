@@ -35,9 +35,16 @@ class FieldCollectionType extends AbstractType
         $i = 0;
         if($options['node'] instanceof Node)
         {
-            $node        = $options['node'];
-            $contentType = $node->getContentType();
-            $contents    = $node->getContents();
+            $node          = $options['node'];
+            $contentType   = $node->getContentType();
+            $contents      = $node->getContents();
+            $fieldContents = array();
+
+            /** @var NodeContent $content */
+            foreach($contents as $content)
+            {
+                $fieldContents[$content->getFieldType()->getName()] = $content;
+            }
 
             foreach($contentType->getTypeFields() as $typeField)
             {
@@ -48,16 +55,16 @@ class FieldCollectionType extends AbstractType
                     $formClass = $field->getForm();
                     $dataClass = $field->getEntityClass();
 
-                    $node->getContents();
                     /** @var NodeContent $entity */
-                    if($contents[$i])
+                    if(array_key_exists($typeField->getName(), $fieldContents))
                     {
-                        $entity = $contents[$i];
+                        $entity = $fieldContents[$typeField->getName()];
                     }
                     else
                     {
                         $entity = new $dataClass();
                         $entity->setField($fieldEntity);
+                        $entity->setFieldType($typeField);
                     }
 
                     $builder->add($i, new $formClass($fieldEntity), array(

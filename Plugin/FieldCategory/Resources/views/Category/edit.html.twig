@@ -1,0 +1,23 @@
+{% extends '@plugin_field_category/Category/base.html.twig' %}
+{% set page_modules = ['cms/field_category/category/form'] %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugin_field_category_category_edit', {id: category.id}) }}">Edit Category</a></li>
+{% endblock %}
+
+{% block page_icon %}
+    <i class="page-header-icon fa-pencil"></i>
+{% endblock %}
+
+{% block page_title %}
+    Editing {{ category.name }}
+{% endblock %}
+
+{% block page_desc %}
+    Modify category
+{% endblock %}
+
+{% block plugin %}
+    {{ include('@plugin_field_category/Category/form.html.twig') }}
+{% endblock %}

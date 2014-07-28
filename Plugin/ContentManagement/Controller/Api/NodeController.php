@@ -11,6 +11,7 @@ use Nefarian\CmsBundle\Controller\AbstractApiController;
 use Nefarian\CmsBundle\Controller\ApiControllerInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\NodeForm;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,7 +81,7 @@ class NodeController extends AbstractApiController implements ClassResourceInter
                 break;
 
             case self::METHOD_POST:
-                return $this->generateUrl('nefarian_api_content_management_post_type_node');
+                return $this->generateUrl('nefarian_api_content_management_post_node_type');
                 break;
 
             case self::METHOD_PUT:
@@ -136,10 +137,7 @@ class NodeController extends AbstractApiController implements ClassResourceInter
      */
     public function postTypeAction(Request $request, ContentType $contentType)
     {
-        if(!$this->authenticate(self::METHOD_POST))
-        {
-            throw new AccessDeniedException();
-        }
+        $this->authenticate(self::METHOD_POST);
 
         if(!$contentType instanceof ContentType)
         {
@@ -152,7 +150,10 @@ class NodeController extends AbstractApiController implements ClassResourceInter
         $payload = json_decode($request->getContent(), true);
 
         $class     = $this->getEntityClass();
+
+        /** @var Node $newEntity */
         $newEntity = new $class();
+        $newEntity->setContentType($contentType);
         $formType  = new NodeForm($this->get('nefarian_core.content_field_manager'), $contentType);
         $form      = $this->createForm($formType, $newEntity);
         $form->submit($payload[$formType->getName()]);
@@ -165,7 +166,7 @@ class NodeController extends AbstractApiController implements ClassResourceInter
             $em->flush();
 
             $view = View::create($entity, 200, array(
-                //'location' => $this->getUrl(self::METHOD_GET, $entity)
+                'location' => $this->getUrl(self::METHOD_GET, $entity)
             ));
         }
         else

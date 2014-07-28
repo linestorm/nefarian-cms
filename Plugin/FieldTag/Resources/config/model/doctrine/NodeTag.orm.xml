@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="Nefarian\CmsBundle\Plugin\FieldTag\Model\NodeTag" table="node_tag">
+        <field name="name" type="text" length="150" column="name" nullable="false" />
+        <field name="description" type="text" length="255" column="description" nullable="true" />
+    </mapped-superclass>
+
+</doctrine-mapping>

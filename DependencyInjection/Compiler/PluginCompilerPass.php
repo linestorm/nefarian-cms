@@ -128,7 +128,6 @@ class PluginCompilerPass implements CompilerPassInterface
             $menus = $plugin->getConfig($plugin::CONFIG_MENU);
             foreach($menus as $menuName => $menu)
             {
-                $menu['title'];
 
                 $menuManagerDefinition->addMethodCall('addCategory', array(
                     $menuName,
@@ -188,7 +187,7 @@ class PluginCompilerPass implements CompilerPassInterface
             // load in all the content fields
             $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
             $class = 'Nefarian\CmsBundle\Content\Field\Field';
-            foreach($fieldsConfig['fields'] as $fieldName => $fieldConfig)
+            foreach($fieldsConfig as $fieldName => $fieldConfig)
             {
                 $sId = 'nefarian_core.content_field.'.$fieldName;
                 $fieldDefinition = $container->register($sId, $class);

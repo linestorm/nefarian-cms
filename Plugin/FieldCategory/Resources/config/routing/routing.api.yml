@@ -1,0 +1,3 @@
+api_node_category:
+  type:         rest
+  resource:     Nefarian\CmsBundle\Plugin\FieldCategory\Controller\Api\CategoryController

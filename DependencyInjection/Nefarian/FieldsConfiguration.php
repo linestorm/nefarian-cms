@@ -18,15 +18,16 @@ class FieldsConfiguration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('content_fields');
 
         $rootNode
-            ->children()
-                ->arrayNode('fields')
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode('class')->isRequired()->end()
-                             ->scalarNode('form')->isRequired()->end()
-                            ->arrayNode('properties')
-                                ->prototype('scalar')->end()
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+                ->children()
+                    ->scalarNode('class')->isRequired()->end()
+                    ->scalarNode('form')->isRequired()->end()
+                    ->arrayNode('assets')
+                        ->addDefaultsIfNotSet()
                         ->end()
+                    ->arrayNode('properties')
+                        ->prototype('scalar')->end()
                 ->end()
             ->end()
         ;

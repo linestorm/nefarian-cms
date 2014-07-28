@@ -1,0 +1,12 @@
+parameters:
+  nefarian.plugins.field_tag.form.type.tag_collection.class: Nefarian\CmsBundle\Plugin\FieldTag\Form\Type\TagType
+
+services:
+
+  #
+  # Widget Types
+  nefarian.plugins.field_tag.form.type.tag_collection:
+        class: %nefarian.plugins.field_tag.form.type.tag_collection.class%
+        arguments: [@doctrine.orm.default_entity_manager]
+        tags:
+            - { name: form.type, alias: tag }
