@@ -24,12 +24,15 @@ class PluginCompilerPass implements CompilerPassInterface
     {
         $plugins = $container->getParameter('nefarian_core.plugins');
 
-        $pluginRouterDefinition = $container->getDefinition('nefarian_core.routing.plugin_loader');
-        $fieldManagerDefinition = $container->getDefinition('nefarian_core.content_field_manager');
-        $apiRouterDefinition    = $container->getDefinition('nefarian_core.routing.api_loader');
-        $menuManagerDefinition  = $container->getDefinition('nefarian_core.menu_manager');
-        $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
-        $twigLoaderDefinition   = $container->findDefinition('twig.loader.plugin_loader');
+        $pluginRouterDefinition  = $container->getDefinition('nefarian_core.routing.plugin_loader');
+        $fieldManagerDefinition  = $container->getDefinition('nefarian_core.content_field_manager');
+        $apiRouterDefinition     = $container->getDefinition('nefarian_core.routing.api_loader');
+        $menuManagerDefinition   = $container->getDefinition('nefarian_core.menu_manager');
+        $assetManagerDefinition  = $container->getDefinition('assetic.asset_manager');
+        $twigLoaderDefinition    = $container->findDefinition('twig.loader.plugin_loader');
+        $editorManagerDefinition = $container->findDefinition('nefarian_core.editor_manager');
+
+        $assetMap       = array();
 
         foreach($plugins as $pluginClass)
         {
@@ -40,7 +43,7 @@ class PluginCompilerPass implements CompilerPassInterface
             // configure the plugin service
             $pluginDefinitionId = 'nefarian.plugin.' . $plugin->getName();
             $pluginDefinition   = $container->register($pluginDefinitionId, $pluginClass);
-            $pluginReference = new Reference($pluginDefinitionId);
+            $pluginReference    = new Reference($pluginDefinitionId);
 
 
             // register the plugins with the router
@@ -62,24 +65,38 @@ class PluginCompilerPass implements CompilerPassInterface
             // Add the default plugin template path to the twig loader
             $twigLoaderDefinition->addMethodCall('addPlugin', array($pluginReference));
 
+            // build an array of all assets, then inject the maps into the asset controller
+            $assetNamespace = '@plugin_' . $plugin->getName() . '/';
 
             // tell asstic where the plugin assets are
             $folder = $path . '/Resources/assets/js';
             if(is_dir($folder))
             {
-                $dir = new \RecursiveDirectoryIterator($folder);
-                $ite = new \RecursiveIteratorIterator($dir);
+                $jsRoot   = '/js';
+                $dir      = new \RecursiveDirectoryIterator($folder);
+                $ite      = new \RecursiveIteratorIterator($dir);
                 $fileList = new \RegexIterator($ite, '/.+\.js/', \RegexIterator::GET_MATCH);
-                foreach($fileList as $files) {
-                    foreach($files as $file) {
+
+                foreach($fileList as $files)
+                {
+                    foreach($files as $file)
+                    {
                         $destination = str_replace($plugin->getPath() . '/Resources/assets/js/', '', $file);
-                        $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination), array(
-                            $file,
-                            array('?uglifyjs2'),
+                        $assetId     = 'nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination);
+                        $assetPath   = '/cms/' . $plugin->getName() . '/' . $destination;
+
+                        $assetMap[$assetNamespace . $destination] = $assetPath;
+
+                        $assetManagerDefinition->addMethodCall('setFormula', array(
+                            $assetId,
                             array(
-                                'output' => 'js/cms/' . $plugin->getName() . '/' . $destination
-                            ),
-                        )));
+                                $file,
+                                array('?uglifyjs2'),
+                                array(
+                                    'output' => $jsRoot . $assetPath
+                                ),
+                            )
+                        ));
                     }
                 }
             }
@@ -87,7 +104,8 @@ class PluginCompilerPass implements CompilerPassInterface
             $folder = $path . '/Resources/assets/img';
             if(is_dir($folder))
             {
-                $maps = array(
+                $imgRoot = '/img';
+                $maps    = array(
                     '.jpg'  => 'jpegoptim',
                     '.jpeg' => 'jpegoptim',
                     '.png'  => 'optipng',
@@ -104,25 +122,33 @@ class PluginCompilerPass implements CompilerPassInterface
                         $app = array();
                     }
 
-                    $dir = new \RecursiveDirectoryIterator($folder);
-                    $ite = new \RecursiveIteratorIterator($dir);
-                    $fileList = new \RegexIterator($ite, '/.+\.'.$ext.'/', \RegexIterator::GET_MATCH);
-                    foreach($fileList as $files) {
-                        foreach($files as $file) {
+                    $dir      = new \RecursiveDirectoryIterator($folder);
+                    $ite      = new \RecursiveIteratorIterator($dir);
+                    $fileList = new \RegexIterator($ite, '/.+\.' . $ext . '/', \RegexIterator::GET_MATCH);
+
+                    foreach($fileList as $files)
+                    {
+                        foreach($files as $file)
+                        {
                             $destination = str_replace($path . '/Resources/assets/img/', '', $file);
-                            $assetManagerDefinition->addMethodCall('setFormula', array('nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', $ext), array('_', ''), $destination), array(
-                                $file,
-                                $app,
+                            $assetPath   = '/theme/' . $plugin->getName() . '/' . $destination;
+
+                            $assetMap[$assetNamespace . $destination] = $assetPath;
+
+                            $assetManagerDefinition->addMethodCall('setFormula', array(
+                                'nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', $ext), array('_', ''), $destination),
                                 array(
-                                    'output' => 'img/theme/' . $plugin->getName() . '/' . $destination
-                                ),
-                            )));
+                                    $file,
+                                    $app,
+                                    array(
+                                        'output' => $imgRoot . $assetPath
+                                    ),
+                                )
+                            ));
                         }
                     }
                 }
             }
-
-
 
             // TODO: Finish loading module menu
             $menus = $plugin->getConfig($plugin::CONFIG_MENU);
@@ -138,7 +164,6 @@ class PluginCompilerPass implements CompilerPassInterface
                     $menu['items'],
                 ));
             }
-
 
             // load all the entity mappings, if they exist
             if(is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine'))
@@ -184,12 +209,16 @@ class PluginCompilerPass implements CompilerPassInterface
                 }
             }
 
+            // add the assetmap to the asset manager
+            $nefarianAssetManagerDefinition = $container->getDefinition('nefarian_core.asset_manager');
+            $nefarianAssetManagerDefinition->addMethodCall('setAssets', array($assetMap));
+
             // load in all the content fields
             $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
-            $class = 'Nefarian\CmsBundle\Content\Field\Field';
+            $class        = 'Nefarian\CmsBundle\Content\Field\Field';
             foreach($fieldsConfig as $fieldName => $fieldConfig)
             {
-                $sId = 'nefarian_core.content_field.'.$fieldName;
+                $sId             = 'nefarian_core.content_field.' . $fieldName;
                 $fieldDefinition = $container->register($sId, $class);
                 $fieldDefinition->setArguments(array($fieldName, $fieldConfig));
                 $fieldManagerDefinition->addMethodCall('addField', array(new Reference($sId)));

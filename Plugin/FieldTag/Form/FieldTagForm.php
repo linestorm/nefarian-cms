@@ -36,15 +36,22 @@ class FieldTagForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add('tags', 'tag', array(
+            ->add('tags', 'tag', array(
                 'tag_class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
                 'name'      => 'name',
-            ))*/
-            ->add('tags', 'entity', array(
+                'attr'     => array(
+                    'class' => 'form-control content-tags'
+                ),
+            ))
+            /*->add('tags', 'entity', array(
                 'multiple' => true,
                 'class'    => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
                 'property' => 'name',
-            ));
+                'attr'     => array(
+                    'class' => 'form-control content-tags'
+                ),
+            ))*/
+        ;
     }
 
     /**

@@ -3,7 +3,11 @@ parameters:
   nefarian_core.menu_manager.class:          Nefarian\CmsBundle\Menu\MenuManager
   nefarian_core.content_manager.class:       Nefarian\CmsBundle\Content\ContentManager
   nefarian_core.content_field_manager.class: Nefarian\CmsBundle\Content\Field\FieldManager
-  nefarian_core.user_manager:                Nefarian\CmsBundle\User\UserManager
+  nefarian_core.user_manager.class:          Nefarian\CmsBundle\User\UserManager
+  nefarian_core.asset_manager.class:         Nefarian\CmsBundle\Assetic\NefarianAssetManager
+  nefarian_core.editor_manager.class:        Nefarian\CmsBundle\Editor\EditorManager
+
+  nefarian_core.twig.assets_extension:       Nefarian\CmsBundle\Twig\PluginExtension
 
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
@@ -42,7 +46,13 @@ services:
     class: %nefarian_core.content_field_manager.class%
 
   nefarian_core.user_manager:
-    class: %nefarian_core.user_manager%
+    class: %nefarian_core.user_manager.class%
+
+  nefarian_core.asset_manager:
+    class: %nefarian_core.asset_manager.class%
+
+  nefarian_core.editor_manager:
+    class: %nefarian_core.editor_manager.class%
 
   #
   # Plugin - Routing
@@ -54,6 +64,16 @@ services:
     class: %nefarian_core.routing.api_loader.class%
     tags:
       - { name: routing.loader }
+
+  #
+  # Twig Functions for plugins
+  nefarian_core.twig.assets_extension:
+    class: %nefarian_core.twig.assets_extension%
+    arguments:
+      - @nefarian_core.asset_manager
+    tags:
+      - { name: twig.extension }
+
 
   #
   # Plugin - Twig Loader

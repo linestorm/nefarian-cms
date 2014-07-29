@@ -13,7 +13,7 @@
         require([
             {% if requirejs_module is defined -%}
                 {%- for m in requirejs_module -%}
-                    '{{ m }}'{% if not loop.last %},{% endif %}
+                    '{{ require_asset(m) }}'{% if not loop.last %},{% endif %}
                 {%- endfor -%}
             {% else %}
             'app/main'

@@ -25,7 +25,7 @@ class ThemeExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('nefarian_theme_admin', array($this, 'getAdminTheme'))
+            new \Twig_SimpleFunction('nefarian_theme_admin', array($this, 'getAdminTheme')),
         );
     }
 

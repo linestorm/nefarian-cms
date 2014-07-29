@@ -73,6 +73,7 @@ class NodeController extends Controller
         ));
 
         return $this->render('@plugin_content_management/Node/new.html.twig', array(
+            'editor' => $this->get('nefarian.editor.ckeditor'), // @TODO: make this dynamic
             'fields'      => $fieldManager->getFields(),
             'contentType' => $contentType,
             'form'        => $form->createView(),
@@ -94,6 +95,7 @@ class NodeController extends Controller
         ));
 
         return $this->render('@plugin_content_management/Node/edit.html.twig', array(
+            'editor' => $this->get('nefarian.editor.ckeditor'), // @TODO: make this dynamic
             'fields' => $fieldManager->getFields(),
             'node'   => $node,
             'form'   => $form->createView(),

@@ -78,11 +78,15 @@
                                     <span>{{ app.user.username }}</span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="label label-warning pull-right">New</span>Profile</a>
+                                    <li><a href="{{ url('fos_user_profile_show') }}">Profile</a>
                                     </li>
-                                    <li><a href="#"><span class="badge badge-primary pull-right">New</span>Account</a>
+                                    <li><a href="{{ url('fos_user_profile_edit') }}">Account</a>
                                     </li>
-                                    <li><a href="#"><i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings</a></li>
+                                    <li>
+                                        <a href="{{ url('fos_user_profile_edit') }}">
+                                            <i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings
+                                        </a>
+                                    </li>
                                     <li class="divider"></li>
                                     <li><a href="{{ url('fos_user_security_logout') }}"><i
                                                     class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;Log Out</a>

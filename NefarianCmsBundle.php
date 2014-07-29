@@ -2,11 +2,8 @@
 
 namespace Nefarian\CmsBundle;
 
-use Nefarian\CmsBundle\DependencyInjection\Compiler\CoreCompilerPass;
+use Nefarian\CmsBundle\DependencyInjection\Compiler as Compilers;
 use Nefarian\CmsBundle\DependencyInjection\Compiler\DoctrineOrmEntityPass;
-use Nefarian\CmsBundle\DependencyInjection\Compiler\PluginCompilerPass;
-use Nefarian\CmsBundle\DependencyInjection\Compiler\ThemeCompilerPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -22,8 +19,9 @@ class NefarianCmsBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new CoreCompilerPass($this));
-        $container->addCompilerPass(new ThemeCompilerPass());
-        $container->addCompilerPass(new PluginCompilerPass());
+        $container->addCompilerPass(new Compilers\CoreCompilerPass($this));
+        $container->addCompilerPass(new Compilers\ThemeCompilerPass());
+        $container->addCompilerPass(new Compilers\PluginCompilerPass());
+        $container->addCompilerPass(new Compilers\EditorCompilerPass());
     }
 }

@@ -5,6 +5,12 @@ namespace Nefarian\CmsBundle\DependencyInjection\Nefarian;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+/**
+ * Class MenuConfiguration
+ *
+ * @package Nefarian\CmsBundle\DependencyInjection\Nefarian
+ * @author  Andy Thorne <contrabandvr@gmail.com>
+ */
 class MenuConfiguration implements ConfigurationInterface
 {
     /**
