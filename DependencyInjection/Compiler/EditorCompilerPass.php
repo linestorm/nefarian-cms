@@ -25,10 +25,17 @@ class EditorCompilerPass implements CompilerPassInterface
         $editorManagerDefinition = $container->findDefinition('nefarian_core.editor_manager');
         $editorServices = $container->findTaggedServiceIds('nefarian.editor');
 
+        $defaultEditor = 'nefarian.editor.' . $container->getParameter('nefarian_core.default_editor');
+
         foreach($editorServices as $editorServiceId=>$props)
         {
             $editorDefinition = $container->getDefinition($editorServiceId);
             $editorManagerDefinition->addMethodCall('addEditor', array($editorDefinition));
+
+            if($editorServiceId == $defaultEditor)
+            {
+                $container->setAlias('nefarian.editor', $editorServiceId);
+            }
         }
 
     }

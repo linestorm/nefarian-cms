@@ -1,0 +1,8 @@
+parameters:
+  nefarian.editor.summernote.class: Nefarian\CmsBundle\Plugin\EditorSummerNote\Editor\SummerNoteEditor
+
+services:
+  nefarian.editor.summernote:
+    class: %nefarian.editor.summernote.class%
+    tags:
+      - { name: nefarian.editor, editor: summernote }

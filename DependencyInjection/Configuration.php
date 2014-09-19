@@ -25,6 +25,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('entity_manager')->isRequired()->end()
                 ->scalarNode('backend_type')->isRequired()->end()
+                ->scalarNode('default_editor')->isRequired()->end()
             ->end();
 
         $this->addPluginSection($rootNode);

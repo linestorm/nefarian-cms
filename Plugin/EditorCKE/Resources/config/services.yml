@@ -5,4 +5,4 @@ services:
   nefarian.editor.ckeditor:
     class: %nefarian.editor.ckeditor.class%
     tags:
-      - { name: nefarian.editor }
+      - { name: nefarian.editor, editor: ckeditor }
