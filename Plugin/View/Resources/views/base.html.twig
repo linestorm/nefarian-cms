@@ -1,0 +1,11 @@
+{% extends '@theme/layout.html.twig' %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugin_view_index') }}">Views</a></li>
+{% endblock %}
+
+
+{% block page_icon %}
+    <i class="page-header-icon fa-align-left"></i>
+{% endblock %}

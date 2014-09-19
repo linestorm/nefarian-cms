@@ -1,0 +1,9 @@
+views:
+  title: Views
+  icon: files-o
+
+  items:
+    views_create:
+      route: index
+      title: All Views
+      description: Add, Edit and Delete Views

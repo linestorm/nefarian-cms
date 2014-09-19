@@ -1,0 +1,12 @@
+{% extends '@plugin_content_management/base.html.twig' %}
+
+{% set page_modules = ['cms/content_management/type/form'] %}
+{% block plugin %}
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        <button type="submit" class="btn btn-default">
+            <i class="fa-save"></i> Create and edit fields
+        </button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,10 @@
+media:
+  title: Media
+  icon: files-o
+
+  items:
+    all_media:
+      route: index
+      title: All Media
+      description: Add, Edit and Delete Media
+

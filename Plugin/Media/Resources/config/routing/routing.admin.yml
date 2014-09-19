@@ -1,0 +1,41 @@
+index:
+    pattern:  /
+    defaults: { _controller: Media:list }
+
+media_new:
+    pattern:  /new
+    defaults: { _controller: Media:new }
+
+media_view:
+    pattern:  /{id}
+    defaults: { _controller: Media:view }
+    requirements:
+       id: \d+
+
+media_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: Media:edit }
+    requirements:
+       id: \d+
+
+media_upload_edit:
+    path: /{id}/upload
+    defaults: { _controller: "Media:uploadEdit" }
+    requirements:
+       id: \d+
+
+media_upload:
+    path: /upload
+    defaults: { _controller: "Media:upload" }
+
+
+media_category_edit:
+    pattern:  /category/{id}/edit
+    defaults: { _controller: Category:edit }
+    requirements:
+       id: \d+
+
+
+media_category_create:
+    pattern:  /category/new
+    defaults: { _controller: Category:new }

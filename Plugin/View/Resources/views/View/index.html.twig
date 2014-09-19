@@ -1,0 +1,48 @@
+{% extends '@plugin_view/base.html.twig' %}
+
+{% block page_title %}
+    Views
+{% endblock %}
+
+{% block page_desc %}
+    Create and Manage Views
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="#"><i class="fa-th"></i> All Views</a></li>
+{% endblock %}
+
+{% block plugin %}
+    <div class="row">
+        <div class="col-sm-4">
+            <fieldset>
+                <legend>Settings</legend>
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.base_entity) }}
+            </fieldset>
+
+            <fieldset>
+                <legend>Fields</legend>
+                <a href="#" data-prototype="{{ form_row(form.fields.vars.prototype)|e('html_attr') }}">Add</a>
+                {{ form_row(form.fields) }}
+            </fieldset>
+        </div>
+
+        <div class="col-sm-4">
+            <fieldset>
+                <legend>Associations</legend>
+                @TODO: Association mapping
+            </fieldset>
+        </div>
+
+        <div class="col-sm-4">
+            <fieldset>
+                <legend>Display</legend>
+                @TODO: Display providers
+            </fieldset>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% import 'LineStormMediaBundle:Form:tile.html.twig' as fn %}
+
+{% set flat= flat|default(false) %}
+
+{% if not flat %}<div class="media-browser-window">{% endif %}
+    {% if init_node is not defined %}
+        {% set init_node = null %}
+    {% endif %}
+    {% if exclude_nodes is not defined %}
+        {% set exclude_nodes = null %}
+    {% endif %}
+    {% if input is not defined %}
+        {% set input = '.media-form-category' %}
+    {% endif %}
+    {{ include('LineStormMediaBundle:Form:mediatreebrowser.html.twig', {
+        url: url('linestorm_cms_module_media_api_get_category_tree'),
+        init_node: init_node,
+        exclude_nodes: exclude_nodes,
+        input: input
+    }) }}
+    <div class="dropzone"
+         data-url="{{ path('linestorm_cms_admin_module_media_upload') }}"
+         data-prototype="{{ fn.dzPreview(form.media.vars.prototype)|e('html_attr') }}"
+         data-count="{{ form.media.children|length }}">
+        <!-- dropzone -->
+        {% for child in form.media.children %}
+            {{ fn.dzPreview(child) }}
+        {% endfor %}
+    </div>
+{% if not flat %}</div>{% endif %}
