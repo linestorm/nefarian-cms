@@ -1,4 +1,5 @@
 {% extends '@plugin_view/base.html.twig' %}
+{% set page_modules = ['cms/view/view/form'] %}
 
 {% block page_title %}
     Views
@@ -14,35 +15,133 @@
 {% endblock %}
 
 {% block plugin %}
-    <div class="row">
+    <div class="row" ng-controller="ViewsCtrl">
         <div class="col-sm-4">
             <fieldset>
                 <legend>Settings</legend>
-                {{ form_row(form.name) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.base_entity) }}
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="form-name">Name</label>
+
+                    <div class="col-md-9">
+                        <input id="form-name" type="text" class="form-control" ng-model="settings.name"
+                               placeholder="View Name"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="form-description">Description</label>
+
+                    <div class="col-md-9">
+                        <textarea id="form-description" class="form-control" ng-model="settings.textarea"
+                                  placeholder="(optional)"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="form-entity">Entity</label>
+
+                    <div class="col-md-9">
+                        <select id="form-entity" class="form-control" ng-model="settings.entity"
+                                ng-options="obj.value as obj.name for obj in entities | orderBy:name"
+                                ng-change="onEntitySelect()">
+                        </select>
+                    </div>
+                </div>
             </fieldset>
 
             <fieldset>
-                <legend>Fields</legend>
-                <a href="#" data-prototype="{{ form_row(form.fields.vars.prototype)|e('html_attr') }}">Add</a>
-                {{ form_row(form.fields) }}
+                <legend>
+                    Fields
+                    <div class="panel-heading-controls">
+                        <button type="button" class="btn btn-xs btn-primary btn-outline field-add"
+                                data-prototype="{{ form_widget(form.fields.vars.prototype)|e('html_attr') }}">
+                            <span class="fa fa-cog"></span> Configure
+                        </button>
+                    </div>
+                </legend>
+                <div class="list-group">
+                    <label class="list-group-item" ng-repeat="obj in fields">
+                        <span class="fa" ng-class="{ 'fa-check': obj.selected }"></span>
+                        <input
+                            class="hidden"
+                            type="checkbox"
+                            name="selectedFields[]"
+                            value="{{ '{{ obj.field }}' }}"
+                            ng-model="obj.selected"
+                                >
+                        {{ '{{ obj.field }}' }}
+                    </label>
+                </div>
+
             </fieldset>
         </div>
-
         <div class="col-sm-4">
-            <fieldset>
-                <legend>Associations</legend>
-                @TODO: Association mapping
-            </fieldset>
+            <pre>{{ '{{ settings|json }}' }}</pre>
+            <pre>{{ '{{ fields|json }}' }}</pre>
         </div>
-
         <div class="col-sm-4">
-            <fieldset>
-                <legend>Display</legend>
-                @TODO: Display providers
-            </fieldset>
         </div>
     </div>
+    {#
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Associations</legend>
+                    @TODO: Association mapping
+                </fieldset>
+            </div>
+
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Display</legend>
+                    @TODO: Display providers
+                </fieldset>
+            </div>
+        </div>
+
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Settings</legend>
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.base_entity) }}
+                </fieldset>
+
+                <fieldset>
+                    <legend>
+                        Fields
+                        <div class="panel-heading-controls">
+                            <button type="button" class="btn btn-xs btn-primary btn-outline field-add"
+                                    data-url="{{ url('nefarian_api_view_get') }}"
+                                    data-prototype="{{ form_widget(form.fields.vars.prototype)|e('html_attr') }}">
+                                <span class="fa fa-cog"></span> Configure
+                            </button>
+                        </div>
+                    </legend>
+                    <ul class="field-selection list-group">
+                        {{ form_widget(form.fields) }}
+                    </ul>
+
+                </fieldset>
+            </div>
+
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Associations</legend>
+                    @TODO: Association mapping
+                </fieldset>
+            </div>
+
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Display</legend>
+                    @TODO: Display providers
+                </fieldset>
+            </div>
+        </div>
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+        #}
 
 {% endblock %}

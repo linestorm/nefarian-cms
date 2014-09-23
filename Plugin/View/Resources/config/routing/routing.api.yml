@@ -1,3 +1,4 @@
-api_:
+api_field:
   type:         rest
-  resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\ContentTypeController
+  resource:     Nefarian\CmsBundle\Plugin\View\Controller\Api\EntityController
+

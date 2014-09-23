@@ -32,7 +32,7 @@ class ViewNewForm extends AbstractType
         {
             if(!$metaData->isMappedSuperclass)
             {
-                $entities[] = $metaData->getName();
+                $entities[sha1($metaData->getName())] = $metaData->getTableName();
             }
         }
 

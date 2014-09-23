@@ -18,7 +18,11 @@ class ViewController extends Controller
         /** @var \Doctrine\ORM\Mapping\ClassMetadata[] $metaDatas */
         $metaDatas = $metaFactory->getAllMetadata();
 
-        $form = $this->createForm(new ViewNewForm($metaDatas));
+        $form = $this->createForm(new ViewNewForm($metaDatas), null, array(
+            'attr'   => array(
+                'class' => 'api-save'
+            ),
+        ));
 
         return $this->render('@plugin_view/View/index.html.twig', array(
             'form' => $form->createView(),
