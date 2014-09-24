@@ -43,7 +43,7 @@
                     <div class="col-md-9">
                         <select id="form-entity" class="form-control" ng-model="settings.entity"
                                 ng-options="obj.value as obj.name for obj in entities | orderBy:name"
-                                ng-change="onEntitySelect()">
+                                ng-change="onEntitySelect(settings.entity)">
                         </select>
                     </div>
                 </div>
@@ -59,27 +59,65 @@
                         </button>
                     </div>
                 </legend>
-                <div class="list-group">
+                <div class="list-group toggle-list">
                     <label class="list-group-item" ng-repeat="obj in fields">
-                        <span class="fa" ng-class="{ 'fa-check': obj.selected }"></span>
-                        <input
-                            class="hidden"
-                            type="checkbox"
-                            name="selectedFields[]"
-                            value="{{ '{{ obj.field }}' }}"
-                            ng-model="obj.selected"
-                                >
-                        {{ '{{ obj.field }}' }}
+                        {% spaceless %}
+                            <div class="switcher switcher-theme-square switcher-sm"
+                                 ng-class="{checked: obj.selected}">
+                                <input data-class="switcher-sm"
+                                       class="switcher-example-square"
+                                       type="checkbox"
+                                       name="selectedFields[]"
+                                       value="{{ '{{ obj.name }}' }}"
+                                       ng-model="obj.selected"
+                                       ng-change="toggleField(obj)"
+                                        >
+
+                                <div class="switcher-toggler"></div>
+                                <div class="switcher-inner">
+                                    <div class="switcher-state-on">ON</div>
+                                    <div class="switcher-state-off">OFF</div>
+                                </div>
+                            </div>
+                            <span class="padded-label">{{ '{{ obj.name }}' }}</span>
+                        {% endspaceless %}
                     </label>
                 </div>
 
             </fieldset>
         </div>
         <div class="col-sm-4">
-            <pre>{{ '{{ settings|json }}' }}</pre>
-            <pre>{{ '{{ fields|json }}' }}</pre>
+            <fieldset>
+                <legend>Associations</legend>
+                <div class="list-group toggle-list">
+                    <label class="list-group-item" ng-repeat="obj in associations">
+                        {% spaceless %}
+                            <div class="switcher switcher-theme-square switcher-sm"
+                                 ng-class="{checked: obj.selected}">
+                                <input data-class="switcher-sm"
+                                       class="switcher-example-square"
+                                       type="checkbox"
+                                       name="selectedFields[]"
+                                       value="{{ '{{ obj.hash }}' }}"
+                                       ng-model="obj.selected"
+                                       ng-change="toggleAssociation(obj)"
+                                        >
+
+                                <div class="switcher-toggler"></div>
+                                <div class="switcher-inner">
+                                    <div class="switcher-state-on">ON</div>
+                                    <div class="switcher-state-off">OFF</div>
+                                </div>
+                            </div>
+                            <span class="padded-label">{{ '{{ obj.name }}' }}</span>
+                        {% endspaceless %}
+                    </label>
+                </div>
+            </fieldset>
         </div>
         <div class="col-sm-4">
+            <pre>{{ '{{ settings|json }}' }}</pre>
+            <pre>{{ '{{ fields|json }}' }}</pre>
         </div>
     </div>
     {#

@@ -5,120 +5,138 @@ define(['jquery', 'jqueryui', 'angular', 'bootstrap', 'cms/core/api'], function 
 
     var viewsApp = angular.module('viewsApp', []);
 
+    var storage = (function () {
+        var prefix = 'nefarian.views.';
+        return {
+            'set': function (key, data) {
+                window.localStorage.setItem(prefix + key, JSON.stringify(data));
+            },
+            'get': function (key) {
+                var obj = window.localStorage.getItem(prefix + key);
+                if (obj) {
+                    try {
+                        return JSON.parse(obj);
+                    }
+                    catch (e) {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+        }
+    })();
+
     viewsApp.controller('ViewsCtrl', ['$scope', '$http', function ($scope, $http) {
 
         $scope.entities = {};
         $scope.fields = [];
+        $scope.associations = [];
         $scope.settings = {
             name: '',
             description: '',
             entity: null,
-            fields: []
+            fields: [],
+            associations: []
         };
 
-        $scope.onEntitySelect = function () {
+        $scope.onEntitySelect = function (hash) {
             $http.get(ctrlr + '/api/view/entity/fields.json', {
                 params: {
-                    entity: $scope.settings.entity
-                }
+                    entity: hash
+                },
+                cache: true
             }).success(function (data) {
                 $scope.fields = [];
-                for(var i=0 ; i<data.length ; ++i){
+                for (var i = 0; i < data.fields.length; ++i) {
                     $scope.fields.push({
-                        field: data[i],
+                        name: data.fields[i],
+                        class: hash,
+                        selected: true
+                    });
+                    storage.set('fields', $scope.fields);
+                }
+                $scope.associations = [];
+                for (var i = 0; i < data.associations.length; ++i) {
+                    $scope.associations.push({
+                        name: data.associations[i].name,
+                        hash: data.associations[i].hash,
                         selected: false
                     });
+                    storage.set('associations', $scope.associations);
                 }
             });
+            storage.set('settings', $scope.settings);
+        };
+
+        $scope.toggleAssociation = function (association) {
+            if (association.selected) {
+                $http.get(ctrlr + '/api/view/entity/fields.json', {
+                    params: {
+                        entity: association.hash
+                    },
+                    cache: true
+                }).success(function (data) {
+                    for (var i = 0; i < data.fields.length; ++i) {
+                        $scope.fields.push({
+                            name: data.fields[i],
+                            class: association.hash,
+                            selected: false
+                        });
+                        storage.set('fields', $scope.fields);
+                    }
+                });
+            } else {
+                for (var i = 0; i < $scope.fields.length; ++i) {
+                    if ($scope.fields[i].class == association.hash) {
+                        $scope.fields.splice(i, 1);
+                    }
+                }
+            }
+            storage.set('settings', $scope.settings);
         };
 
         $scope.toggleField = function (field) {
-            var idx = $scope.settings.fields.indexOf(field);
-            if (idx > -1) {
-                $scope.settings.fields.splice(idx, 1);
-            } else {
-                $scope.settings.fields.push(field);
+            $scope.settings.fields = [];
+            var new_val = $scope.fields;
+            for (var i = 0; i < new_val.length; ++i) {
+                if (new_val[i].selected) {
+                    $scope.settings.fields.push(new_val[i].name);
+                }
             }
+            storage.set('settings', $scope.settings);
         };
 
-        $scope.$watch($scope.fields, function(old_val, new_val){
-            if(new_val === old_val){
-                return;
-            }
-            console.log(new_val);
-        });
+        // check local storage
+        var stored = {
+            settings: storage.get('settings'),
+            entities: storage.get('entities'),
+            fields: storage.get('fields'),
+            associations: storage.get('associations')
+        }
 
-        $http.get(ctrlr + '/api/view/entities.json').success(function (data) {
-            $scope.entities = data;
-        });
-
+        if (stored.settings) {
+            $scope.settings = stored.settings;
+        }
+        if (stored.entities) {
+            $scope.entities = stored.entities;
+        } else {
+            $http.get(ctrlr + '/api/view/entities.json').success(function (data) {
+                $scope.entities = data;
+                storage.set('entities', data);
+            });
+        }
+        if(stored.fields){
+            $scope.fields = stored.fields;
+        } else if($scope.settings.entity){
+            $scope.onEntitySelect($scope.settings.entity);
+        }
+        if(stored.associations){
+            $scope.associations = stored.associations;
+        } else if($scope.settings.entity){
+            $scope.onEntitySelect($scope.settings.entity);
+        }
     }]);
 
     angular.bootstrap(document, ['viewsApp']);
-    /*
-     $(document).ready(function () {
-
-     var $form = $('form.api-save');
-
-     $form.on('submit', function (e) {
-     e.stopPropagation();
-     e.preventDefault();
-
-     api.saveForm($(this), function (ob, status, xhr) {
-     var location = xhr.getResponseHeader('location');
-     if (location && location.length) {
-     window.location = location;
-     }
-     });
-     return false;
-     });
-
-     var $fieldContainer = $('ul.field-selection');
-     var fieldCount = $fieldContainer.children().length;
-     $form.on('click', '.field-add', function(){
-     $.ajax({
-     url: $(this).data('url'),
-     dataType: 'json',
-     data: {
-     entity: $('#nefarian_plugin_view_new_base_entity').val()
-     },
-     success: function(ob){
-     console.log(ob);
-     }
-     });
-     });
-     $fieldContainer.on('click', '.field-remove', function(){
-     $(this).closest('li').remove();
-     fieldCount--;
-     });
-
-     $form.on('click', '.api-delete', function(){
-     var a = this;
-     bootbox.dialog({
-     title: 'Delete node',
-     message: 'Are you sure you want to remove this node?',
-     buttons: {
-     cancel: {
-     label: 'Cancel'
-     },
-     delete: {
-     label: "Delete Node",
-     className: "btn-danger",
-     callback: function() {
-     api.call(a.href, {
-     method: 'DELETE',
-     success:function(o){
-     bootbox.alert('The node has been removed.', function(){
-
-     });
-     }
-     });
-     }
-     }
-     }
-     });
-
-     return false;
-     });
-     });*/
 });

@@ -57,20 +57,36 @@ class EntityController extends Controller
         /** @var \Doctrine\ORM\Mapping\ClassMetadata[] $metaSchemas */
         $metaSchemas = $metaFactory->getAllMetadata();
 
-        $fields = array();
+        $associations = array();
+        $fields       = array();
         foreach($metaSchemas as $metaSchema)
         {
             $hash = sha1($metaSchema->getName());
             if($hash == $entityHash)
             {
+                $table = $metaSchema->getTableName();
                 foreach($metaSchema->getFieldNames() as $fieldName)
                 {
-                    $fields[] = $metaSchema->getTableName() . '.' . $fieldName;
+                    $fields[] = $table . '.' . $fieldName;
                 }
+
+                foreach($metaSchema->associationMappings as $associationSchema)
+                {
+                    $associations[] = array(
+                        'name' => $table . '.' . $associationSchema['fieldName'],
+                        'hash' => sha1($associationSchema['targetEntity']),
+                    );
+                }
+
+                // no point in continuing
+                break;
             }
         }
 
-        $view = new View($fields);
+        $view = new View(array(
+            'fields'       => $fields,
+            'associations' => $associations,
+        ));
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }

@@ -102,3 +102,23 @@ html body.page-signin {
         }
     }
 }
+
+.toggle-list {
+    .list-group-item {
+        height: 42px;
+        cursor: pointer;
+
+        .switcher {
+            float: left;
+        }
+
+        > .padded-label {
+            height: 42px;
+            line-height: 22px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    }
+}
+
+
