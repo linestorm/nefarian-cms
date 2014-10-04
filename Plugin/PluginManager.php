@@ -37,7 +37,7 @@ class PluginManager
     {
         $cachedMeta = $this->pluginCache->fetch($plugin->getName());
         if (!$cachedMeta instanceof PluginMetaCache) {
-            $cachedMeta = new PluginMetaCache($plugin->getName());
+            $cachedMeta = new PluginMetaCache($plugin);
             $this->pluginCache->save($plugin->getName(), $cachedMeta);
         }
         $this->plugins[$plugin->getName()] = $plugin;

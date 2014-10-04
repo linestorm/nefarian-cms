@@ -2,10 +2,10 @@
 
 namespace Nefarian\CmsBundle\Cache\Provider;
 
-use Doctrine\Common\Cache\PhpFileCache;
+use Nefarian\CmsBundle\Cache\Cache\SerializedPhpFileCache;
 use Nefarian\CmsBundle\Cache\CacheProviderInterface;
 
-class PhpFileCacheProvider implements CacheProviderInterface
+class SerializedPhpFileCacheProvider implements CacheProviderInterface
 {
     /**
      * @var string
@@ -19,6 +19,6 @@ class PhpFileCacheProvider implements CacheProviderInterface
 
     public function create($name)
     {
-        return new PhpFileCache($this->cacheDir . '/' . $name);
+        return new SerializedPhpFileCache($this->cacheDir . '/' . $name);
     }
 } 

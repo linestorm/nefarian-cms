@@ -26,12 +26,17 @@ class PluginMetaCache
 
     function __construct($pluginClass)
     {
+        $this->pluginClass = $pluginClass;
         $this->pluginReflection = new \ReflectionClass($pluginClass);
     }
 
     function __sleep()
     {
-        $this->pluginReflection = null;
+        return array(
+            'installed',
+            'enabled',
+            'pluginClass',
+        );
     }
 
     function __wakeup()

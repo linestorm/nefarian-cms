@@ -35,7 +35,7 @@ services:
       - @nefarian_core.cache.phpfile
 
   nefarian_core.cache.phpfile:
-    class: Nefarian\CmsBundle\Cache\Provider\PhpFileCacheProvider
+    class: Nefarian\CmsBundle\Cache\Provider\SerializedPhpFileCacheProvider
     arguments:
       - %kernel.cache_dir%/nefarian
 
@@ -72,6 +72,8 @@ services:
 
   nefarian_core.plugin_manager:
     class: %nefarian_core.plugin_manager.class%
+    arguments:
+      - @nefarian_core.cache
 
   #
   # Plugin - Routing
