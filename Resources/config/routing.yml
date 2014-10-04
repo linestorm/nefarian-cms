@@ -1,13 +1,9 @@
-nefarian_plugins:
-  resource:   .
-  type:       nefarian_plugins
+nefarian_plugins_routing:
+  resource: routing/plugins.yml
+  prefix: /_cms/admin/plugins/
 
 nefarian_api:
   resource:   .
   type:       nefarian_api
-
-#nefarian_cms_homepage:
-#    path:     /hello/{name}
-#    defaults: { _controller: NefarianCmsBundle:Default:index }
 
 

@@ -15,6 +15,10 @@ services:
 #    tags:
 #      - { name: doctrine.event_subscriber }
 
+  nefarian.plugin.content_management:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\ContentManagementPlugin
+    tags:
+      - { name: nefarian.plugin }
 
   #
   # Forms - field collection

@@ -22,42 +22,38 @@ class PluginCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $plugins = $container->getParameter('nefarian_core.plugins');
+        $plugins = $container->findTaggedServiceIds('nefarian.plugin');
 
+        $pluginManagerDefinition = $container->getDefinition('nefarian_core.plugin_manager');
         $pluginRouterDefinition  = $container->getDefinition('nefarian_core.routing.plugin_loader');
         $fieldManagerDefinition  = $container->getDefinition('nefarian_core.content_field_manager');
         $apiRouterDefinition     = $container->getDefinition('nefarian_core.routing.api_loader');
         $menuManagerDefinition   = $container->getDefinition('nefarian_core.menu_manager');
         $assetManagerDefinition  = $container->getDefinition('assetic.asset_manager');
         $twigLoaderDefinition    = $container->findDefinition('twig.loader.plugin_loader');
-        $editorManagerDefinition = $container->findDefinition('nefarian_core.editor_manager');
 
-        $assetMap       = array();
+        $assetMap = array();
 
-        foreach($plugins as $pluginClass)
-        {
-            $plugin = new PluginCompiler($pluginClass);
+        foreach ($plugins as $sid => $attrs) {
+            $pluginDefinition = $container->findDefinition($sid);
+            $pluginReference  = new Reference($sid);
+            $pluginManagerDefinition->addMethodCall('registerPlugin', array($pluginReference));
+
+            $pluginClass = $pluginDefinition->getClass();
+            $plugin      = new PluginCompiler($pluginClass);
             $plugin->compile();
             $path = $plugin->getPath();
 
-            // configure the plugin service
-            $pluginDefinitionId = 'nefarian.plugin.' . $plugin->getName();
-            $pluginDefinition   = $container->register($pluginDefinitionId, $pluginClass);
-            $pluginReference    = new Reference($pluginDefinitionId);
-
-
             // register the plugins with the router
             $routingResource = $path . DIRECTORY_SEPARATOR . 'Resources/config/routing/routing.admin.yml';
-            if(file_exists($routingResource))
-            {
+            if (file_exists($routingResource)) {
                 $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
             }
 
 
             // register the plugins with the router
             $routingResource = $path . DIRECTORY_SEPARATOR . 'Resources/config/routing/routing.api.yml';
-            if(file_exists($routingResource))
-            {
+            if (file_exists($routingResource)) {
                 $apiRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
             }
 
@@ -70,40 +66,43 @@ class PluginCompilerPass implements CompilerPassInterface
 
             // tell asstic where the plugin assets are
             $folder = $path . '/Resources/assets/js';
-            if(is_dir($folder))
-            {
+            if (is_dir($folder)) {
                 $jsRoot   = '/js';
                 $dir      = new \RecursiveDirectoryIterator($folder);
                 $ite      = new \RecursiveIteratorIterator($dir);
                 $fileList = new \RegexIterator($ite, '/.+\.js/', \RegexIterator::GET_MATCH);
 
-                foreach($fileList as $files)
-                {
-                    foreach($files as $file)
-                    {
+                foreach ($fileList as $files) {
+                    foreach ($files as $file) {
                         $destination = str_replace($plugin->getPath() . '/Resources/assets/js/', '', $file);
-                        $assetId     = 'nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', '.js'), array('_', ''), $destination);
+                        $assetId     = 'nefarian_plugin_' . $plugin->getName() . '_' . str_replace(
+                                array('/', '.js'),
+                                array('_', ''),
+                                $destination
+                            );
                         $assetPath   = '/cms/' . $plugin->getName() . '/' . $destination;
 
                         $assetMap[$assetNamespace . $destination] = $assetPath;
 
-                        $assetManagerDefinition->addMethodCall('setFormula', array(
-                            $assetId,
+                        $assetManagerDefinition->addMethodCall(
+                            'setFormula',
                             array(
-                                $file,
-                                array('?uglifyjs2'),
+                                $assetId,
                                 array(
-                                    'output' => $jsRoot . $assetPath
-                                ),
+                                    $file,
+                                    array('?uglifyjs2'),
+                                    array(
+                                        'output' => $jsRoot . $assetPath
+                                    ),
+                                )
                             )
-                        ));
+                        );
                     }
                 }
             }
 
             $folder = $path . '/Resources/assets/img';
-            if(is_dir($folder))
-            {
+            if (is_dir($folder)) {
                 $imgRoot = '/img';
                 $maps    = array(
                     '.jpg'  => 'jpegoptim',
@@ -111,14 +110,10 @@ class PluginCompilerPass implements CompilerPassInterface
                     '.png'  => 'optipng',
                     '.gif'  => null,
                 );
-                foreach($maps as $ext => $app)
-                {
-                    if($app)
-                    {
+                foreach ($maps as $ext => $app) {
+                    if ($app) {
                         $app = array('?' . $app);
-                    }
-                    else
-                    {
+                    } else {
                         $app = array();
                     }
 
@@ -126,25 +121,30 @@ class PluginCompilerPass implements CompilerPassInterface
                     $ite      = new \RecursiveIteratorIterator($dir);
                     $fileList = new \RegexIterator($ite, '/.+\.' . $ext . '/', \RegexIterator::GET_MATCH);
 
-                    foreach($fileList as $files)
-                    {
-                        foreach($files as $file)
-                        {
+                    foreach ($fileList as $files) {
+                        foreach ($files as $file) {
                             $destination = str_replace($path . '/Resources/assets/img/', '', $file);
                             $assetPath   = '/theme/' . $plugin->getName() . '/' . $destination;
 
                             $assetMap[$assetNamespace . $destination] = $assetPath;
 
-                            $assetManagerDefinition->addMethodCall('setFormula', array(
-                                'nefarian_plugin_' . $plugin->getName() . '_' . str_replace(array('/', $ext), array('_', ''), $destination),
+                            $assetManagerDefinition->addMethodCall(
+                                'setFormula',
                                 array(
-                                    $file,
-                                    $app,
-                                    array(
-                                        'output' => $imgRoot . $assetPath
+                                    'nefarian_plugin_' . $plugin->getName() . '_' . str_replace(
+                                        array('/', $ext),
+                                        array('_', ''),
+                                        $destination
                                     ),
+                                    array(
+                                        $file,
+                                        $app,
+                                        array(
+                                            'output' => $imgRoot . $assetPath
+                                        ),
+                                    )
                                 )
-                            ));
+                            );
                         }
                     }
                 }
@@ -152,59 +152,72 @@ class PluginCompilerPass implements CompilerPassInterface
 
             // TODO: Finish loading module menu
             $menus = $plugin->getConfig($plugin::CONFIG_MENU);
-            foreach($menus as $menuName => $menu)
-            {
+            foreach ($menus as $menuName => $menu) {
 
-                $menuManagerDefinition->addMethodCall('addCategory', array(
-                    $menuName,
-                    $pluginReference,
-                    $menu['title'],
-                    $menu['icon'],
-                    $menu['description'],
-                    $menu['items'],
-                ));
+                $menuManagerDefinition->addMethodCall(
+                    'addCategory',
+                    array(
+                        $menuName,
+                        $pluginReference,
+                        $menu['title'],
+                        $menu['icon'],
+                        $menu['description'],
+                        $menu['items'],
+                    )
+                );
             }
 
             // load all the entity mappings, if they exist
-            if(is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine'))
-            {
+            if (is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine')) {
                 // set the validations mappings
                 $mappings = array(
                     'xml'  => 'xml',
                     'yaml' => 'yml'
                 );
-                foreach($mappings as $mapping => $extension)
-                {
-                    if(!$container->hasParameter('validator.mapping.loader.' . $mapping . '_files_loader.mapping_files'))
-                    {
+                foreach ($mappings as $mapping => $extension) {
+                    if (!$container->hasParameter(
+                        'validator.mapping.loader.' . $mapping . '_files_loader.mapping_files'
+                    )
+                    ) {
                         continue;
                     }
 
-                    $files          = $container->getParameter('validator.mapping.loader.' . $mapping . '_files_loader.mapping_files');
+                    $files          = $container->getParameter(
+                        'validator.mapping.loader.' . $mapping . '_files_loader.mapping_files'
+                    );
                     $validationPath = 'Resources/config/validation.orm.' . $extension;
 
                     $file = $path . DIRECTORY_SEPARATOR . $validationPath;
-                    if(is_file($file))
-                    {
+                    if (is_file($file)) {
                         $files[] = realpath($file);
                         $container->addResource(new FileResource($file));
                     }
 
-                    $container->setParameter('validator.mapping.loader.' . $mapping . '_files_loader.mapping_files', $files);
+                    $container->setParameter(
+                        'validator.mapping.loader.' . $mapping . '_files_loader.mapping_files',
+                        $files
+                    );
                 }
 
                 $mappings    = array(
                     $modelPath => $plugin->getNamespace() . '\Model',
                 );
-                $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
+                $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver(
+                    $mappings,
+                    array('nefarian_core.entity_manager'),
+                    'nefarian_core.backend_type_orm'
+                );
                 $doctinePass->process($container);
 
-                if(is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/entity/doctrine'))
-                {
+                if (is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/entity/doctrine')) {
                     $mappings    = array(
                         $modelPath => $plugin->getNamespace() . '\Entity',
                     );
-                    $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('nefarian_core.entity_manager'), 'nefarian_core.backend_type_orm');
+                    $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver(
+                        $mappings,
+                        array('nefarian_core.entity_manager'),
+                        'nefarian_core.backend_type_orm'
+                    );
                     $doctinePass->process($container);
                 }
             }
@@ -216,8 +229,7 @@ class PluginCompilerPass implements CompilerPassInterface
             // load in all the content fields
             $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
             $class        = 'Nefarian\CmsBundle\Content\Field\Field';
-            foreach($fieldsConfig as $fieldName => $fieldConfig)
-            {
+            foreach ($fieldsConfig as $fieldName => $fieldConfig) {
                 $sId             = 'nefarian_core.content_field.' . $fieldName;
                 $fieldDefinition = $container->register($sId, $class);
                 $fieldDefinition->setArguments(array($fieldName, $fieldConfig));

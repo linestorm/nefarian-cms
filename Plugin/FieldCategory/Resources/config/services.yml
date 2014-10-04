@@ -1,3 +1,7 @@
 parameters: ~
 
-services: ~
+services:
+  nefarian.plugin.field_category:
+    class: Nefarian\CmsBundle\Plugin\FieldCategory\FieldCategoryPlugin
+    tags:
+      - { name: nefarian.plugin }

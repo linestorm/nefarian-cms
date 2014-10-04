@@ -1,3 +1,7 @@
 parameters: ~
 
-services: ~
+services:
+  nefarian.plugin.field_body:
+    class: Nefarian\CmsBundle\Plugin\FieldBody\FieldBodyPlugin
+    tags:
+      - { name: nefarian.plugin }

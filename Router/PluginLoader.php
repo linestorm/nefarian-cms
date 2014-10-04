@@ -49,6 +49,7 @@ class PluginLoader extends Loader
     public function load($resource, $type = null)
     {
         $routes = new RouteCollection();
+
         foreach($this->resources as $pluginName => $routeResources)
         {
             $plugin = $this->plugins[$pluginName];
@@ -71,8 +72,6 @@ class PluginLoader extends Loader
                 $routes->add('nefarian_plugin_' . $pluginName . '_' . $name, $route);
             }
         }
-
-        $routes->addPrefix('/_cms/admin/plugins/');
 
         return $routes;
     }

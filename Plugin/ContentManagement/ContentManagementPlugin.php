@@ -19,4 +19,4 @@ class ContentManagementPlugin extends Plugin
     {
         return 'content_management';
     }
-} 
+}

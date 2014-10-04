@@ -6,6 +6,7 @@ parameters:
   nefarian_core.user_manager.class:          Nefarian\CmsBundle\User\UserManager
   nefarian_core.asset_manager.class:         Nefarian\CmsBundle\Assetic\NefarianAssetManager
   nefarian_core.editor_manager.class:        Nefarian\CmsBundle\Editor\EditorManager
+  nefarian_core.plugin_manager.class:        Nefarian\CmsBundle\Plugin\PluginManager
 
   nefarian_core.twig.assets_extension:       Nefarian\CmsBundle\Twig\PluginExtension
 
@@ -56,6 +57,9 @@ services:
 
   nefarian_core.editor_manager:
     class: %nefarian_core.editor_manager.class%
+
+  nefarian_core.plugin_manager:
+    class: %nefarian_core.plugin_manager.class%
 
   #
   # Plugin - Routing

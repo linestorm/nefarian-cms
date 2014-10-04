@@ -6,6 +6,10 @@ parameters:
   linestorm.cms.module.media.resize_profile.manager.class: Nefarian\CmsBundle\Plugin\Media\Media\Resizer\MediaResizeProfileManager
 
 services:
+  nefarian.plugin.media:
+    class: Nefarian\CmsBundle\Plugin\Media\MediaPlugin
+    tags:
+      - { name: nefarian.plugin }
 
   #
   # MEDIA MANAGER

@@ -5,6 +5,10 @@ parameters:
 
 
 services:
+  nefarian.plugin.view:
+    class: Nefarian\CmsBundle\Plugin\View\ViewPlugin
+    tags:
+      - { name: nefarian.plugin }
 
   #
   # Doctrine - Map node listener
