@@ -28,6 +28,18 @@ parameters:
 services:
 
   #
+  # Cache management
+  nefarian_core.cache:
+    class: Nefarian\CmsBundle\Cache\CacheManager
+    arguments:
+      - @nefarian_core.cache.phpfile
+
+  nefarian_core.cache.phpfile:
+    class: Nefarian\CmsBundle\Cache\Provider\PhpFileCacheProvider
+    arguments:
+      - %kernel.cache_dir%/nefarian
+
+  #
   # Managers
   nefarian_core.config_manager:
     class: %nefarian_core.config_manager.class%

@@ -36,6 +36,11 @@ abstract class Plugin
     private $meta;
 
     /**
+     * @var boolean
+     */
+    protected $enabled;
+
+    /**
      * initialiser
      */
     function __construct()
@@ -78,5 +83,30 @@ abstract class Plugin
         return $this->routes;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param boolean $enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    }
+
+    public function install()
+    {
+
+    }
+
+    public function uninstall()
+    {
+
+    }
 
 } 
