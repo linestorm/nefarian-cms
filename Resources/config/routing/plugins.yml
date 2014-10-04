@@ -1,12 +1,14 @@
 nefarian_plugins_list:
-    path:     /
-    defaults: { _controller: NefarianCmsBundle:Plugin/Plugin:list }
+  path:     /
+  defaults: { _controller: NefarianCmsBundle:Plugin/Plugin:list }
+  prefix: /_cms/admin/plugins/
 
 nefarian_plugins_enable:
-    path:     /
-    type:     rest
-    defaults: { _controller: NefarianCmsBundle:Plugin/Plugin:enablePlugin }
+  type:     rest
+  resource: Nefarian\CmsBundle\Controller\Plugin\Api\PluginController
+  prefix:   /api/core/plugin
 
 nefarian_plugins:
   resource:   .
   type:       nefarian_plugins
+  prefix: /_cms/admin/plugins/

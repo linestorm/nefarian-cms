@@ -1,6 +1,5 @@
 nefarian_plugins_routing:
   resource: routing/plugins.yml
-  prefix: /_cms/admin/plugins/
 
 nefarian_api:
   resource:   .
