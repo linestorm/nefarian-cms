@@ -4,6 +4,8 @@ namespace Nefarian\CmsBundle\Plugin;
 
 use Doctrine\Common\Cache\Cache;
 use Nefarian\CmsBundle\Cache\CacheManager;
+use Nefarian\CmsBundle\Plugin\Exception\PluginDependencyNotInstalledException;
+use Nefarian\CmsBundle\Plugin\Exception\PluginDependencyNotInstallException;
 use Nefarian\CmsBundle\Plugin\Exception\PluginNotFoundException;
 
 class PluginManager
@@ -40,6 +42,7 @@ class PluginManager
             $cachedMeta = new PluginMetaCache($plugin);
             $this->pluginCache->save($plugin->getName(), $cachedMeta);
         }
+        $this->pluginMeta[$plugin->getName()] = $cachedMeta;
         $this->plugins[$plugin->getName()] = $plugin;
     }
 
@@ -67,6 +70,16 @@ class PluginManager
     public function hasPlugin($name)
     {
         return array_key_exists($name, $this->plugins);
+    }
+
+    public function isPluginEnabled(Plugin $plugin)
+    {
+        if($this->hasPlugin($plugin->getName()))
+        {
+            return $this->pluginMeta[$plugin->getName()]->enabled;
+        }
+
+        return false;
     }
 
     /**
@@ -100,6 +113,14 @@ class PluginManager
     public function installPlugin(Plugin $plugin)
     {
         $name = $plugin->getName();
+        $dependencies = $plugin->dependencies();
+        foreach($dependencies as $dependency)
+        {
+            if(!array_key_exists($dependency, $this->plugins))
+            {
+                throw new PluginDependencyNotInstalledException($name, $dependency);
+            }
+        }
         $plugin->install();
 
         $this->pluginMeta[$name]->installed = true;

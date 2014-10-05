@@ -20,4 +20,10 @@ class FieldBodyPlugin extends Plugin
         return 'field_body';
     }
 
+    public function dependencies()
+    {
+        return array(
+            'content_management'
+        );
+    }
 } 

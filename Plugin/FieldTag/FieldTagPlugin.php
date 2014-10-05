@@ -20,4 +20,11 @@ class FieldTagPlugin extends Plugin
         return 'field_tag';
     }
 
+    public function dependencies()
+    {
+        return array(
+            'content_management'
+        );
+    }
+
 } 

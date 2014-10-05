@@ -12,7 +12,7 @@ class PluginMetaCache
     /**
      * @var boolean
      */
-    public $enabled;
+    public $enabled = false;
 
     /**
      * @var string
@@ -26,7 +26,7 @@ class PluginMetaCache
 
     function __construct($pluginClass)
     {
-        $this->pluginClass = $pluginClass;
+        $this->pluginClass      = $pluginClass;
         $this->pluginReflection = new \ReflectionClass($pluginClass);
     }
 

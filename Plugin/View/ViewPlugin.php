@@ -20,4 +20,11 @@ class ViewPlugin extends Plugin
         return 'view';
     }
 
+    public function dependencies()
+    {
+        return array(
+            'content_management'
+        );
+    }
+
 } 

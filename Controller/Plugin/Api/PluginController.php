@@ -10,6 +10,24 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class PluginController extends Controller
 {
+    public function listAction()
+    {
+        $pluginManager = $this->get('nefarian_core.plugin_manager');
+
+        $pluginList = array();
+        foreach ($pluginManager->getPlugins() as $plugin) {
+            $pluginList[] = array(
+                'name'         => $plugin->getName(),
+                'description'  => '@todo', // TODO
+                'enabled'      => $pluginManager->isPluginEnabled($plugin),
+                'dependencies' => $plugin->dependencies(),
+            );
+        }
+        $view = new View($pluginList);
+
+        return $this->get('fos_rest.view_handler')->handle($view);
+    }
+
     /**
      * Enable a plugin
      *
@@ -19,14 +37,11 @@ class PluginController extends Controller
     {
         $pluginManager = $this->get('nefarian_core.plugin_manager');
 
-        try
-        {
-            $payload = $request->getContent();
-            $payload = json_decode($payload, true);
+        try {
+            $payload    = $request->getContent();
+            $payload    = json_decode($payload, true);
             $pluginName = $payload['name'];
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             throw new BadRequestHttpException('Invalid Payload', $e);
         }
 
@@ -36,7 +51,9 @@ class PluginController extends Controller
 
             $view = new View(
                 array(
-                    'enabled' => true
+                    'name'        => $plugin->getName(),
+                    'description' => 'todo',
+                    'enabled'     => true
                 )
             );
 

@@ -1,4 +1,15 @@
 {% extends '@theme/layout.html.twig' %}
+{% set page_modules = ['cms/core/plugin/list'] %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li><a href="{{ url('nefarian_plugins_list') }}">Plugins</a></li>
+{% endblock %}
+
+{% block page_icon %}
+    <i class="page-header-icon fa-puzzle-piece"></i>
+{% endblock %}
+
 
 {% block page_title %}
     Manage Plugins
@@ -9,36 +20,59 @@
 {% endblock %}
 
 {% block plugin %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Plugin</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for plugin in plugins %}
-                <tr>
-                    <td>
-                        <div class="switcher switcher-theme-square switcher-sm">
-                            <input data-class="switcher-sm"
-                                   class="switcher-example-square"
-                                   type="checkbox"
-                                   name="selectedFields[]"
-                                   value="{{ '{{ obj.name }}' }}">
-                            <div class="switcher-toggler"></div>
-                            <div class="switcher-inner">
-                                <div class="switcher-state-on">ON</div>
-                                <div class="switcher-state-off">OFF</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>{{ plugin.name }}</td>
-                    <td>@todo</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form id="plugin-form">
+        <div class="row" ng-controller="PluginsCtrl">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Plugin</th>
+                        <th>Description</th>
+                        <th>Dependencies</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="plugin in plugins">
+                        <td>
+                            {% spaceless %}
+                                <label class="switcher switcher-theme-square switcher-sm"
+                                       ng-class="{checked: plugin.enabled}">
+                                    <input data-class="switcher-sm"
+                                           class="switcher-example-square"
+                                           type="checkbox"
+                                           name="selectedFields[]"
+                                           value="{{ '{{ plugin.name }}' }}"
+                                           ng-model="plugin.enabled"
+                                           ng-change="togglePlugin(plugin)"
+                                            >
 
+                                    <div class="switcher-toggler"></div>
+                                    <div class="switcher-inner">
+                                        <div class="switcher-state-on">ON</div>
+                                        <div class="switcher-state-off">OFF</div>
+                                    </div>
+                                </label>
+                            {% endspaceless %}
+                        </td>
+                        <td>{{ '{{ plugin.name }}' }}</td>
+                        <td>{{ '{{ plugin.description }}' }}</td>
+                        <td>
+                        <span class="label label-primary"
+                              ng-repeat="dependency in plugin.dependencies">{{ '{{ dependency }}' }}</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-primary" ng-click="enablePlugins()">
+                    <i class="fa-icon-save"></i> Save Plugins
+                </button>
+            </div>
+        </div>
+        <pre>{{ '{{ plugins|json }}' }}</pre>
+    </form>
 {% endblock %}

@@ -99,6 +99,16 @@ abstract class Plugin
         $this->enabled = $enabled;
     }
 
+    /**
+     * Return an array of plugins names that this plugin requires
+     *
+     * If you need logic to determine dependencies, throw a PluginDependencyNotInstalledException if it fails
+     */
+    public function dependencies()
+    {
+        return array();
+    }
+
     public function install()
     {
 

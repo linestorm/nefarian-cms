@@ -20,4 +20,11 @@ class FieldCategoryPlugin extends Plugin
         return 'field_category';
     }
 
+    public function dependencies()
+    {
+        return array(
+            'content_management'
+        );
+    }
+
 } 
