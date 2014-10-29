@@ -3,6 +3,8 @@
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
 use Nefarian\CmsBundle\Plugin\PluginCompiler;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,6 +28,7 @@ class PluginCompilerPass implements CompilerPassInterface
 
         $pluginManagerDefinition = $container->getDefinition('nefarian_core.plugin_manager');
         $pluginRouterDefinition  = $container->getDefinition('nefarian_core.routing.plugin_loader');
+        $configManagerDefinition = $container->getDefinition('nefarian_core.config_manager');
         $fieldManagerDefinition  = $container->getDefinition('nefarian_core.content_field_manager');
         $apiRouterDefinition     = $container->getDefinition('nefarian_core.routing.api_loader');
         $menuManagerDefinition   = $container->getDefinition('nefarian_core.menu_manager');
@@ -227,6 +230,9 @@ class PluginCompilerPass implements CompilerPassInterface
             $nefarianAssetManagerDefinition->addMethodCall('setAssets', array($assetMap));
 
             // load in all the content fields
+
+            $processor = new Processor();
+
             $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
             $class        = 'Nefarian\CmsBundle\Content\Field\Field';
             foreach ($fieldsConfig as $fieldName => $fieldConfig) {
@@ -234,6 +240,20 @@ class PluginCompilerPass implements CompilerPassInterface
                 $fieldDefinition = $container->register($sId, $class);
                 $fieldDefinition->setArguments(array($fieldName, $fieldConfig));
                 $fieldManagerDefinition->addMethodCall('addField', array(new Reference($sId)));
+
+                // build the configurations
+                foreach($fieldConfig['configs'] as $configName => $config){
+                    $configDefinition = new $config['class']();
+                    $processedConfig = $processor->processConfiguration(
+                      $configDefinition,
+                      array(
+                        $config['defaults'],
+                      )
+                    );
+                    $configManagerDefinition->addMethodCall('addConfiguration', array(
+                        $fieldName . '.' . $configName, $processedConfig
+                    ));
+                }
             }
 
             /**

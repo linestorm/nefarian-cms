@@ -1,7 +1,7 @@
 define(['jquery', 'jqueryui', 'bootstrap', 'cms/core/api'], function ($, ui, bs, api) {
 
     $(document).ready(function () {
-        $('form').on('submit', function (e) {
+        $('form.api-save').on('submit', function (e) {
             e.stopPropagation();
             e.preventDefault();
 

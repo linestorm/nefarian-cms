@@ -28,3 +28,11 @@ services:
         - @nefarian_core.content_field_manager
     tags:
         - { name: form.type, alias: field_collection }
+
+  nefarian.plugins.content_management.event_listener.configuration:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\EventListener\ConfigurationEventSubscriber
+    arguments:
+      - @nefarian_core.config_manager
+      - @doctrine.orm.default_entity_manager
+    tags:
+        - { name: kernel.event_subscriber }

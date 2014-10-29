@@ -16,16 +16,18 @@ class ContentTypeForm extends AbstractType
     {
         $builder
             ->add('name', 'text')
+            ->add('label', 'text')
             ->add('description', 'text', array(
                 'required' => false
             ))
-            ->add('typeFields', 'collection', array(
+            /*->add('typeFields', 'collection', array(
                 'label'        => 'Fields',
                 'type'         => new ContentTypeFieldForm(),
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-            ));
+            ))*/
+        ;
     }
 
     /**

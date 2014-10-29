@@ -5,6 +5,7 @@
 
     <mapped-superclass name="Nefarian\CmsBundle\Plugin\ContentManagement\Model\ContentType" table="content_type">
         <field name="name" type="text" column="name" length="100" nullable="false" />
+        <field name="label" type="text" column="label" length="100" nullable="false"/>
         <field name="description" type="text" column="description" length="255" nullable="true" />
     </mapped-superclass>
 

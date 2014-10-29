@@ -1,0 +1,10 @@
+parameters:
+  nefarian.theme.nefarian_admin_dark.class:  Nefarian\CmsBundle\Theme\NefarianAdminDark\NefarianAdminDarkTheme
+
+
+services:
+
+  nefarian.theme.nefarian_admin_dark:
+    class: %nefarian.theme.nefarian_admin_dark.class%
+    tags:
+      - { name: nefarian.theme }

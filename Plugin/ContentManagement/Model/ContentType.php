@@ -25,6 +25,11 @@ class ContentType
     /**
      * @var string
      */
+    protected $label;
+
+    /**
+     * @var string
+     */
     protected $description;
 
     /**
@@ -79,6 +84,23 @@ class ContentType
     {
         return $this->name;
     }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
 
     /**
      * @param ContentTypeField $typeField

@@ -38,7 +38,6 @@ class Field implements FieldInterface
         $this->name       = $name;
         $this->class      = $properties['class'];
         $this->form       = $properties['form'];
-        $this->properties = $properties['properties'];
         $this->assets     = $properties['assets'];
     }
 
@@ -56,29 +55,6 @@ class Field implements FieldInterface
     public function getForm()
     {
         return $this->form;
-    }
-
-    /**
-     * @return array
-     */
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
-    /**
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function getProperty($name)
-    {
-        if(array_key_exists($name, $this->properties))
-        {
-            return $this->properties[$name];
-        }
-
-        return null;
     }
 
     /**

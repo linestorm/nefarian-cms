@@ -37,8 +37,6 @@ class CoreCompilerPass implements CompilerPassInterface
     {
         $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
 
-        // tell asstic where the core assets are
-
         // tell asstic where the plugin assets are
         $assetNamespace = '@core/';
         $folder = $this->bundle->getPath() . '/Resources/assets/js';

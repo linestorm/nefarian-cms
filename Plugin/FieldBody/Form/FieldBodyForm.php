@@ -1,4 +1,5 @@
 <?php
+
 namespace Nefarian\CmsBundle\Plugin\FieldBody\Form;
 
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;

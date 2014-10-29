@@ -4,25 +4,6 @@
 
 {% block _nefarian_plugin_content_management_content_type_typeFields_widget %}
 
-    {% import _self as fn %}
-    {% macro row(form) %}
-        {% spaceless %}
-            <tr data-order="{{ form.order.vars.value }}">
-                <!--<td>
-                    <button type="button" class="btn btn-link table-row-sortable"><i class="fa-arrows"></i></button>
-                </td>-->
-                <td>{{ form_widget(form.name) }}{{ form_widget(form.order) }}</td>
-                <td>{{ form_widget(form.field) }}</td>
-                <td>@TODO</td>
-                <td>
-                    <button type="button" class="btn btn-danger field-type-remove">
-                        <i class="fa-trash-o"></i> Remove
-                    </button>
-                </td>
-            </tr>
-        {% endspaceless %}
-    {% endmacro %}
-
     <button type="button" class="btn btn-link field-type-add" data-prototype="{{ fn.row(form.vars.prototype)|e }}">
         <i class="fa-plus"></i> Add Field
     </button>
@@ -38,8 +19,19 @@
                 </tr>
             </thead>
             <tbody>
-                {% for typeField in form %}
-                    {{ fn.row(typeField) }}
+                {% for field in contentType.fields %}
+                    {% spaceless %}
+                        <tr>
+                            <td>{{ field.name }}</td>
+                            <td>{{ field.field }}</td>
+                            <td>@TODO</td>
+                            <td>
+                                <button type="button" class="btn btn-danger field-type-remove">
+                                    <i class="fa-trash-o"></i> Remove
+                                </button>
+                            </td>
+                        </tr>
+                    {% endspaceless %}
                 {% endfor %}
             </tbody>
         </table>

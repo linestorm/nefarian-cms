@@ -1,12 +1,53 @@
 {% extends '@plugin_content_management/ContentType/edit.html.twig' %}
+{% set selected_tab = 'fields' %}
 {% block tab %}
-    {{ form_start(form) }}
-        {{ form_row(form.name) }}
-        {{ form_row(form.description) }}
+    <form action="{{ url('nefarian_plugin_content_management_content_type_create_fields', {id: contentType.id}) }}" method="post">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Display Type</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for field in contentType.typeFields %}
+                    {% spaceless %}
+                        <tr>
+                            <td>{{ field.name|capitalize }}</td>
+                            <td><a href="{{ url('nefarian_plugin_content_management_content_type_edit_field', {id: contentType.id, field: field.id}) }}">{{ field.field.name|capitalize }}</a></td>
+                            <td></td>
+                            <td>
+                                <button type="button" class="btn btn-danger field-type-remove">
+                                    <i class="fa-trash-o"></i> Remove
+                                </button>
+                            </td>
+                        </tr>
+                    {% endspaceless %}
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td><input type="text" name="field_name" class="form-control" required="true" /></td>
+                    <td>
+                        <select class="form-control" name="field_type">
+                            {% for field in fields %}
+                                <option value="{{ field.id }}">{{ field.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">
+                            Create
+                        </button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </form>
 
-        {{ form_rest(form) }}
-        <button type="submit" class="btn btn-default">
-            <i class="fa-save"></i> Save
-        </button>
-    {{ form_end(form) }}
 {% endblock %}

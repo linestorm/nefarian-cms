@@ -43,7 +43,7 @@ services:
   # Managers
   nefarian_core.config_manager:
     class: %nefarian_core.config_manager.class%
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @nefarian_core.cache, @event_dispatcher]
 
   nefarian_core.menu_manager:
     class: %nefarian_core.menu_manager.class%
