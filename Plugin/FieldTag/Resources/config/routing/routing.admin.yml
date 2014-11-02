@@ -3,8 +3,8 @@ tags:
   defaults: { _controller: Tag:index }
 
 tag_new:
-  path:     /new
-  defaults: { _controller: Tag:new }
+  path:     /{id}/new
+  defaults: { _controller: Tag:new, id:root }
 
 tag_edit:
   path:     /{id}/edit

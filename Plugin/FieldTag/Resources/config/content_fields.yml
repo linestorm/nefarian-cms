@@ -3,6 +3,10 @@ tag:
   form:    Nefarian\CmsBundle\Plugin\FieldTag\Form\FieldTagForm
   assets:
     - @plugin_field_tag/node/tags.js
-  properties:
-    limit: 1
-    limit_required: true
+  configs:
+    settings:
+      fields:
+        tag:
+          label: Tag List
+          type: tag_choice
+          default: ~

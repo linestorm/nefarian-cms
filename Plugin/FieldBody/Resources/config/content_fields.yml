@@ -3,7 +3,12 @@ body:
   form:    Nefarian\CmsBundle\Plugin\FieldBody\Form\FieldBodyForm
   configs:
     settings:
-      class: Nefarian\CmsBundle\Plugin\FieldBody\Config\FieldBodyConfiguration
-      defaults:
-        limit: 1
-        limit_required: true
+      fields:
+        limit:
+          type: number
+          default: 1
+        limit_required:
+          type: checkbox
+          options:
+            required: false
+          default: true

@@ -3,7 +3,7 @@
 {% block tab %}
     <form action="{{ url('nefarian_plugin_content_management_content_type_create_fields', {id: contentType.id}) }}" method="post">
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped field-type">
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -17,10 +17,12 @@
                     {% spaceless %}
                         <tr>
                             <td>{{ field.name|capitalize }}</td>
-                            <td><a href="{{ url('nefarian_plugin_content_management_content_type_edit_field', {id: contentType.id, field: field.id}) }}">{{ field.field.name|capitalize }}</a></td>
+                            <td><a href="{{ url('nefarian_plugin_content_management_content_type_edit_field', {contentType: contentType.id, contentTypeField: field.id}) }}">{{ field.field.name|capitalize }}</a></td>
                             <td></td>
                             <td>
-                                <button type="button" class="btn btn-danger field-type-remove">
+                                <button type="button" class="btn btn-danger field-type-remove" data-url="{{
+                                    url('nefarian_api_content_management_delete_type_field', {contentType: contentType.id, contentTypeField: field.id})
+                                }}">
                                     <i class="fa-trash-o"></i> Remove
                                 </button>
                             </td>
@@ -30,7 +32,7 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td><input type="text" name="field_name" class="form-control" required="true" /></td>
+                    <td><input type="text" name="field_name" class="form-control" required="true" placeholder="Field Label" /></td>
                     <td>
                         <select class="form-control" name="field_type">
                             {% for field in fields %}

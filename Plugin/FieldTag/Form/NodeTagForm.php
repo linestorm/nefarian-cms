@@ -2,7 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldTag\Form;
 
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,14 +17,21 @@ class NodeTagForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', 'text')
-            ->add('description')
-        ;
+            ->add('parentTag', 'entity', array(
+                'class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
+                'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->orderBy('u.name', 'ASC');
+                },
+                'property' => 'name',
+            ))
+            ->add('description');
     }
 
     /**

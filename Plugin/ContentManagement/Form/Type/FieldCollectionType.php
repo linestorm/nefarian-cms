@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type;
 
+use Nefarian\CmsBundle\Configuration\ConfigManager;
 use Nefarian\CmsBundle\Content\Field\Field;
 use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
@@ -19,57 +20,60 @@ class FieldCollectionType extends AbstractType
     protected $fieldManager;
 
     /**
-     * @param FieldManager $fieldManager
+     * @var ConfigManager
      */
-    function __construct(FieldManager $fieldManager)
+    protected $configManager;
+
+    /**
+     * @param FieldManager $fieldManager
+     * @param ConfigManager $configManager
+     */
+    function __construct(FieldManager $fieldManager, ConfigManager $configManager)
     {
-        $this->fieldManager = $fieldManager;
+        $this->fieldManager  = $fieldManager;
+        $this->configManager = $configManager;
     }
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $i = 0;
-        if($options['node'] instanceof Node)
-        {
+        if ($options['node'] instanceof Node) {
             $node          = $options['node'];
             $contentType   = $node->getContentType();
             $contents      = $node->getContents();
             $fieldContents = array();
 
             /** @var NodeContent $content */
-            foreach($contents as $content)
-            {
+            foreach ($contents as $content) {
                 $fieldContents[$content->getFieldType()->getName()] = $content;
             }
 
-            foreach($contentType->getTypeFields() as $typeField)
-            {
-                $fieldEntity = $typeField->getField();
-                $field       = $this->fieldManager->getField($fieldEntity->getName());
-                if($field instanceof Field)
-                {
+            foreach ($contentType->getTypeFields() as $typeField) {
+                $fieldEntity     = $typeField->getField();
+                $field           = $this->fieldManager->getField($fieldEntity->getName());
+                $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $typeField->getName();
+                $config          = $this->configManager->get($fieldConfigName);
+
+                if ($field instanceof Field) {
                     $formClass = $field->getForm();
                     $dataClass = $field->getEntityClass();
 
                     /** @var NodeContent $entity */
-                    if(array_key_exists($typeField->getName(), $fieldContents))
-                    {
+                    if (array_key_exists($typeField->getName(), $fieldContents)) {
                         $entity = $fieldContents[$typeField->getName()];
-                    }
-                    else
-                    {
+                    } else {
                         $entity = new $dataClass();
                         $entity->setField($fieldEntity);
                         $entity->setFieldType($typeField);
                     }
 
-                    $builder->add($i, new $formClass($fieldEntity), array(
-                        'label'        => false,
-                        'data'         => $entity,
+                    $builder->add($i, new $formClass($fieldEntity, $config), array(
+                        'label' => false,
+                        'data' => $entity,
                         'by_reference' => false,
                     ));
                     ++$i;

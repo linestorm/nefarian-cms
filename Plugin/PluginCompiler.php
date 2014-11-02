@@ -17,8 +17,9 @@ use Symfony\Component\Yaml\Parser;
 class PluginCompiler
 {
     const CONFIG_MODULE = 'module';
-    const CONFIG_MENU   = 'menu';
+    const CONFIG_MENU = 'menu';
     const CONFIG_FIELDS = 'fields';
+    const CONFIG_TEMPLATING = 'templating';
 
     /**
      * @var string
@@ -99,6 +100,7 @@ class PluginCompiler
         $this->loadModuleConfig();
         $this->loadMenuConfig();
         $this->loadFieldsConfig();
+        $this->loadTemplatingConfig();
 
         return $this;
     }
@@ -156,17 +158,14 @@ class PluginCompiler
      */
     protected function parse($files)
     {
-        if(!is_array($files))
-        {
+        if (!is_array($files)) {
             $files = array($files);
         }
 
         $configs = array();
 
-        foreach($files as $file)
-        {
-            if(is_file($dir = $this->path . '/' . $file))
-            {
+        foreach ($files as $file) {
+            if (is_file($dir = $this->path . '/' . $file)) {
                 $configs[] = $this->parser->parse(file_get_contents($dir));
             }
 
@@ -178,7 +177,7 @@ class PluginCompiler
     /**
      * Load a yaml file
      *
-     * @param string|array           $configs
+     * @param string|array $configs
      * @param ConfigurationInterface $configuration
      *
      * @internal param $name
@@ -186,8 +185,7 @@ class PluginCompiler
      */
     protected function load($configs, ConfigurationInterface $configuration)
     {
-        if(!is_array($configs))
-        {
+        if (!is_array($configs)) {
             $configs = array($configs);
         }
 
@@ -230,6 +228,17 @@ class PluginCompiler
         return $this->configs[self::CONFIG_FIELDS] = $config;
     }
 
+    /**
+     * @return array
+     */
+    protected function loadTemplatingConfig()
+    {
+        $configuration = new Configurations\TemplatingConfiguration();
+        $config        = $this->load('Resources/config/templating.yml', $configuration);
+
+        return $this->configs[self::CONFIG_TEMPLATING] = $config;
+    }
+
 
     /**
      * Get a config array
@@ -240,8 +249,7 @@ class PluginCompiler
      */
     public function getConfig($name)
     {
-        if(array_key_exists($name, $this->configs))
-        {
+        if (array_key_exists($name, $this->configs)) {
             return $this->configs[$name];
         }
 

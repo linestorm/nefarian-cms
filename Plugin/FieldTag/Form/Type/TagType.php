@@ -29,7 +29,8 @@ class TagType extends AbstractType
                 'name' => null
             ))
             ->setRequired(array(
-                'tag_class'
+                'tag_class',
+                'tag_base'
             ));
     }
 
@@ -50,10 +51,17 @@ class TagType extends AbstractType
 
         if($name)
         {
-            $tagArray = $this->em->getRepository($dataClass)->createQueryBuilder('c')->getQuery()->getArrayResult();
+            $repo = $this->em->getRepository($dataClass);
+            if(!$options['tag_base']){
+                $tagArray = $repo->findAll();
+            } else {
+                $baseTag = $repo->find($options['tag_base']);
+                $tagArray = $repo->findAllChildTags($baseTag);
+            }
+
             foreach($tagArray as $tagData)
             {
-                $tags[] = $tagData['name'];
+                $tags[] = $tagData->getName();
             }
         }
 

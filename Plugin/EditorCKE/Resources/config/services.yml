@@ -2,6 +2,11 @@ parameters:
   nefarian.editor.ckeditor.class: Nefarian\CmsBundle\Plugin\EditorCKE\Editor\CKEditor
 
 services:
+  nefarian.plugin.editor.ckeditor:
+    class: Nefarian\CmsBundle\Plugin\EditorCKE\EditorCKEPlugin
+    tags:
+      - { name: nefarian.plugin }
+
   nefarian.editor.ckeditor:
     class: %nefarian.editor.ckeditor.class%
     tags:

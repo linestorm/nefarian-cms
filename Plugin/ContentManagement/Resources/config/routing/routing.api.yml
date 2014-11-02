@@ -7,10 +7,6 @@ api_content_type_field:
     resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\ContentTypeFieldController
     parent:       api_content_type
 
-api_content_field:
-  type:         rest
-  resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\FieldController
-
 api_node:
   type:         rest
   resource:     Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api\NodeController

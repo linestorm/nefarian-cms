@@ -22,6 +22,8 @@ parameters:
   nefarian_core.theme_loader.class:   Nefarian\CmsBundle\Twig\Loader\ThemeLoader
   nefarian_core.plugin_loader.class:  Nefarian\CmsBundle\Twig\Loader\PluginLoader
 
+  templating.form_template_manager.class: Nefarian\CmsBundle\Form\FormTemplateManager
+
   # override the asset factory
   assetic.asset_factory.class: Nefarian\CmsBundle\Assetic\Factory\NefarianAssetFactory
 
@@ -146,3 +148,5 @@ services:
     arguments:
       - @templating.locator.theme_locator
 
+  templating.form_template_manager:
+    class: %templating.form_template_manager.class%

@@ -2,7 +2,9 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldTag\Form;
 
+use Nefarian\CmsBundle\Configuration\Configuration;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -13,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @package Nefarian\CmsBundle\Plugin\FieldTag\Form
  * @author  Andy Thorne <contrabandvr@gmail.com>
  */
-class FieldTagForm extends AbstractType
+class FieldTagForm extends AbstractType implements FieldNodeFormInterface
 {
     /**
      * @var Field
@@ -21,36 +23,36 @@ class FieldTagForm extends AbstractType
     protected $field;
 
     /**
-     * @param Field $field
+     * @var Configuration
      */
-    function __construct(Field $field)
+    protected $config;
+
+    /**
+     * @param Field $field
+     * @param Configuration $configuration
+     */
+    function __construct(Field $field, Configuration $configuration)
     {
-        $this->field = $field;
+        $this->field  = $field;
+        $this->config = $configuration;
     }
 
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('tags', 'tag', array(
                 'tag_class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
-                'name'      => 'name',
-                'attr'     => array(
+                'tag_base'  => $this->config->get('tag'),
+                'name' => 'name',
+                'attr' => array(
                     'class' => 'form-control content-tags'
-                ),
+                )
             ))
-            /*->add('tags', 'entity', array(
-                'multiple' => true,
-                'class'    => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
-                'property' => 'name',
-                'attr'     => array(
-                    'class' => 'form-control content-tags'
-                ),
-            ))*/
         ;
     }
 

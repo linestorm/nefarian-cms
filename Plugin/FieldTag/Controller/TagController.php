@@ -2,14 +2,10 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldTag\Controller;
 
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Form\NodeForm;
 use Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag;
 use Nefarian\CmsBundle\Plugin\FieldTag\Form\NodeTagForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TagController
@@ -21,8 +17,8 @@ class TagController extends Controller
 {
     public function indexAction()
     {
-        $em    = $this->getDoctrine()->getManager();
-        $tags = $em->getRepository('PluginFieldTag:NodeTag')->findAll();
+        $em   = $this->getDoctrine()->getManager();
+        $tags = $em->getRepository('PluginFieldTag:NodeTag')->findAllRootTags();
 
         return $this->render('@plugin_field_tag/Tag/index.html.twig', array(
             'tags' => $tags,
@@ -31,16 +27,19 @@ class TagController extends Controller
 
 
     /**
-     * @throws NotFoundHttpException
-     *
+     * @param NodeTag $parentNodeTag
      * @return Response
      */
-    public function newAction()
+    public function newAction(NodeTag $parentNodeTag = null)
     {
         $tag = new NodeTag();
 
+        if ($parentNodeTag instanceof NodeTag) {
+            $tag->setParentTag($parentNodeTag);
+        }
+
         $form = $this->createForm(new NodeTagForm(), $tag, array(
-            'attr'   => array(
+            'attr' => array(
                 'class' => 'api-save'
             ),
             'method' => 'POST',
@@ -48,14 +47,14 @@ class TagController extends Controller
         ));
 
         return $this->render('@plugin_field_tag/Tag/new.html.twig', array(
-            'form'        => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     public function editAction(NodeTag $nodeTag)
     {
         $form = $this->createForm(new NodeTagForm(), $nodeTag, array(
-            'attr'   => array(
+            'attr' => array(
                 'class' => 'api-save'
             ),
             'method' => 'PUT',
@@ -64,8 +63,12 @@ class TagController extends Controller
             )),
         ));
 
+        $em      = $this->getDoctrine()->getManager();
+        $parents = $em->getRepository('PluginFieldTag:NodeTag')->findAllParentTags($nodeTag);
+
         return $this->render('@plugin_field_tag/Tag/edit.html.twig', array(
             'tag' => $nodeTag,
+            'parents' => $parents,
             'form' => $form->createView(),
         ));
     }

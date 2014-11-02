@@ -1,5 +1,6 @@
 parameters:
   nefarian.plugins.field_tag.form.type.tag_collection.class: Nefarian\CmsBundle\Plugin\FieldTag\Form\Type\TagType
+  nefarian.plugins.field_tag.form.type.tag_choice.class: Nefarian\CmsBundle\Plugin\FieldTag\Form\Type\TagChoiceType
 
 services:
   nefarian.plugin.field_tag:
@@ -14,3 +15,14 @@ services:
         arguments: [@doctrine.orm.default_entity_manager]
         tags:
             - { name: form.type, alias: tag }
+  nefarian.plugins.field_tag.form.type.tag_choice:
+        class: %nefarian.plugins.field_tag.form.type.tag_choice.class%
+        arguments: [@doctrine.orm.default_entity_manager]
+        tags:
+            - { name: form.type, alias: tag_choice }
+
+
+  nefarian.plugins.field_tag.event_listener.configuration:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\EventSubscriber\ConfigFormBuildEventSubscriber
+    tags:
+        - { name: kernel.event_subscriber }

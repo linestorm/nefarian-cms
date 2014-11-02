@@ -26,6 +26,7 @@ services:
     class: %nefarian.plugins.content_management.form.type.field_collection.class%
     arguments:
         - @nefarian_core.content_field_manager
+        - @nefarian_core.config_manager
     tags:
         - { name: form.type, alias: field_collection }
 

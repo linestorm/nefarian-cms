@@ -2,7 +2,7 @@
 {% set page_modules = ['cms/content_management/type/form'] %}
 
 {% block page_title %}
-    {{ contentType.name }} Content Type
+    {{ contentType.label }}
 {% endblock %}
 
 {% block page_desc %}
@@ -11,7 +11,7 @@
 
 {% block breadcrumbs %}
     {{ parent() }}
-    <li><a href="#">Edit {{ contentType.name }}</a></li>
+    <li><a href="#">Edit {{ contentType.label }}</a></li>
 {% endblock %}
 
 {% block plugin %}

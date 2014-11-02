@@ -3,7 +3,6 @@
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
 use Nefarian\CmsBundle\Plugin\PluginCompiler;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -108,10 +107,10 @@ class PluginCompilerPass implements CompilerPassInterface
             if (is_dir($folder)) {
                 $imgRoot = '/img';
                 $maps    = array(
-                    '.jpg'  => 'jpegoptim',
+                    '.jpg' => 'jpegoptim',
                     '.jpeg' => 'jpegoptim',
-                    '.png'  => 'optipng',
-                    '.gif'  => null,
+                    '.png' => 'optipng',
+                    '.gif' => null,
                 );
                 foreach ($maps as $ext => $app) {
                     if ($app) {
@@ -174,7 +173,7 @@ class PluginCompilerPass implements CompilerPassInterface
             if (is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/model/doctrine')) {
                 // set the validations mappings
                 $mappings = array(
-                    'xml'  => 'xml',
+                    'xml' => 'xml',
                     'yaml' => 'yml'
                 );
                 foreach ($mappings as $mapping => $extension) {
@@ -242,25 +241,34 @@ class PluginCompilerPass implements CompilerPassInterface
                 $fieldManagerDefinition->addMethodCall('addField', array(new Reference($sId)));
 
                 // build the configurations
-                foreach($fieldConfig['configs'] as $configName => $config){
-                    $configDefinition = new $config['class']();
-                    $processedConfig = $processor->processConfiguration(
-                      $configDefinition,
-                      array(
-                        $config['defaults'],
-                      )
-                    );
+                foreach ($fieldConfig['configs'] as $configName => $config) {
+                    foreach ($config['fields'] as $name => &$field) {
+                        if (!is_array($field['options'])) {
+                            $field['options'] = array();
+                        }
+                    }
                     $configManagerDefinition->addMethodCall('addConfiguration', array(
-                        $fieldName . '.' . $configName, $processedConfig
+                        $fieldName . '.' . $configName, $config['fields']
                     ));
                 }
             }
+
+            // add the plugin forms to the form list
+            $formResources = $container->getParameter('twig.form.resources');
+            $templatingConfig = $plugin->getConfig($plugin::CONFIG_TEMPLATING);
+            foreach($templatingConfig['forms'] as $tmplName => $template){
+                $formResources[] = $template;
+            }
+            $container->setParameter('twig.form.resources', $formResources);
 
             /**
              * @TODO: dump cached
              * @see http://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
              */
+
+
         }
+
 
     }
 

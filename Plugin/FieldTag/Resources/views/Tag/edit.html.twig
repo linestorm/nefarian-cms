@@ -3,11 +3,10 @@
 
 {% block breadcrumbs %}
     {{ parent() }}
-    <li><a href="{{ url('nefarian_plugin_field_tag_tag_edit', {id: tag.id}) }}">Edit Tag</a></li>
-{% endblock %}
-
-{% block page_icon %}
-    <i class="page-header-icon fa-pencil"></i>
+    {% for parent in parents %}
+        <li><a href="{{ url('nefarian_plugin_field_tag_tag_edit', {id: parent.id}) }}">{{ parent.name|capitalize }}</a></li>
+    {% endfor %}
+    <li><a href="{{ url('nefarian_plugin_field_tag_tag_edit', {id: tag.id}) }}">{{ tag.name|capitalize }}</a></li>
 {% endblock %}
 
 {% block page_title %}

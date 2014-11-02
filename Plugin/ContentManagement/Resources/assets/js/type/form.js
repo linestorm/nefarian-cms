@@ -1,4 +1,4 @@
-define(['jquery', 'jqueryui', 'bootstrap', 'cms/core/api'], function ($, ui, bs, api) {
+define(['jquery', 'jqueryui', 'bootstrap', 'bootbox', 'cms/core/api'], function ($, ui, bs, bootbox, api) {
 
     $(document).ready(function () {
         $('form.api-save').on('submit', function (e) {
@@ -31,33 +31,33 @@ define(['jquery', 'jqueryui', 'bootstrap', 'cms/core/api'], function ($, ui, bs,
         });
 
         $typeFieldTable.on('click', '.field-type-remove', function(){
-            if(confirm('Are you sure you want to remove this field?')){
-                $(this).closest('tr').remove();
-                $typeFieldTable.sortable('refresh');
-            }
-        });
-
-        $typeFieldTable.sortable({
-            items: '> tr',
-            axis: 'y',
-            create: function( event, ui ) {
-                var $ul = $(this);
-                $ul.children('tr').sort(function(a,b) {
-                    var keyA = parseInt(a.dataset.order);
-                    var keyB = parseInt(b.dataset.order);
-                    if (keyA < keyB) return -1;
-                    if (keyA > keyB) return 1;
-                    return 0;
-                }).appendTo($ul);
-            },
-            stop:function(e,ui){
-
-                // update the order
-                $typeFieldTable.children('tr').each(function(i, tr){
-                    var $tr = $(tr);
-                    $tr.find('input[name*="[order]"]').val(i);
-                });
-            }
+            var $btn = $(this);
+            bootbox.dialog({
+                title: "Delete field",
+                message: "Please confirm you want to delete this field. This action cannot be undone.",
+                closeButton: false,
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-default"
+                    },
+                    delete: {
+                        label: "Delete Field",
+                        className: "btn-danger",
+                        callback: function() {
+                            api.call($btn.data('url'), {
+                                type: 'DELETE',
+                                success: function(ob){
+                                    $btn.closest('tr').remove();
+                                    bootbox.hideAll()
+                                }
+                            });
+                            return false;
+                        }
+                    }
+                },
+                className: "bootbox-md"
+            });
         });
 
     });

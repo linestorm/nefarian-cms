@@ -172,7 +172,7 @@ class ContentTypeController extends Controller
                 'class' => 'api-save'
             ),
             'method' => 'POST',
-            'action' => $this->generateUrl('nefarian_api_content_management_put_type', array('id' => $contentType->getId())),
+            'action' => $this->generateUrl('nefarian_api_content_management_post_type', array('id' => $contentType->getId())),
         ));
 
         return $this->render(
@@ -184,14 +184,14 @@ class ContentTypeController extends Controller
         );
     }
 
-    public function editFieldAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
+    public function editFieldAction(ContentType $contentType, ContentTypeField $contentTypeField)
     {
         /** @var EntityManager $em */
         $configManager = $this->get('nefarian_core.config_manager');
 
-        $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
-        $fieldConfig     = $configManager->get($fieldConfigName);
-        $fieldConfigForm = $configManager->getConfigForm($fieldConfigName);
+        $fieldConfigName     = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
+        $fieldConfig         = $configManager->get($fieldConfigName);
+        $fieldConfigForm     = $configManager->getConfigForm($fieldConfigName);
 
         $form = $this->createForm($fieldConfigForm, $fieldConfig, array(
             'attr' => array(

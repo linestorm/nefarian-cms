@@ -1,6 +1,6 @@
 category:
   class:   Nefarian\CmsBundle\Plugin\FieldCategory\Entity\FieldCategory
   form:    Nefarian\CmsBundle\Plugin\FieldCategory\Form\FieldCategoryForm
-  properties:
-    limit: 1
-    limit_required: true
+  configs:
+    settings:
+      fields: ~

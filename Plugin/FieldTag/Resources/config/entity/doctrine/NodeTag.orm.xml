@@ -4,10 +4,17 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                     http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag" table="node_tag">
+    <entity name="Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag" table="node_tag"
+            repository-class="Nefarian\CmsBundle\Plugin\FieldTag\Entity\Repository\NodeTagRepository">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
+        <one-to-many target-entity="Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag" mapped-by="parentTag" field="childTags">
+
+        </one-to-many>
+
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag" field="parentTag" inversed-by="childTags">
+        </many-to-one>
     </entity>
 
 </doctrine-mapping>

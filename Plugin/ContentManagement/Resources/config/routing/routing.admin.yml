@@ -23,7 +23,7 @@ content_type_create_fields:
   defaults: { _controller: ContentType:createFields, _method: POST }
 
 content_type_edit_field:
-  path:     /content/type/{id}/fields/edit/{field}
+  path:     /content/type/{contentType}/fields/edit/{contentTypeField}
   defaults: { _controller: ContentType:editField }
 
 node_create_select:

@@ -22,16 +22,14 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Health</th>
-                    <th>Options</th>
+                    <th width="70%">Name</th>
+                    <th width="30%">Options</th>
                 </tr>
             </thead>
             <tbody>
                 {% for contentType in contentTypes %}
                     <tr>
-                        <td>{{ contentType.name }}</td>
-                        <td></td>
+                        <td>{{ contentType.label }}</td>
                         <td>
                             <div class="btn-group">
                                 <a href="{{ url('nefarian_plugin_content_management_content_type_edit', {id: contentType.id}) }}" class="btn btn-primary">Edit</a>

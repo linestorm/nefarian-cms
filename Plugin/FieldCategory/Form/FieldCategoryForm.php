@@ -2,7 +2,9 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldCategory\Form;
 
+use Nefarian\CmsBundle\Configuration\Configuration;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -13,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @package Nefarian\CmsBundle\Plugin\FieldCategory\Form
  * @author  Andy Thorne <contrabandvr@gmail.com>
  */
-class FieldCategoryForm extends AbstractType
+class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
 {
     /**
      * @var Field
@@ -22,8 +24,9 @@ class FieldCategoryForm extends AbstractType
 
     /**
      * @param Field $field
+     * @param Configuration $configuration
      */
-    function __construct(Field $field)
+    function __construct(Field $field, Configuration $configuration)
     {
         $this->field = $field;
     }
