@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @package Nefarian\CmsBundle\Configuration\Form
  * @author Andy Thorne <contrabandvr@gmail.com>
  */
-class ConfigSettingsForm extends AbstractType
+class ConfigurationSettingsForm extends AbstractType
 {
     /**
      * @var Configuration
@@ -35,8 +35,8 @@ class ConfigSettingsForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        foreach ($this->configuration->getAll() as $name => $value) {
-            $builder->add($name, 'text');
+        foreach ($this->configuration->getAllSchemas() as $name => $config) {
+            $builder->add($name, $config->type, (array)$config->options);
         }
     }
 
@@ -54,5 +54,13 @@ class ConfigSettingsForm extends AbstractType
     public function getName()
     {
         return 'nefarian_config_settings';
+    }
+
+    /**
+     * @return Configuration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
     }
 }
