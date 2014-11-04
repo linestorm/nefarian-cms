@@ -36,7 +36,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.removePlugins = 'elementspath';
 
     //config.extraPlugins = 'youtube,autogrow,pbckcode,linestorm-media,carousel,featurette,jumbotron,trifold,listgroup,badge';
-    config.extraPlugins = 'autogrow';
+    config.extraPlugins = 'divarea';
 
     config.contentsCss = '/css/cms/core/main.css';
 

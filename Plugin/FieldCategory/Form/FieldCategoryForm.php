@@ -23,7 +23,7 @@ class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
     protected $field;
 
     /**
-     * @param Field $field
+     * @param Field         $field
      * @param Configuration $configuration
      */
     function __construct(Field $field, Configuration $configuration)
@@ -40,8 +40,9 @@ class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
     {
         $builder
             ->add('category', 'entity', array(
+                'label' => false,
                 'property' => 'name',
-                'class'    => 'Nefarian\CmsBundle\Plugin\FieldCategory\Entity\NodeCategory'
+                'class' => 'Nefarian\CmsBundle\Plugin\FieldCategory\Entity\NodeCategory'
             ));
     }
 

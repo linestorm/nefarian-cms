@@ -24,6 +24,7 @@
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>
+                <cascade-detach/>
             </cascade>
         </one-to-many>
 

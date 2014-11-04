@@ -7,6 +7,8 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -20,17 +22,22 @@ class FieldBodyForm extends AbstractType implements FieldNodeFormInterface
     /**
      * @var Field
      */
-    protected $Field;
+    protected $field;
 
     /**
-     * @param Field $Field
+     * @var Configuration
+     */
+    protected $configuration;
+
+    /**
+     * @param Field         $Field
      * @param Configuration $configuration
      */
     function __construct(Field $Field, Configuration $configuration)
     {
-        $this->Field = $Field;
+        $this->field         = $Field;
+        $this->configuration = $configuration;
     }
-
 
     /**
      * @param FormBuilderInterface $builder
@@ -38,13 +45,15 @@ class FieldBodyForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $limit = $this->configuration->get('limit');
         $builder
             ->add('body', 'textarea', array(
+                'label' => false,
                 'attr' => array(
-                    'class' => 'form-control wysiwyg-editor'
-                )
-            ))
-        ;
+                    'class' => 'form-control wysiwyg-editor',
+                    'data-limit' => $limit,
+                ),
+            ));
     }
 
     /**
@@ -53,9 +62,11 @@ class FieldBodyForm extends AbstractType implements FieldNodeFormInterface
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Nefarian\CmsBundle\Plugin\FieldBody\Entity\FieldBody'
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Nefarian\CmsBundle\Plugin\FieldBody\Entity\FieldBody',
+            )
+        );
     }
 
     /**

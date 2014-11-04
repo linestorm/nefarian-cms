@@ -1,5 +1,5 @@
 CKEDITOR_BASEPATH = '/vendor/ckeditor/';
-define(['jquery', 'jckeditor'], function ( $, ckeditor) {
+define(['jquery', 'jckeditor', 'cms/content_management/editor/editor'], function ( $, ckeditor, editor) {
 
 
     CKEDITOR.config.customConfig = '/js/cms/editor_cke/ckeditor/config.js';
@@ -17,9 +17,11 @@ define(['jquery', 'jckeditor'], function ( $, ckeditor) {
     CKEDITOR.plugins.addExternal( 'badge',              window.lineStormTags.assets.path+'/bundles/linestormarticlecomponent/js/ckeditor/plugins/badge/' );
     */
 
-    // add ckeditor to all the pre-loaded articles
-    $('textarea.wysiwyg-editor').each(function(){
-        var $editor = $(this)
-        $editor.ckeditor().focus();
+    editor.registerEditor('ckeditor', function($scope){
+        $scope.find('textarea.wysiwyg-editor').each(function(){
+            var $editor = $(this);
+            $editor.ckeditor().focus();
+        });
     });
+
 });

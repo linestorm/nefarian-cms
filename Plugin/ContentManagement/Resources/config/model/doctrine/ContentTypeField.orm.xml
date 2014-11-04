@@ -5,7 +5,8 @@
 
     <mapped-superclass name="Nefarian\CmsBundle\Plugin\ContentManagement\Model\ContentTypeField" table="content_type_field">
       <field name="order" type="integer" column="field_order" nullable="false" />
-      <field name="name" type="text" column="name" length="25" nullable="false" />
+        <field name="name" type="string" column="name" length="25" nullable="false" />
+        <field name="label" type="string" column="label" length="55" nullable="false" />
     </mapped-superclass>
 
 </doctrine-mapping>

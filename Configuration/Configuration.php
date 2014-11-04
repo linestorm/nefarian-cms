@@ -40,6 +40,7 @@ class Configuration
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function has($name)
@@ -48,14 +49,18 @@ class Configuration
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param null   $default
+     *
      * @return mixed
      */
-    public function get($name)
+    public function get($name, $default = null)
     {
         if ($this->has($name)) {
             return $this->properties[$name];
         }
+
+        return $default;
     }
 
     /**
@@ -68,6 +73,7 @@ class Configuration
 
     /**
      * @param string $name
+     *
      * @return ConfigSchema
      */
     public function getSchema($name)

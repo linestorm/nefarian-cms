@@ -98,6 +98,9 @@ $fa-font-path: "/vendor/font-awesome/fonts";
 @import "custom";
 @import "./widgets/menu_widget";
 
+// add widgets here
+// @import "./theme/widgets/...";
+
 [class*="fa-"] {
     display: inline-block;
     font-family: FontAwesome;

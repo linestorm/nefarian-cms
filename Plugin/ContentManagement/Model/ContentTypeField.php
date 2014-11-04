@@ -32,6 +32,11 @@ class ContentTypeField
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $label;
+
+    /**
      * @var int
      */
     protected $order;
@@ -58,6 +63,22 @@ class ContentTypeField
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
 
     /**

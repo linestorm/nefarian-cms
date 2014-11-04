@@ -121,4 +121,50 @@ html body.page-signin {
     }
 }
 
+.field-group {
+  ul.field-group-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 
+    > li.field-group-item {
+
+      .field-controls {
+        float: left;
+
+        .field-sort-icon {
+          color: #bbb;
+          cursor: move;
+          display: block;
+          position: relative;
+          margin: -8px 6px -8px 0;
+          padding: 8px 12px;
+          line-height: 21px;
+        }
+        .field-delete-widget {
+
+        }
+      }
+
+      .field-group-item-widget {
+        color: #444;
+        text-decoration: none;
+        float: none;
+        overflow: hidden;
+        margin-left: 40px;
+      }
+    }
+  }
+
+  .field-group-header {
+    @extend .form-group-margin, .panel-wide, .panel-padding-h;
+    border-top: solid #ccc;
+    position: relative;
+
+    .field-control-block {
+      position: absolute;
+      right: 20px;
+      bottom: 0;
+    }
+  }
+}

@@ -2,8 +2,6 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 abstract class NodeContent
 {
 
@@ -23,14 +21,14 @@ abstract class NodeContent
     protected $node;
 
     /**
-     * @var Field
-     */
-    protected $field;
-
-    /**
      * @var ContentTypeField
      */
     protected $fieldType;
+
+    /**
+     * @var int
+     */
+    protected $delta;
 
     /**
      * @return int
@@ -73,22 +71,6 @@ abstract class NodeContent
     }
 
     /**
-     * @param Field $field
-     */
-    public function setField(Field $field)
-    {
-        $this->field = $field;
-    }
-
-    /**
-     * @return Field
-     */
-    public function getField()
-    {
-        return $this->field;
-    }
-
-    /**
      * @param ContentTypeField $fieldType
      */
     public function setFieldType(ContentTypeField $fieldType)
@@ -104,6 +86,20 @@ abstract class NodeContent
         return $this->fieldType;
     }
 
+    /**
+     * @return int
+     */
+    public function getDelta()
+    {
+        return $this->delta;
+    }
 
+    /**
+     * @param int $delta
+     */
+    public function setDelta($delta)
+    {
+        $this->delta = $delta;
+    }
 
 } 

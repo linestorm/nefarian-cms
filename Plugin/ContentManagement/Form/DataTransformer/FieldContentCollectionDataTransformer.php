@@ -4,13 +4,23 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form\DataTransformer;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class FieldCollectionDataTransformer implements DataTransformerInterface
+class FieldContentCollectionDataTransformer implements DataTransformerInterface
 {
+    /**
+     * @var
+     */
+    protected $contentTypeFieldType;
+
+    function __construct(ContentTypeField $contentTypeField)
+    {
+        $this->contentTypeField = $contentTypeField;
+    }
+
     /**
      * Transforms a value from the original representation to a transformed representation.
      *
@@ -61,7 +71,7 @@ class FieldCollectionDataTransformer implements DataTransformerInterface
      * By convention, reverseTransform() should return NULL if an empty string
      * is passed.
      *
-     * @param mixed $value The value in the transformed representation
+     * @param NodeContent[] $value The value in the transformed representation
      *
      * @return mixed The value in the original representation
      *
@@ -69,23 +79,11 @@ class FieldCollectionDataTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        $contentTypeValues = new ArrayCollection();
-        foreach ($value as $contentTypes) {
-            if($contentTypes instanceof NodeContent)
-            {
-                continue;
-                $contentTypeValues[] = $contentTypes;
-            }
-            else {
-                $contentTypes = array_values($contentTypes);
-                foreach ($contentTypes as $i => $contentType) {
-                    $contentType->setDelta($i);
-                    $contentTypeValues[] = $contentType;
-                }
-            }
+        foreach ($value as $contentType) {
+            $contentType->setFieldType($this->contentTypeField);
         }
 
-        return $contentTypeValues;
+        return $value;
     }
 
 } 

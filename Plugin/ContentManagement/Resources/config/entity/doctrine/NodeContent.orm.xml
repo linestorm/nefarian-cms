@@ -11,9 +11,8 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
-        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node" field="node" inversed-by="contents">
-        </many-to-one>
-        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field" field="field">
+        <field name="delta" type="integer" column="delta" nullable="false"/>
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node" field="node" inversed-by="contents" >
         </many-to-one>
         <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField" field="fieldType">
         </many-to-one>
