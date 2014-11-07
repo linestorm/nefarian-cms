@@ -6,6 +6,9 @@ tag:
   configs:
     settings:
       fields:
+        limit:
+          type: number
+          default: 1
         tag:
           label: Tag List
           type: tag_choice

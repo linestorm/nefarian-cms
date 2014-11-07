@@ -9,8 +9,3 @@ body:
         limit:
           type: number
           default: 1
-        limit_required:
-          type: checkbox
-          options:
-            required: false
-          default: true

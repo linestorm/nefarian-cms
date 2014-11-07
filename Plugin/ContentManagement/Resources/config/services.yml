@@ -1,5 +1,6 @@
 parameters:
   nefarian.plugins.content_management.doctrine.node_listener.class:  Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener\NodeEventListener
+  nefarian.plugins.content_management.doctrine.content_type_listener.class:  Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener\ContentTypeEventListener
 
   nefarian.plugins.content_management.form.type.field_collection.class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type\FieldCollectionType
   nefarian.plugins.content_management.form.type.field_content_collection.class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type\FieldContentCollectionType
@@ -15,6 +16,14 @@ services:
 #      - @security.context
 #    tags:
 #      - { name: doctrine.event_subscriber }
+  nefarian.plugins.content_management.doctrine.content_type_listener:
+    class: %nefarian.plugins.content_management.doctrine.content_type_listener.class%
+    arguments:
+      - @service_container
+#    calls:
+#      - [ setConfigManager, [@nefarian_core.config_manager]]
+    tags:
+      - { name: doctrine.event_subscriber }
 
   nefarian.plugin.content_management:
     class: Nefarian\CmsBundle\Plugin\ContentManagement\ContentManagementPlugin

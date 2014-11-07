@@ -18,6 +18,10 @@ content_type_edit_fields:
   path:     /content/type/{id}/fields/edit
   defaults: { _controller: ContentType:editFields }
 
+content_type_edit_field_details:
+  path:     /content/type/{contentTypeField}/details/edit
+  defaults: { _controller: ContentType:editFieldDetailsAction }
+
 content_type_create_fields:
   path:     /content/type/{id}/fields/create
   defaults: { _controller: ContentType:createFields, _method: POST }

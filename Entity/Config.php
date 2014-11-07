@@ -3,57 +3,12 @@
 namespace Nefarian\CmsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Nefarian\CmsBundle\Model\Config as BaseConfig;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="config")
  */
-class Config
+class Config extends BaseConfig
 {
-    /**
-     * @var string
-     *
-     * @ORM\Id
-     * @ORM\Column(type="string")
-     */
-    protected $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="blob")
-     */
-    protected $value;
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param mixed $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
 } 

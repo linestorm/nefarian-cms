@@ -74,7 +74,6 @@ class FieldCollectionDataTransformer implements DataTransformerInterface
             if($contentTypes instanceof NodeContent)
             {
                 continue;
-                $contentTypeValues[] = $contentTypes;
             }
             else {
                 $contentTypes = array_values($contentTypes);

@@ -4,6 +4,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -56,6 +57,16 @@ class NodeEventListener implements EventSubscriber
             if(!$entity->getCreatedOn())
             {
                 $entity->setCreatedOn(new \DateTime());
+            }
+        }
+
+        if($entity instanceof ContentType)
+        {
+            $em = $args->getEntityManager();
+
+            foreach ($entity->getTypeFields() as $field) {
+                $fieldConfigName = 'content_type.' . $entity->getName() . '.' . $field->getName();
+                $this->configManager->duplicate($field->getField()->getName() . '.settings', $fieldConfigName);
             }
         }
 

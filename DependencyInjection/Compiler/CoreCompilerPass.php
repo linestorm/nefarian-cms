@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
 use Nefarian\CmsBundle\Plugin\PluginCompiler;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

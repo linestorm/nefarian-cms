@@ -127,6 +127,20 @@ class ConfigManager
     }
 
     /**
+     * Rename a config entity by name
+     *
+     * @param string $oldName
+     * @param string $newName
+     */
+    public function rename($oldName, $newName)
+    {
+        $configEntity = $this->repository->find($oldName);
+        $configEntity->setName($newName);
+        $this->em->persist($configEntity);
+        $this->em->flush($configEntity);
+    }
+
+    /**
      * Duplicates an existing configuration into a new name
      *
      * @param string $name

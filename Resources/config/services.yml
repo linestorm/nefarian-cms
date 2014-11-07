@@ -88,7 +88,6 @@ services:
     tags:
       - { name: routing.loader }
 
-
   #
   # Views
   nefarian_core.views.manager:

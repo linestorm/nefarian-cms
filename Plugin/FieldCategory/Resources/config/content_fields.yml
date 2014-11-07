@@ -3,4 +3,7 @@ category:
   form:    Nefarian\CmsBundle\Plugin\FieldCategory\Form\FieldCategoryForm
   configs:
     settings:
-      fields: ~
+      fields:
+        limit:
+          type: number
+          default: 1
