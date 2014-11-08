@@ -209,9 +209,9 @@ class ContentTypeController extends Controller
 
         $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
         $fieldConfig     = $configManager->get($fieldConfigName);
-        $fieldConfigForm = $configManager->getConfigForm($fieldConfigName);
+        $form = $fieldConfig->getForm();
 
-        $form = $this->createForm($fieldConfigForm, $fieldConfig, array(
+        $form = $this->createForm($form, $fieldConfig, array(
             'attr' => array(
                 'class' => 'api-save'
             ),

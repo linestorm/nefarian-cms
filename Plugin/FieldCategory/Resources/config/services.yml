@@ -5,3 +5,8 @@ services:
     class: Nefarian\CmsBundle\Plugin\FieldCategory\FieldCategoryPlugin
     tags:
       - { name: nefarian.plugin }
+
+  nefarian.plugin.field_category.field.configuration:
+    class: Nefarian\CmsBundle\Plugin\FieldCategory\Configuration\FieldCategoryConfiguration
+    tags:
+      - { name: nefarian.configuration, config: field.category }

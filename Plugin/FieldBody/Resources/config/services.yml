@@ -5,3 +5,8 @@ services:
     class: Nefarian\CmsBundle\Plugin\FieldBody\FieldBodyPlugin
     tags:
       - { name: nefarian.plugin }
+
+  nefarian.plugin.field_body.field.configuration:
+    class: Nefarian\CmsBundle\Plugin\FieldBody\Configuration\FieldBodyConfiguration
+    tags:
+      - { name: nefarian.configuration, config: field.body }

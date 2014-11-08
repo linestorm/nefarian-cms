@@ -2,11 +2,8 @@
 
 namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 
-use Nefarian\CmsBundle\Plugin\PluginCompiler;
-use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -36,11 +33,11 @@ class CoreCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $assetManagerDefinition = $container->getDefinition('assetic.asset_manager');
+        $assetManagerDefinition  = $container->getDefinition('assetic.asset_manager');
 
         // tell asstic where the plugin assets are
         $assetNamespace = '@core/';
-        $folder = $this->bundle->getPath() . '/Resources/assets/js';
+        $folder         = $this->bundle->getPath() . '/Resources/assets/js';
         if (is_dir($folder)) {
             $jsRoot   = '/js';
             $dir      = new \RecursiveDirectoryIterator($folder);

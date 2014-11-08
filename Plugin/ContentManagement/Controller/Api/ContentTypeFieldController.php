@@ -46,7 +46,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
 
         $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
         $fieldConfig     = $configManager->get($fieldConfigName);
-        $fieldConfigForm = $configManager->getConfigForm($fieldConfigName);
+        $fieldConfigForm = $fieldConfig->getForm();
 
         $payload = json_decode($request->getContent(), true);
 

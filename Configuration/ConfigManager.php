@@ -6,9 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Nefarian\CmsBundle\Cache\CacheManager;
 use Nefarian\CmsBundle\Cache\CacheProviderInterface;
-use Nefarian\CmsBundle\Configuration\Event\ConfigFormBuildEvent;
 use Nefarian\CmsBundle\Configuration\Form\ConfigSettingsForm;
-use Nefarian\CmsBundle\Configuration\Form\ConfigurationSettingsForm;
 use Nefarian\CmsBundle\Entity\Config;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -20,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class ConfigManager
 {
-    const CONFIG_BUILD = 'nefarian.configuration.rebuild';
+    const CONFIG_BUILD = 'nefarian.configuration.build';
     const CONFIG_FORM_BUILD = 'nefarian.configuration.form.build';
 
     /**
@@ -39,14 +37,14 @@ class ConfigManager
     private $cacheBin;
 
     /**
-     * @var array
-     */
-    private $configs;
-
-    /**
      * @var EventDispatcher
      */
     private $eventDispatcher;
+
+    /**
+     * @var ConfigurationInterface[]
+     */
+    private $configurations;
 
     function __construct(EntityManager $em, CacheManager $cacheManager, EventDispatcher $eventDispatcher)
     {
@@ -57,18 +55,21 @@ class ConfigManager
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function addConfiguration($name, $config)
+    public function setBaseConfigurations(array $configurations)
     {
-        $this->configs[$name] = $config;
+        $this->configurations = $configurations;
     }
+
 
     /**
      * Rebuild all configuration values
+     *
+     * Fires the event nefarian.configuration.build
      */
     public function rebuild()
     {
-        foreach ($this->configs as $name => $defaults) {
-            $this->set($name, new Configuration($defaults));
+        foreach ($this->configurations as $name => $configuration) {
+            $this->set($name, $configuration);
         }
         $this->eventDispatcher->dispatch(self::CONFIG_BUILD);
     }
@@ -77,7 +78,8 @@ class ConfigManager
      * Fetch a configuration object by name
      *
      * @param string $name
-     * @return Configuration
+     *
+     * @return ConfigurationInterface
      */
     public function get($name)
     {
@@ -97,21 +99,21 @@ class ConfigManager
     /**
      * Set the value of a configuration
      *
-     * @param string $name
-     * @param Configuration $config
+     * @param string                 $name
+     * @param ConfigurationInterface $configuration
      */
-    public function set($name, Configuration $config)
+    public function set($name, ConfigurationInterface $configuration)
     {
         $configEntity = $this->repository->find($name);
         if (!$configEntity instanceof Config) {
             $configEntity = new Config();
             $configEntity->setName($name);
         }
-        $configEntity->setValue(serialize($config));
+        $configEntity->setValue(serialize($configuration));
         $this->em->persist($configEntity);
         $this->em->flush($configEntity);
 
-        $this->cacheBin->save($name, $config);
+        $this->cacheBin->save($name, $configuration);
     }
 
     /**
@@ -124,47 +126,5 @@ class ConfigManager
         $configEntity = $this->repository->find($name);
         $this->em->remove($configEntity);
         $this->em->flush($configEntity);
-    }
-
-    /**
-     * Rename a config entity by name
-     *
-     * @param string $oldName
-     * @param string $newName
-     */
-    public function rename($oldName, $newName)
-    {
-        $configEntity = $this->repository->find($oldName);
-        $configEntity->setName($newName);
-        $this->em->persist($configEntity);
-        $this->em->flush($configEntity);
-    }
-
-    /**
-     * Duplicates an existing configuration into a new name
-     *
-     * @param string $name
-     * @param string $newName
-     */
-    public function duplicate($name, $newName)
-    {
-        $config = $this->get($name);
-        if ($config) {
-            $base = clone $config;
-            $this->set($newName, $base);
-        }
-    }
-
-    /**
-     * Get a form for a config entity
-     *
-     * @param string $name
-     * @return ConfigurationSettingsForm
-     */
-    public function getConfigForm($name)
-    {
-        $form = new ConfigurationSettingsForm($this->get($name));
-        $this->eventDispatcher->dispatch(self::CONFIG_FORM_BUILD, new ConfigFormBuildEvent($form));
-        return $form;
     }
 } 

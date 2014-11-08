@@ -26,3 +26,9 @@ services:
     class: Nefarian\CmsBundle\Plugin\FieldTag\EventSubscriber\ConfigFormBuildEventSubscriber
     tags:
         - { name: kernel.event_subscriber }
+
+
+  nefarian.plugin.field_tag.field.configuration:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Configuration\FieldTagConfiguration
+    tags:
+      - { name: nefarian.configuration, config: field.tag }

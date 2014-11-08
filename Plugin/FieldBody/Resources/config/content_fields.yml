@@ -3,9 +3,3 @@ body:
   form:    Nefarian\CmsBundle\Plugin\FieldBody\Form\FieldBodyForm
   assets:
     - @plugin_field_body/node/body.js
-  configs:
-    settings:
-      fields:
-        limit:
-          type: number
-          default: 1

@@ -27,7 +27,6 @@ class PluginCompilerPass implements CompilerPassInterface
 
         $pluginManagerDefinition = $container->getDefinition('nefarian_core.plugin_manager');
         $pluginRouterDefinition  = $container->getDefinition('nefarian_core.routing.plugin_loader');
-        $configManagerDefinition = $container->getDefinition('nefarian_core.config_manager');
         $fieldManagerDefinition  = $container->getDefinition('nefarian_core.content_field_manager');
         $apiRouterDefinition     = $container->getDefinition('nefarian_core.routing.api_loader');
         $menuManagerDefinition   = $container->getDefinition('nefarian_core.menu_manager');
@@ -230,8 +229,6 @@ class PluginCompilerPass implements CompilerPassInterface
 
             // load in all the content fields
 
-            $processor = new Processor();
-
             $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
             $class        = 'Nefarian\CmsBundle\Content\Field\Field';
             foreach ($fieldsConfig as $fieldName => $fieldConfig) {
@@ -239,18 +236,6 @@ class PluginCompilerPass implements CompilerPassInterface
                 $fieldDefinition = $container->register($sId, $class);
                 $fieldDefinition->setArguments(array($fieldName, $fieldConfig));
                 $fieldManagerDefinition->addMethodCall('addField', array(new Reference($sId)));
-
-                // build the configurations
-                foreach ($fieldConfig['configs'] as $configName => $config) {
-                    foreach ($config['fields'] as $name => &$field) {
-                        if (!is_array($field['options'])) {
-                            $field['options'] = array();
-                        }
-                    }
-                    $configManagerDefinition->addMethodCall('addConfiguration', array(
-                        $fieldName . '.' . $configName, $config['fields']
-                    ));
-                }
             }
 
             // add the plugin forms to the form list
