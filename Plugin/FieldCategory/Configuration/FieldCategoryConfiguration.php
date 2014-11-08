@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldCategory\Configuration;
 
 use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\FieldConfiguration;
+use Nefarian\CmsBundle\Plugin\FieldCategory\Form\FieldCategorySettingsForm;
 
 /**
  * Class FieldCategoryConfiguration
@@ -25,7 +26,7 @@ class FieldCategoryConfiguration extends FieldConfiguration
      */
     public function getForm()
     {
-        return null;
+        return new FieldCategorySettingsForm();
     }
 
 } 

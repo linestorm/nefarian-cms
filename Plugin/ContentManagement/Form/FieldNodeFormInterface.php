@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form;
 
+use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 
 /**
@@ -12,5 +13,5 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
  */
 interface FieldNodeFormInterface
 {
-    function __construct(Field $field);
+    function __construct(Field $field, ConfigurationInterface $configuration);
 } 

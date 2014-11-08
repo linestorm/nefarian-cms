@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldTag\Configuration;
 
 use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\FieldConfiguration;
+use Nefarian\CmsBundle\Plugin\FieldTag\Form\FieldTagSettingsForm;
 
 /**
  * Class FieldTagConfiguration
@@ -12,6 +13,8 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\FieldConfiguration
  */
 class FieldTagConfiguration extends FieldConfiguration
 {
+    protected $tag;
+
     /**
      * {@inheritdoc}
      */
@@ -25,7 +28,23 @@ class FieldTagConfiguration extends FieldConfiguration
      */
     public function getForm()
     {
-        return null;
+        return new FieldTagSettingsForm();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * @param mixed $tag
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
     }
 
 } 

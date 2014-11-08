@@ -11,22 +11,16 @@ services:
   #
   # Widget Types
   nefarian.plugins.field_tag.form.type.tag_collection:
-        class: %nefarian.plugins.field_tag.form.type.tag_collection.class%
-        arguments: [@doctrine.orm.default_entity_manager]
-        tags:
-            - { name: form.type, alias: tag }
-  nefarian.plugins.field_tag.form.type.tag_choice:
-        class: %nefarian.plugins.field_tag.form.type.tag_choice.class%
-        arguments: [@doctrine.orm.default_entity_manager]
-        tags:
-            - { name: form.type, alias: tag_choice }
-
-
-  nefarian.plugins.field_tag.event_listener.configuration:
-    class: Nefarian\CmsBundle\Plugin\FieldTag\EventSubscriber\ConfigFormBuildEventSubscriber
+    class: %nefarian.plugins.field_tag.form.type.tag_collection.class%
+    arguments: [@doctrine.orm.default_entity_manager]
     tags:
-        - { name: kernel.event_subscriber }
+        - { name: form.type, alias: tag }
 
+  nefarian.plugins.field_tag.form.type.tag_choice:
+    class: %nefarian.plugins.field_tag.form.type.tag_choice.class%
+    arguments: [@doctrine.orm.default_entity_manager]
+    tags:
+        - { name: form.type, alias: tag_choice }
 
   nefarian.plugin.field_tag.field.configuration:
     class: Nefarian\CmsBundle\Plugin\FieldTag\Configuration\FieldTagConfiguration

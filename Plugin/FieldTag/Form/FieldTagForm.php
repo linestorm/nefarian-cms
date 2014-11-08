@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldTag\Form;
 
 use Nefarian\CmsBundle\Configuration\Configuration;
+use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
@@ -23,15 +24,15 @@ class FieldTagForm extends AbstractType implements FieldNodeFormInterface
     protected $field;
 
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     protected $config;
 
     /**
      * @param Field         $field
-     * @param Configuration $configuration
+     * @param ConfigurationInterface $configuration
      */
-    function __construct(Field $field, Configuration $configuration)
+    function __construct(Field $field, ConfigurationInterface $configuration)
     {
         $this->field  = $field;
         $this->config = $configuration;
