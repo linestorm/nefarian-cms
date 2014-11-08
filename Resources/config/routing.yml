@@ -6,3 +6,7 @@ nefarian_api:
   type:       nefarian_api
 
 
+
+nefarian_web:
+  resource:   .
+  type:       nefarian_web

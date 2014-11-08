@@ -16,6 +16,7 @@ parameters:
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
   nefarian_core.routing.api_loader.class:    Nefarian\CmsBundle\Router\ApiLoader
+  nefarian_core.routing.web_loader.class:    Nefarian\CmsBundle\Router\webLoader
 
   # Theming
   nefarian_core.theme_manager.class:  Nefarian\CmsBundle\Theme\ThemeManager
@@ -90,6 +91,16 @@ services:
     class: %nefarian_core.routing.api_loader.class%
     tags:
       - { name: routing.loader }
+  nefarian_core.routing.web_loader:
+    class: %nefarian_core.routing.web_loader.class%
+    tags:
+      - { name: routing.loader }
+
+  nefarian_core.routing.route_provider:
+    class: Nefarian\CmsBundle\Router\NefarianRouteProvider
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
 
   #
   # Views

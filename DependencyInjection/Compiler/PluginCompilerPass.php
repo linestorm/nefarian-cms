@@ -29,6 +29,7 @@ class PluginCompilerPass implements CompilerPassInterface
         $pluginRouterDefinition  = $container->getDefinition('nefarian_core.routing.plugin_loader');
         $fieldManagerDefinition  = $container->getDefinition('nefarian_core.content_field_manager');
         $apiRouterDefinition     = $container->getDefinition('nefarian_core.routing.api_loader');
+        $webRouterDefinition     = $container->getDefinition('nefarian_core.routing.web_loader');
         $menuManagerDefinition   = $container->getDefinition('nefarian_core.menu_manager');
         $assetManagerDefinition  = $container->getDefinition('assetic.asset_manager');
         $twigLoaderDefinition    = $container->findDefinition('twig.loader.plugin_loader');
@@ -51,13 +52,17 @@ class PluginCompilerPass implements CompilerPassInterface
                 $pluginRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
             }
 
-
             // register the plugins with the router
             $routingResource = $path . DIRECTORY_SEPARATOR . 'Resources/config/routing/routing.api.yml';
             if (file_exists($routingResource)) {
                 $apiRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
             }
 
+            // register the plugins with the router
+            $routingResource = $path . DIRECTORY_SEPARATOR . 'Resources/config/routing/routing.web.yml';
+            if (file_exists($routingResource)) {
+                $webRouterDefinition->addMethodCall('addPluginResource', array($pluginReference, $routingResource));
+            }
 
             // Add the default plugin template path to the twig loader
             $twigLoaderDefinition->addMethodCall('addPlugin', array($pluginReference));

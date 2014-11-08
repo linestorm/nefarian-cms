@@ -34,6 +34,13 @@ class Route
     protected $path;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, unique=True, nullable=False)
+     */
+    protected $pattern;
+
+    /**
      * @var \Symfony\Component\Routing\Route
      *
      * @ORM\Column(type="object", nullable=False)
@@ -81,7 +88,7 @@ class Route
     }
 
     /**
-     * @return mixed
+     * @return \Symfony\Component\Routing\Route
      */
     public function getRoute()
     {
@@ -94,6 +101,22 @@ class Route
     public function setRoute($route)
     {
         $this->route = $route;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPattern()
+    {
+        return $this->pattern;
+    }
+
+    /**
+     * @param string $pattern
+     */
+    public function setPattern($pattern)
+    {
+        $this->pattern = $pattern;
     }
 
 }

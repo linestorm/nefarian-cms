@@ -8,26 +8,25 @@ parameters:
 
 services:
 
+  nefarian.plugin.content_management:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\ContentManagementPlugin
+    tags:
+      - { name: nefarian.plugin }
+
   #
   # Doctrine - Map node listener
-#  nefarian.plugins.content_management.doctrine.node_listener:
-#    class: %nefarian.plugins.content_management.doctrine.node_listener.class%
-#    arguments:
-#      - @security.context
-#    tags:
-#      - { name: doctrine.event_subscriber }
-
+  nefarian.plugins.content_management.doctrine.node_listener:
+    class: %nefarian.plugins.content_management.doctrine.node_listener.class%
+    arguments:
+      - @service_container
+    tags:
+      - { name: doctrine.event_subscriber }
   nefarian.plugins.content_management.doctrine.content_type_listener:
     class: %nefarian.plugins.content_management.doctrine.content_type_listener.class%
     arguments:
       - @service_container
     tags:
       - { name: doctrine.event_subscriber }
-
-  nefarian.plugin.content_management:
-    class: Nefarian\CmsBundle\Plugin\ContentManagement\ContentManagementPlugin
-    tags:
-      - { name: nefarian.plugin }
 
   #
   # Forms - field collection
