@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldCategory\Form;
 
 use Nefarian\CmsBundle\Configuration\Configuration;
+use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
@@ -23,10 +24,10 @@ class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
     protected $field;
 
     /**
-     * @param Field         $field
-     * @param Configuration $configuration
+     * @param Field                  $field
+     * @param ConfigurationInterface $configuration
      */
-    function __construct(Field $field, Configuration $configuration)
+    function __construct(Field $field, ConfigurationInterface $configuration)
     {
         $this->field = $field;
     }

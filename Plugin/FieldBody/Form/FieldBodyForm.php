@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldBody\Form;
 
 use Nefarian\CmsBundle\Configuration\Configuration;
+use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
@@ -25,17 +26,17 @@ class FieldBodyForm extends AbstractType implements FieldNodeFormInterface
     protected $field;
 
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     protected $configuration;
 
     /**
-     * @param Field         $Field
-     * @param Configuration $configuration
+     * @param Field         $field
+     * @param ConfigurationInterface $configuration
      */
-    function __construct(Field $Field, Configuration $configuration)
+    function __construct(Field $field, ConfigurationInterface $configuration)
     {
-        $this->field         = $Field;
+        $this->field         = $field;
         $this->configuration = $configuration;
     }
 
@@ -45,7 +46,7 @@ class FieldBodyForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $limit = $this->configuration->get('limit');
+        $limit = $this->configuration->getLimit();
         $builder
             ->add('body', 'textarea', array(
                 'label' => false,

@@ -48,7 +48,7 @@ class FieldTagForm extends AbstractType implements FieldNodeFormInterface
         $builder
             ->add('tags', 'tag', array(
                 'tag_class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
-                'tag_base' => $this->config->get('tag'),
+                'tag_base' => $this->config->getTag(),
                 'name' => 'name',
                 'label' => false,
                 'attr' => array(

@@ -87,7 +87,7 @@ class FieldCollectionType extends AbstractType
                             'label' => false,
                         ),
                         'type_field' => $typeField,
-                        'limit' => (int)$config->get('limit', 1),
+                        'limit' => (int)$config->getLimit() ?: 1,
                         'label' => false,
                         'allow_add' => true,
                         'allow_delete' => true,
