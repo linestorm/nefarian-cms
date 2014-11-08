@@ -16,12 +16,11 @@ services:
 #      - @security.context
 #    tags:
 #      - { name: doctrine.event_subscriber }
+
   nefarian.plugins.content_management.doctrine.content_type_listener:
     class: %nefarian.plugins.content_management.doctrine.content_type_listener.class%
     arguments:
       - @service_container
-#    calls:
-#      - [ setConfigManager, [@nefarian_core.config_manager]]
     tags:
       - { name: doctrine.event_subscriber }
 
@@ -46,7 +45,8 @@ services:
         - { name: form.type, alias: field_content_collection }
 
 
-
+  #
+  # Configuration events
   nefarian.plugins.content_management.event_listener.configuration:
     class: Nefarian\CmsBundle\Plugin\ContentManagement\EventListener\ConfigurationEventSubscriber
     arguments:
@@ -54,3 +54,10 @@ services:
       - @doctrine.orm.default_entity_manager
     tags:
         - { name: kernel.event_subscriber }
+
+  #
+  # Node routing manager
+  nefarian.plugins.content_management.node_route_manager:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\Router\NodeRouterManager
+    arguments:
+      - @router

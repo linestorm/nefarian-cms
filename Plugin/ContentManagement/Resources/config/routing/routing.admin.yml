@@ -32,20 +32,20 @@ content_type_edit_field:
 
 node_create_select:
   path: /node/create
-  defaults: { _controller: Node:newSelect }
+  defaults: { _controller: Admin\Node:newSelect }
 
 node_index:
   path: /node/
-  defaults: { _controller: Node:index }
+  defaults: { _controller: Admin\Node:index }
 
 node_create:
   path: /node/{id}/create
-  defaults: { _controller: Node:new }
+  defaults: { _controller: Admin\Node:new }
   requirements:
     id: \d+
 
 node_edit:
   path: /node/{id}/edit
-  defaults: { _controller: Node:edit }
+  defaults: { _controller: Admin\Node:edit }
   requirements:
     id: \d+

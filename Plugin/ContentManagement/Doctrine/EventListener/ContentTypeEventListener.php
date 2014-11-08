@@ -3,11 +3,12 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Nefarian\CmsBundle\Configuration\ConfigManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ContentTypeEventListener
@@ -28,11 +29,11 @@ class ContentTypeEventListener implements EventSubscriber
     protected $updatedContentTypes;
 
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     protected $container;
 
-    function __construct(Container $container)
+    function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -73,11 +74,11 @@ class ContentTypeEventListener implements EventSubscriber
         $object = $args->getObject();
 
         if ($object instanceof ContentType) {
-            if($args->hasChangedField('name')) {
+            if ($args->hasChangedField('name')) {
                 $this->getConfigManager();
                 foreach ($object->getTypeFields() as $field) {
-                    $oldFieldConfigName = 'content_type.' . $args->getOldValue('name') . '.' . $field->getName();
-                    $newFieldConfigName = 'content_type.' . $args->getNewValue('name') . '.' . $field->getName();
+                    $oldFieldConfigName                             = 'content_type.' . $args->getOldValue('name') . '.' . $field->getName();
+                    $newFieldConfigName                             = 'content_type.' . $args->getNewValue('name') . '.' . $field->getName();
                     $this->updatedContentTypes[$newFieldConfigName] = $oldFieldConfigName;
                 }
             }
