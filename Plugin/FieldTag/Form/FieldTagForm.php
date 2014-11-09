@@ -26,7 +26,7 @@ class FieldTagForm extends AbstractType implements FieldNodeFormInterface
     /**
      * @var ConfigurationInterface
      */
-    protected $config;
+    protected $configuration;
 
     /**
      * @param Field         $field
@@ -35,7 +35,7 @@ class FieldTagForm extends AbstractType implements FieldNodeFormInterface
     function __construct(Field $field, ConfigurationInterface $configuration)
     {
         $this->field  = $field;
-        $this->config = $configuration;
+        $this->configuration = $configuration;
     }
 
 
@@ -45,12 +45,13 @@ class FieldTagForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $limit = $this->configuration->getLimit();
         $builder
             ->add('tags', 'tag', array(
                 'tag_class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
-                'tag_base' => $this->config->getTag(),
+                'tag_base' => $this->configuration->getTag(),
                 'name' => 'name',
-                'label' => false,
+                'label' => $limit == 1 ? null : $limit,
                 'attr' => array(
                     'class' => 'form-control content-tags'
                 )

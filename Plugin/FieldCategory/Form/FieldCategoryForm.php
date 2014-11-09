@@ -24,12 +24,18 @@ class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
     protected $field;
 
     /**
+     * @var ConfigurationInterface
+     */
+    protected $configuration;
+
+    /**
      * @param Field                  $field
      * @param ConfigurationInterface $configuration
      */
     function __construct(Field $field, ConfigurationInterface $configuration)
     {
         $this->field = $field;
+        $this->configuration = $configuration ;
     }
 
 
@@ -39,9 +45,10 @@ class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $limit = $this->configuration->getLimit();
         $builder
             ->add('category', 'entity', array(
-                'label' => false,
+                'label' => $limit == 1 ? null : $limit,
                 'property' => 'name',
                 'class' => 'Nefarian\CmsBundle\Plugin\FieldCategory\Entity\NodeCategory'
             ));

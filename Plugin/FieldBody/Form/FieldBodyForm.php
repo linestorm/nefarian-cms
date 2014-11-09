@@ -49,7 +49,7 @@ class FieldBodyForm extends AbstractType implements FieldNodeFormInterface
         $limit = $this->configuration->getLimit();
         $builder
             ->add('body', 'textarea', array(
-                'label' => false,
+                'label' => $limit == 1 ? null : $limit,
                 'attr' => array(
                     'class' => 'form-control wysiwyg-editor',
                     'data-limit' => $limit,

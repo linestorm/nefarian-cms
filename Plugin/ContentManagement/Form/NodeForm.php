@@ -56,7 +56,6 @@ class NodeForm extends AbstractType
             ->add('description', 'text', array(
                 'required' => false
             ))
-            ->add('path', 'text')
             ->add('published', 'checkbox')
             ->add('publishedOn', 'datetime', array(
                 'date_widget' => 'single_text',
