@@ -49,3 +49,7 @@ node_edit:
   defaults: { _controller: Admin\Node:edit }
   requirements:
     id: \d+
+
+routing_settings:
+  path: /routing/settings
+  defaults: { _controller: Routing:settings }

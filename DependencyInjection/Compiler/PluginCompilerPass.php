@@ -251,6 +251,14 @@ class PluginCompilerPass implements CompilerPassInterface
             }
             $container->setParameter('twig.form.resources', $formResources);
 
+            // fire any plugin compiler passes
+            $class = $plugin->getNamespace() . '\\DependencyInjection\\Compiler\\' . $plugin->getCamelName() . 'CompilerPass';
+            if(class_exists($class)){
+                /** @var CompilerPassInterface $pluginCompilerPass */
+                $pluginCompilerPass = new $class();
+                $pluginCompilerPass->process($container);
+            }
+
             /**
              * @TODO: dump cached
              * @see http://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
@@ -258,7 +266,6 @@ class PluginCompilerPass implements CompilerPassInterface
 
 
         }
-
 
     }
 

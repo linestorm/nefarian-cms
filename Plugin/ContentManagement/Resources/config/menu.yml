@@ -16,7 +16,15 @@ nodes:
   title: Content Nodes
   icon: th
   items:
+    node_create:
+      route: node_create_select
+      title: Create node
+      description: Create a new content node
     nodes:
       route: node_index
       title: View Nodes
       description: View all content nodes
+    routing:
+      route: routing_settings
+      title: Node Routing
+      description: Manage Node routes

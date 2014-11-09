@@ -20,13 +20,7 @@ class ContentTypeForm extends AbstractType
             ->add('description', 'text', array(
                 'required' => false
             ))
-            /*->add('typeFields', 'collection', array(
-                'label'        => 'Fields',
-                'type'         => new ContentTypeFieldForm(),
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-            ))*/
+            ->add('path_format', 'text')
         ;
     }
 

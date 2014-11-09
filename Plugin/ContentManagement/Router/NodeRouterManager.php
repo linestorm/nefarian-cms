@@ -2,7 +2,10 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Router;
 
-use Symfony\Cmf\Component\Routing\ChainRouterInterface;
+use Nefarian\CmsBundle\Configuration\ConfigManager;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\RoutingConfiguration;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Router\PathProcessor\PathProcessorInterface;
 
 /**
  * Class NodeRouterManager
@@ -13,17 +16,54 @@ use Symfony\Cmf\Component\Routing\ChainRouterInterface;
 class NodeRouterManager
 {
     /**
-     * @var ChainRouterInterface
+     * @var PathProcessorInterface[]
      */
-    protected $router;
+    protected $pathProcessors = array();
 
-    function __construct(ChainRouterInterface $router)
+    /**
+     * @var ConfigManager
+     */
+    protected $configManager;
+
+    function __construct(ConfigManager $configManager)
     {
-        $this->router = $router;
-
-        var_dump($this->router);
-        die;
+        $this->configManager = $configManager;
     }
 
+    /**
+     * @param PathProcessorInterface $pathProcessor
+     */
+    public function addPathProcessor(PathProcessorInterface $pathProcessor)
+    {
+        $this->pathProcessors[] = $pathProcessor;
+    }
+
+    /**
+     * @param Node   $node
+     * @param string $type
+     * @param string $field
+     *
+     * @return mixed
+     */
+    public function process(Node $node, $type, $field)
+    {
+        $term = null;
+        foreach ($this->pathProcessors as $pathProcessor) {
+            if ($pathProcessor->getType() == $type) {
+                $term = $pathProcessor->process($field, $node);
+            }
+        }
+
+        if(!$term){
+            $term = $field;
+        }
+
+        // process the result
+        /** @var RoutingConfiguration $routingConfig */
+        $routingConfig = $this->configManager->get('content_type.routing');
+        $term = $routingConfig->processString($term);
+
+        return $term;
+    }
 
 } 

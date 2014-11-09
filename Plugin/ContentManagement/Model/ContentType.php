@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -36,6 +37,16 @@ class ContentType
      * @var ContentTypeField[]
      */
     protected $typeFields;
+
+    /**
+     * @var string
+     *
+     * @Assert\Regex(
+     *      pattern="/^(\/[\w\d-]+|\/\[[\w\d-]+:[\w\d-]+\])+$/",
+     *      message="Format must follow a path structure (e.g. /node/[node:title]")
+     * )
+     */
+    protected $pathFormat;
 
     /**
      * Initialisation
@@ -126,5 +137,22 @@ class ContentType
     {
         return $this->typeFields;
     }
+
+    /**
+     * @return string
+     */
+    public function getPathFormat()
+    {
+        return $this->pathFormat;
+    }
+
+    /**
+     * @param string $pathFormat
+     */
+    public function setPathFormat($pathFormat)
+    {
+        $this->pathFormat = $pathFormat;
+    }
+
 
 } 

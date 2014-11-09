@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Nefarian\CmsBundle\Entity\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -23,6 +24,11 @@ class Node
      * @var string
      */
     protected $path;
+
+    /**
+     * @var Route
+     */
+    protected $route;
 
     /**
      * @var string
@@ -251,6 +257,22 @@ class Node
     }
 
     /**
+     * @return Route
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    /**
+     * @param Route $route
+     */
+    public function setRoute(Route $route)
+    {
+        $this->route = $route;
+    }
+
+    /**
      * @param boolean $published
      */
     public function setPublished($published)
@@ -315,7 +337,7 @@ class Node
     }
 
     /**
-     * @return NodeContent
+     * @return NodeContent[]
      */
     public function getContents()
     {

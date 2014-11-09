@@ -10,3 +10,10 @@ services:
     class: Nefarian\CmsBundle\Plugin\FieldCategory\Configuration\FieldCategoryConfiguration
     tags:
       - { name: nefarian.configuration, config: field.category }
+
+  #
+  # Node routing manager
+  nefarian.plugins.field_category.routing.node_path_processor:
+    class: Nefarian\CmsBundle\Plugin\FieldCategory\Router\PathProcessor\CategoryPathProcessor
+    tags:
+      - {name: nefarian.node.path_processor}

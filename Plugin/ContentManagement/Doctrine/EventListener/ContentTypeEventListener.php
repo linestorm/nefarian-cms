@@ -4,10 +4,11 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Events;
 use Nefarian\CmsBundle\Configuration\ConfigManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -44,11 +45,33 @@ class ContentTypeEventListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'postPersist',
-            'preUpdate',
-            'postUpdate',
-            'postRemove',
+            Events::onFlush,
+            Events::postPersist,
+            Events::postRemove,
         );
+    }
+
+    public function onFlush(OnFlushEventArgs $args)
+    {
+        $em  = $args->getEntityManager();
+        $uow = $em->getUnitOfWork();
+
+        $this->getConfigManager();
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof ContentType) {
+                $changeSet = $uow->getEntityChangeSet($entity);
+                if (isset($changeSet['name'])) {
+                    list($oldValue, $newValue) = $changeSet['name'];
+                    foreach ($entity->getTypeFields() as $field) {
+                        $oldFieldConfigName = 'content_type.' . $oldValue . '.' . $field->getName();
+                        $newFieldConfigName = 'content_type.' . $newValue . '.' . $field->getName();
+
+                        $this->configManager->rename($oldFieldConfigName, $newFieldConfigName);
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -65,36 +88,6 @@ class ContentTypeEventListener implements EventSubscriber
             foreach ($entity->getTypeFields() as $field) {
                 $fieldConfigName = 'content_type.' . $entity->getName() . '.' . $field->getName();
                 $this->configManager->duplicate($field->getField()->getName() . '.settings', $fieldConfigName);
-            }
-        }
-    }
-
-    public function preUpdate(PreUpdateEventArgs $args)
-    {
-        $object = $args->getObject();
-
-        if ($object instanceof ContentType) {
-            if ($args->hasChangedField('name')) {
-                $this->getConfigManager();
-                foreach ($object->getTypeFields() as $field) {
-                    $oldFieldConfigName                             = 'content_type.' . $args->getOldValue('name') . '.' . $field->getName();
-                    $newFieldConfigName                             = 'content_type.' . $args->getNewValue('name') . '.' . $field->getName();
-                    $this->updatedContentTypes[$newFieldConfigName] = $oldFieldConfigName;
-                }
-            }
-        }
-    }
-
-    public function postUpdate(LifecycleEventArgs $args)
-    {
-        $object = $args->getObject();
-
-        if ($object instanceof ContentType) {
-            $this->getConfigManager();
-            foreach ($object->getTypeFields() as $field) {
-                $newFieldConfigName = 'content_type.' . $object->getName() . '.' . $field->getName();
-                $oldFieldConfigName = $this->updatedContentTypes[$newFieldConfigName];
-                $this->configManager->rename($oldFieldConfigName, $newFieldConfigName);
             }
         }
     }

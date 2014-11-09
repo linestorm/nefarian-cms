@@ -59,4 +59,17 @@ services:
   nefarian.plugins.content_management.node_route_manager:
     class: Nefarian\CmsBundle\Plugin\ContentManagement\Router\NodeRouterManager
     arguments:
-      - @router
+      - @nefarian_core.config_manager
+
+  nefarian.plugins.content_management.routing.node_path_processor:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\Router\PathProcessor\NodePathProcessor
+    tags:
+      - {name: nefarian.node.path_processor}
+
+
+  #
+  # Configurations
+  nefarian.plugin.content_management.routing.configuration:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\RoutingConfiguration
+    tags:
+      - { name: nefarian.configuration, config: content_type.routing }

@@ -3,10 +3,12 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Nefarian\CmsBundle\Entity\Route;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -38,7 +40,7 @@ class NodeEventListener implements EventSubscriber
         return array(
             Events::onFlush,
             Events::prePersist,
-            Events::preUpdate
+            SoftDeleteableListener::POST_SOFT_DELETE,
         );
     }
 
@@ -47,79 +49,16 @@ class NodeEventListener implements EventSubscriber
         $em  = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if ($entity instanceof Node) {
+        // update any routes
+        $this->updateRouting($em, $uow);
 
-                $routeRepo = $em->getRepository('NefarianCmsBundle:Route');
-                $route     = $routeRepo->findOneBy(array(
-                    'path' => $entity->getPath()
-                ));
-
-                $symfonyRoute = $this->createNewNodeDeletedRoute($entity->getPath());
-                if (!$route instanceof Route) {
-                    $path = $entity->getPath();
-                    // create the new route
-                    $route = $this->createNewNodeRouteEntity($path, $symfonyRoute);
-                } else {
-                    $route->setRoute($symfonyRoute);
-                }
-
-                $em->persist($route);
-                $uow->computeChangeSets();
-            }
-        }
-
+        // update edit dates
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof Node) {
-                $changeSet = $uow->getEntityChangeSet($entity);
-var_dump($changeSet);die;
-                $routeRepo = $em->getRepository('NefarianCmsBundle:Route');
-                $route     = $routeRepo->findOneBy(array(
-                    'path' => $entity->getPath()
-                ));
-
-                if (!$route instanceof Route) {
-                    $path = $entity->getPath();
-                    // create the new route
-                    $symfonyRoute = $this->createNewNodeRoute($entity);
-                    $route = $this->createNewNodeRouteEntity($path, $symfonyRoute);
-                    $em->persist($route);
-
-                    $uow->computeChangeSets();
-                }
-
-                if (isset($changeSet['deletedOn'])) {
-                    if ($changeSet['deletedOn'] instanceof \DateTime) {
-                        // delete
-                        $symfonyRoute = $this->createNewNodeDeletedRoute($entity->getPath());
-                        $route->setRoute($symfonyRoute);
-                    } else {
-                        // un-delete
-                        $symfonyRoute = $this->createNewNodeRoute($entity);
-                        $newRoute = $this->createNewNodeRouteEntity($entity->getPath(), $symfonyRoute);
-                    }
-                    $em->persist($newRoute);
-                } elseif ($changeSet['path']) {
-                    list($oldPath, $newPath) = $changeSet['path'];
-
-                    // create the new route entity
-                    $symfonyRoute = $this->createNewNodeRoute($entity);
-                    $newRoute = $this->createNewNodeRouteEntity($newPath, $symfonyRoute);
-                    $em->persist($newRoute);
-
-                    // set any old route to redirtect to the new route
-                    $oldRoute = $routeRepo->findOneBy(array(
-                        'path' => $oldPath
-                    ));
-                    if ($oldRoute) {
-                        $oldSymfonyRoute = $oldRoute->getRoute();
-                        $newSymfonyRoute = $this->createNewNodeRedirectRoute($oldSymfonyRoute->getPath(), $symfonyRoute->getPath());
-                        $oldRoute->setRoute($newSymfonyRoute);
-                        $em->persist($oldRoute);
-                    }
-
-                    $uow->computeChangeSets();
-                }
+                $user = $this->container->get('security.context')->getToken()->getUser();
+                $entity->setEditedBy($user);
+                $entity->setEditedOn(new \DateTime());
+                $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($entity)), $entity);
             }
         }
     }
@@ -146,26 +85,154 @@ var_dump($changeSet);die;
         }
     }
 
-    public function preUpdate(PreUpdateEventArgs $args)
+    public function postSoftDelete(LifecycleEventArgs $args)
     {
-        return;
         $entity = $args->getEntity();
+        $em     = $args->getEntityManager();
+        $uow    = $em->getUnitOfWork();
 
-        if ($entity instanceof Node) {
-            $user = $this->container->get('security.context')->getToken()->getUser();
-            $entity->setEditedBy($user);
-            $entity->setEditedOn(new \DateTime());
+        if($entity instanceof Node) {
+            if ($entity->getDeletedOn() instanceof \DateTime) {
+                $route = $entity->getRoute();
+
+                if (!$route instanceof Route) {
+                    $oldRoute     = $this->createNewNodeRoute($entity);                     // make a new route
+                    $deletedRoute = $this->createNewNodeDeletedRoute($oldRoute->getPath()); // 410 the new route
+                    $route        = $this->createNewNodeRouteEntity($deletedRoute);         // create an entity of the route
+                    $entity->setRoute($route);
+                    $em->persist($route);
+                    $uow->computeChangeSet($em->getClassMetadata(get_class($route)), $route);
+
+                    $uow->propertyChanged($entity, 'route', null, $route);
+                    $uow->scheduleExtraUpdate($entity, array(
+                        'route' => array(null, $route)
+                    ));
+                } else {
+                    $symfonyRoute = $this->createNewNodeDeletedRoute($route->getPath());
+                    $route->setRoute($symfonyRoute);
+                    $em->persist($route);
+                    $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($route)), $route);
+                }
+
+                $em->persist($entity);
+                $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($entity)), $entity);
+            }
+        }
+
+    }
+
+    /**
+     * Schedule updates for routing
+     *
+     * @param EntityManager $em
+     * @param UnitOfWork    $uow
+     */
+    protected function updateRouting(EntityManager $em, UnitOfWork $uow)
+    {
+        // 302 old routes to the new 200
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof Node) {
+                $changeSet = $uow->getEntityChangeSet($entity);
+
+                $currentRoute = $entity->getRoute();
+
+                // Check if we have a route. If not, create on and continue
+                if (!$currentRoute instanceof Route) {
+                    // create the new route
+                    $symfonyRoute = $this->createNewNodeRoute($entity);
+                    $currentRoute = $this->createNewNodeRouteEntity($symfonyRoute);
+                    $entity->setRoute($currentRoute);
+                    $em->persist($currentRoute);
+                    $uow->computeChangeSet($em->getClassMetadata(get_class($currentRoute)), $currentRoute);
+                    $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($entity)), $entity);
+                }
+
+                $oldRoute = $currentRoute->getRoute();
+                $newRoute = $this->createNewNodeRoute($entity);
+
+                // if the route changed, update it
+                if ($newRoute->getPath() !== $oldRoute->getPath()) {
+                    // create the new route entity
+                    $newRouteEntity = $this->createNewNodeRouteEntity($newRoute);
+                    $entity->setRoute($newRouteEntity);
+                    $em->persist($newRouteEntity);
+                    $uow->computeChangeSet($em->getClassMetadata(get_class($newRouteEntity)), $newRouteEntity);
+
+                    // set any old route to redirtect to the new route
+                    $newSymfonyRoute = $this->createNewNodeRedirectRoute($oldRoute->getPath(), $newRoute->getPath());
+                    $currentRoute->setRoute($newSymfonyRoute);
+                    $em->persist($currentRoute);
+                    $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($currentRoute)),
+                        $currentRoute);
+                }
+
+                if (isset($changeSet['deletedOn'])) {
+                    if ($changeSet['deletedOn'] instanceof \DateTime) {
+                        // delete
+                        $newRoute = $this->createNewNodeDeletedRoute($entity->getPath());
+                        $currentRoute->getRoute($newRoute);
+                        $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($currentRoute)),
+                            $currentRoute);
+                    } else {
+                        // un-delete
+                        $newRoute = $this->createNewNodeRoute($entity);
+                        $currentRoute->getRoute($newRoute);
+                        $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($currentRoute)),
+                            $currentRoute);
+                    }
+                }
+
+                $em->persist($entity);
+                $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($entity)), $entity);
+            }
+        }
+
+        // create 200 routes for new nodes
+        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+            if ($entity instanceof Node) {
+                $symfonyRoute = $this->createNewNodeRoute($entity);
+                $route        = $this->createNewNodeRouteEntity($symfonyRoute);
+                $em->persist($route);
+            }
         }
     }
 
+    /**
+     * Create a 200 route for a new Node
+     *
+     * @param Node $node
+     *
+     * @return SymfonyRoute
+     */
     protected function createNewNodeRoute(Node $node)
     {
-        return new SymfonyRoute($node->getPath(), array(
+        $routeManager = $this->container->get('nefarian.plugins.content_management.node_route_manager');
+        $contentType  = $node->getContentType();
+        $pathFormat   = trim($contentType->getPathFormat(), '/');
+
+        $parts = explode('/', $pathFormat);
+        foreach ($parts as &$part) {
+            if (preg_match('/\[([\w\d-]+):([\w\d-]+)\]/', $part, $matches)) {
+                list(, $type, $field) = $matches;
+                $part = $routeManager->process($node, $type, $field);
+            }
+        }
+        $newPath = '/' . implode('/', $parts);
+
+        return new SymfonyRoute($newPath, array(
             '_controller' => '\Nefarian\CmsBundle\Plugin\ContentManagement\Controller\NodeController::viewAction',
             'node' => $node->getId(),
         ));
     }
 
+    /**
+     * Create a redirect route
+     *
+     * @param $oldPath
+     * @param $newPath
+     *
+     * @return SymfonyRoute
+     */
     protected function createNewNodeRedirectRoute($oldPath, $newPath)
     {
         $newSymfonyRoute = new SymfonyRoute($oldPath);
@@ -178,19 +245,33 @@ var_dump($changeSet);die;
         return $newSymfonyRoute;
     }
 
+    /**
+     * Creat a 410 route
+     *
+     * @param $path
+     *
+     * @return SymfonyRoute
+     */
     protected function createNewNodeDeletedRoute($path)
     {
         return $this->createNewNodeRedirectRoute($path, '');
     }
 
-    protected function createNewNodeRouteEntity($path, SymfonyRoute $route)
+    /**
+     * Create a new Route entity for the given route
+     *
+     * @param SymfonyRoute $route
+     *
+     * @return Route
+     */
+    protected function createNewNodeRouteEntity(SymfonyRoute $route)
     {
-        $newPathName  = str_replace('/', '_', ltrim($path, '/'));
+        $newPathName = str_replace(array('/', '-'), '_', ltrim($route->getPath(), '/'));
 
         $newRoute = new Route();
         $newRoute->setName('nefarian_node_' . $newPathName);
-        $newRoute->setPattern($path);
-        $newRoute->setPath($path);
+        $newRoute->setPattern($route->getPath());
+        $newRoute->setPath($route->getPath());
         $newRoute->setRoute($route);
 
         return $newRoute;

@@ -1,0 +1,20 @@
+{% extends '@plugin_content_management/Routing/base.html.twig' %}
+{% set page_modules = ['cms/content_management/node/form'] %}
+
+{% block page_title %}
+    Routing
+{% endblock %}
+
+{% block page_desc %}
+    Routing and Alias Settings
+{% endblock %}
+
+{% block plugin %}
+    {{ form_start(form) }}
+        {{ form_rest(form) }}
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-save"></i> Save
+        </button>
+    {{ form_end(form) }}
+{% endblock %}
