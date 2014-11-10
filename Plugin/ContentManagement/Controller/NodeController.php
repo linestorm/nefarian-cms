@@ -24,17 +24,4 @@ class NodeController extends Controller
             'node' => $node,
         ));
     }
-    public function slugAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $nodeRepo = $em->getRepository('PluginContentManagement:Node');
-
-        $nodeRepo->findBy(array(
-            'path' => $slug
-        ));
-
-        return $this->render('@plugin_content_management/Node/view.html.twig', array(
-            'node' => $node,
-        ));
-    }
 } 

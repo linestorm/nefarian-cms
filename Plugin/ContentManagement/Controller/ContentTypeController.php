@@ -173,6 +173,7 @@ class ContentTypeController extends Controller
         // create a new field type
         $contentTypeField = new ContentTypeField();
         $contentTypeField->setName($name);
+        $contentTypeField->setLabel($name);
         $contentTypeField->setField($field);
         $contentTypeField->setContentType($contentType);
         $contentTypeField->setOrder(count($contentType->getTypeFields()));
@@ -182,9 +183,8 @@ class ContentTypeController extends Controller
         // create a new field definition
         $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
         $fieldConfig     = $configManager->get($fieldConfigName);
-        $fieldConfigForm = $configManager->getConfigForm($fieldConfigName);
 
-        $form = $this->createForm($fieldConfigForm, $fieldConfig, array(
+        $form = $this->createForm($fieldConfig->getForm(), $fieldConfig, array(
             'attr' => array(
                 'class' => 'api-save'
             ),

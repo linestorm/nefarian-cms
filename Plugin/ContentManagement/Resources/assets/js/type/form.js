@@ -45,7 +45,7 @@ define(['jquery', 'jqueryui', 'bootstrap', 'bootbox', 'cms/core/api'], function 
                         label: "Delete Field",
                         className: "btn-danger",
                         callback: function() {
-                            api.call($btn.data('url'), {
+                            api.call($btn.attr('href'), {
                                 type: 'DELETE',
                                 success: function(ob){
                                     $btn.closest('tr').remove();
@@ -58,6 +58,8 @@ define(['jquery', 'jqueryui', 'bootstrap', 'bootbox', 'cms/core/api'], function 
                 },
                 className: "bootbox-md"
             });
+
+            return false;
         });
 
     });
