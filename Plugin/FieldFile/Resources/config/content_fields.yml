@@ -1,0 +1,4 @@
+file:
+  class:   Nefarian\CmsBundle\Plugin\FieldFile\Entity\FieldFile
+  form:    Nefarian\CmsBundle\Plugin\FieldFile\Form\FieldFileForm
+  configs: ~

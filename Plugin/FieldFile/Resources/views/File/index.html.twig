@@ -1,0 +1,39 @@
+{% extends '@plugin_field_file/File/base.html.twig' %}
+
+{% block page_title %}
+    View Categories
+{% endblock %}
+
+{% block page_desc %}
+    All Node Categories
+{% endblock %}
+
+{% block plugin %}
+    <div class="row">
+        <div class="col-sm-9">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                                <tr>
+                                    <td><a href="{{ url('nefarian_plugin_field_file_category_edit', {id: category.id}) }}">{{ category.name }}</a></td>
+                                    <td>{{ category.description }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+        <div class="col-sm-3">
+            <a class="btn btn-primary" href="{{ url('nefarian_plugin_field_file_category_new') }}">
+                <i class="fa-plus"></i> New File
+            </a>
+        </div>
+    </div>
+{% endblock %}

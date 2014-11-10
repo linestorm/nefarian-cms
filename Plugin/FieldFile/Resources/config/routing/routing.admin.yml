@@ -1,0 +1,11 @@
+categories:
+  path:     /
+  defaults: { _controller: Category:index }
+
+category_new:
+  path:     /new
+  defaults: { _controller: Category:new }
+
+category_edit:
+  path:     /{id}/edit
+  defaults: { _controller: Category:edit }
