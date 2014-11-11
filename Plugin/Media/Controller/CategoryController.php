@@ -34,7 +34,7 @@ class CategoryController extends Controller
             throw new AccessDeniedException();
         }
 
-        $modelManager = $this->get('linestorm.cms.model_manager');
+        $modelManager = $this->get('nefarian.plugin.media.manager');
         $repo         = $modelManager->get('media_category');
 
         $category = $repo->find($id);
@@ -69,7 +69,7 @@ class CategoryController extends Controller
             throw new AccessDeniedException();
         }
 
-        $modelManager = $this->get('linestorm.cms.model_manager');
+        $modelManager = $this->get('nefarian.plugin.media.manager');
         $class        = $modelManager->getEntityClass('media_category');
 
         $form = $this->createForm('linestorm_cms_form_media_category', new $class(), array(
@@ -145,7 +145,7 @@ class CategoryController extends Controller
             throw new AccessDeniedException();
         }
 
-        $mediaManager = $this->get('linestorm.cms.media_manager');
+        $mediaManager = $this->get('nefarian.plugin.media.manager');
         $image        = $mediaManager->find($id);
 
         if (!($image instanceof Media))
@@ -188,7 +188,7 @@ class CategoryController extends Controller
      */
     private function doUpload($entity = null)
     {
-        $mediaManager = $this->get('linestorm.cms.media_manager');
+        $mediaManager = $this->get('nefarian.plugin.media.manager');
 
         $request = $this->getRequest();
         $files   = $request->files->all();

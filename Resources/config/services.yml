@@ -163,3 +163,10 @@ services:
 
   templating.form_template_manager:
     class: %templating.form_template_manager.class%
+
+  #
+  # Form Types
+  nefarian_core.form.type.hidden_entity:
+      class: Nefarian\CmsBundle\Form\Type\HiddenEntityIdType
+      tags:
+          - { name: form.type, alias: hidden_entity }

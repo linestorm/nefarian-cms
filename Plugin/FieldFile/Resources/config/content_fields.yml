@@ -1,4 +1,6 @@
 file:
   class:   Nefarian\CmsBundle\Plugin\FieldFile\Entity\FieldFile
   form:    Nefarian\CmsBundle\Plugin\FieldFile\Form\FieldFileForm
+  assets:
+    - @plugin_field_file/file/dropzone.js
   configs: ~

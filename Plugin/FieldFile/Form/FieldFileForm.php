@@ -34,8 +34,8 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
      */
     function __construct(Field $field, ConfigurationInterface $configuration)
     {
-        $this->field = $field;
-        $this->configuration = $configuration ;
+        $this->field         = $field;
+        $this->configuration = $configuration;
     }
 
 
@@ -47,7 +47,14 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
     {
         $limit = $this->configuration->getLimit();
         $builder
-            ->add('file', 'file', array(
+            ->add('file', 'file_dropzone', array(
+                'type' => new FileType(),
+                'data_class' => 'Nefarian\CmsBundle\Plugin\FieldFile\Entity\File',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'limit' => (int)$limit,
                 'label' => $limit == 1 ? null : $limit,
             ));
     }

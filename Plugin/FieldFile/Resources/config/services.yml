@@ -10,3 +10,42 @@ services:
     class: Nefarian\CmsBundle\Plugin\FieldFile\Configuration\FieldFileConfiguration
     tags:
       - { name: nefarian.configuration, config: field.file }
+
+  #
+  # Form Types
+  nefarian.plugin.file.form_type.file_browser:
+    class: Nefarian\CmsBundle\Plugin\FieldFile\Form\Type\FileBrowserType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: file_browser }
+
+  nefarian.plugin.file.form_type.file_dropzone:
+    class: Nefarian\CmsBundle\Plugin\FieldFile\Form\Type\FileDropZoneType
+    tags:
+      - { name: form.type, alias: file_dropzone }
+
+
+  #
+  # MEDIA PROVIDER
+  nefarian.meida.provider.local_storeage:
+    class: Nefarian\CmsBundle\Plugin\Media\Media\LocalStorageMediaProvider
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - Nefarian\CmsBundle\Plugin\FieldFile\Entity\File
+      - @security.context
+      - @linestorm.cms.media.resize_profile_manager
+      - /var/www/andythorne/web/media/
+      - /media/
+#    calls:
+#      - ['setOptimiser', [@linestorm.cms.media.optimiser]]
+    tags:
+      - { name: nefarian.media.provider }
+
+  #
+  # MEDIA RESIZE PROFILE MANAGER
+  linestorm.cms.media.resize_profile_manager:
+      class: %linestorm.cms.module.media.resize_profile.manager.class%
+      arguments:
+        - @doctrine.orm.default_entity_manager
+        - Andy\PortfolioBundle\Entity\MediaResizeProfile

@@ -12,7 +12,6 @@ use Nefarian\CmsBundle\Plugin\Media\Media\Resizer\MediaResizeProfileManager;
 use Nefarian\CmsBundle\Plugin\Media\Model\Media;
 use Nefarian\CmsBundle\Plugin\Media\Model\MediaResizeProfile;
 use Nefarian\CmsBundle\Plugin\Media\Model\MediaVersion;
-use LineStorm\SearchBundle\Search\SearchProviderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\SecurityContext;
@@ -81,11 +80,6 @@ class LocalStorageMediaProvider extends AbstractMediaProvider implements MediaPr
      * @var string
      */
     private $storePath;
-
-    /**
-     * @var SearchProviderInterface
-     */
-    protected $searchProvider;
 
     /**
      * @var MediaResizeProfileManager
@@ -244,12 +238,6 @@ class LocalStorageMediaProvider extends AbstractMediaProvider implements MediaPr
         $this->em->persist($media);
         $this->em->flush($media);
 
-        // index the media object
-        if($this->searchProvider)
-        {
-            $this->searchProvider->index($media);
-        }
-
         return $media;
     }
 
@@ -373,12 +361,6 @@ class LocalStorageMediaProvider extends AbstractMediaProvider implements MediaPr
         if($media->getSrc() && file_exists($file) && is_file($file))
         {
             unlink($file);
-        }
-
-        // index the media object
-        if($this->searchProvider)
-        {
-            $this->searchProvider->remove($media);
         }
 
         $this->em->remove($media);

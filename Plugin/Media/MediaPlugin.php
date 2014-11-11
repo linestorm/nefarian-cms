@@ -19,5 +19,4 @@ class MediaPlugin extends Plugin
     {
         return 'media';
     }
-
 } 

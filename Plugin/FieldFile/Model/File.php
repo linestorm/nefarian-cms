@@ -18,6 +18,16 @@ class File
     /**
      * @var string
      */
+    protected $title;
+
+    /**
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * @var string
+     */
     protected $filename;
 
     /**
@@ -38,17 +48,54 @@ class File
     /**
      * @var \DateTime
      */
-    protected $created;
+    protected $createdOn;
 
     /**
      * @var \DateTime
      */
-    protected $edited;
+    protected $editedOn;
 
     /**
      * @var int
      */
     protected $status;
+
+    function __construct()
+    {
+        $this->createdOn = new \DateTime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
 
     /**
      * @return int
@@ -61,33 +108,33 @@ class File
     /**
      * @return \DateTime
      */
-    public function getCreated()
+    public function getCreatedOn()
     {
-        return $this->created;
+        return $this->createdOn;
     }
 
     /**
-     * @param \DateTime $created
+     * @param \DateTime $createdOn
      */
-    public function setCreated($created)
+    public function setCreatedOn(\DateTime $createdOn)
     {
-        $this->created = $created;
+        $this->createdOn = $createdOn;
     }
 
     /**
      * @return \DateTime
      */
-    public function getEdited()
+    public function getEditedOn()
     {
-        return $this->edited;
+        return $this->editedOn;
     }
 
     /**
-     * @param \DateTime $edited
+     * @param \DateTime $editedOn
      */
-    public function setEdited($edited)
+    public function setEditedOn(\DateTime $editedOn)
     {
-        $this->edited = $edited;
+        $this->editedOn = $editedOn;
     }
 
     /**

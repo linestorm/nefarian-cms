@@ -1,0 +1,3 @@
+api_file_upload:
+  path: /api/file/upload
+  defaults: { _controller: File:upload }

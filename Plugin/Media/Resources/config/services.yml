@@ -1,8 +1,6 @@
 parameters:
   nefarian.plugin.media.manager.class:    Nefarian\CmsBundle\Plugin\Media\Media\MediaManager
 
-  linestorm.cms.module.media.search_provider.class: Nefarian\CmsBundle\Plugin\Media\Search\MediaTriGraphSearchProvider
-
   linestorm.cms.module.media.resize_profile.manager.class: Nefarian\CmsBundle\Plugin\Media\Media\Resizer\MediaResizeProfileManager
 
 services:
@@ -24,47 +22,35 @@ services:
 #        - @doctrine.orm.default_entity_manager
 #        - LineStormMediaBundle:MediaResizeProfile
 
-  #
-  # MEDIA DEFAULT SEARCH PROVIDER
-  linestorm.cms.module.media.search_provider:
-    class: %linestorm.cms.module.media.search_provider.class%
-    tags:
-      - { name: linestorm.cms.module.search.provider, map: media }
 
   #
   # TWIG MEDIA MODULE
-  linestorm.cms.twig.module_media_extension:
-    class: Nefarian\CmsBundle\Plugin\Media\Twig\MediaExtension
-    tags:
-      - { name: twig.extension }
-
-
-  linestorm.cms.form.type.widget.mediaentity:
-        class: Nefarian\CmsBundle\Plugin\Media\Form\Type\MediaEntityType
-        arguments: [@nefarian.plugin.media.manager]
-        tags:
-            - { name: form.type, alias: mediaentity }
-
-  linestorm.cms.form.type.widget.mediatreebrowser:
-        class: Nefarian\CmsBundle\Plugin\Media\Form\Type\MediaTreeBrowserType
-        #arguments: [@linestorm.cms.model_manager]
-        tags:
-            - { name: form.type, alias: mediatreebrowser }
-
-  linestorm.cms.form.type.media:
-        class: Nefarian\CmsBundle\Plugin\Media\Form\MediaFormType
-        arguments: [@nefarian.plugin.media.manager]
-        tags:
-            - { name: form.type, alias: linestorm_cms_form_media }
-
-  linestorm.cms.form.type.media_multiple:
-        class: Nefarian\CmsBundle\Plugin\Media\Form\MediaMultipleFormType
-        arguments: [@nefarian.plugin.media.manager]
-        tags:
-            - { name: form.type, alias: linestorm_cms_form_media_multiple }
-
-  linestorm.cms.form.type.media_category:
-        class: Nefarian\CmsBundle\Plugin\Media\Form\MediaCategoryFormType
-        arguments: [@nefarian.plugin.media.manager]
-        tags:
-            - { name: form.type, alias: linestorm_cms_form_media_category }
+#  linestorm.cms.twig.module_media_extension:
+#    class: Nefarian\CmsBundle\Plugin\Media\Twig\MediaExtension
+#    tags:
+#      - { name: twig.extension }
+#
+#
+#  linestorm.cms.form.type.widget.mediaentity:
+#        class: Nefarian\CmsBundle\Plugin\Media\Form\Type\MediaEntityType
+#        arguments: [@nefarian.plugin.media.manager]
+#        tags:
+#            - { name: form.type, alias: mediaentity }
+#
+#  linestorm.cms.form.type.media:
+#        class: Nefarian\CmsBundle\Plugin\Media\Form\MediaFormType
+#        arguments: [@nefarian.plugin.media.manager]
+#        tags:
+#            - { name: form.type, alias: linestorm_cms_form_media }
+#
+#  linestorm.cms.form.type.media_multiple:
+#        class: Nefarian\CmsBundle\Plugin\Media\Form\MediaMultipleFormType
+#        arguments: [@nefarian.plugin.media.manager]
+#        tags:
+#            - { name: form.type, alias: linestorm_cms_form_media_multiple }
+#
+#  linestorm.cms.form.type.media_category:
+#        class: Nefarian\CmsBundle\Plugin\Media\Form\MediaCategoryFormType
+#        arguments: [@nefarian.plugin.media.manager]
+#        tags:
+#            - { name: form.type, alias: linestorm_cms_form_media_category }
