@@ -214,18 +214,18 @@ class PluginCompilerPass implements CompilerPassInterface
                     'nefarian_core.backend_type_orm'
                 );
                 $doctinePass->process($container);
+            }
 
-                if (is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/entity/doctrine')) {
-                    $mappings    = array(
-                        $modelPath => $plugin->getNamespace() . '\Entity',
-                    );
-                    $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver(
-                        $mappings,
-                        array('nefarian_core.entity_manager'),
-                        'nefarian_core.backend_type_orm'
-                    );
-                    $doctinePass->process($container);
-                }
+            if (is_dir($modelPath = $path . DIRECTORY_SEPARATOR . 'Resources/config/entity/doctrine')) {
+                $mappings    = array(
+                    $modelPath => $plugin->getNamespace() . '\Entity',
+                );
+                $doctinePass = DoctrineOrmMappingsPass::createXmlMappingDriver(
+                    $mappings,
+                    array('nefarian_core.entity_manager'),
+                    'nefarian_core.backend_type_orm'
+                );
+                $doctinePass->process($container);
             }
 
             // add the assetmap to the asset manager
