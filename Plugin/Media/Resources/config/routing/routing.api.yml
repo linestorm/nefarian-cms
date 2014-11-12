@@ -1,7 +1,0 @@
-api_media:
-  type:         rest
-  resource:     Nefarian\CmsBundle\Plugin\Media\Controller\Api\MediaController
-
-api_category:
-  type:         rest
-  resource:     Nefarian\CmsBundle\Plugin\Media\Controller\Api\CategoryController

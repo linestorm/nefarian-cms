@@ -2,7 +2,9 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldFile\Form\Type;
 
+use Nefarian\CmsBundle\Plugin\FieldFile\Form\DataTransformer\DropZoneDataTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -23,12 +25,19 @@ class FileDropZoneType extends AbstractType
                 'label' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
+                'data_type' => 'Nefarian\CmsBundle\Plugin\File\Entity\File',
             ))
             ->setAllowedTypes(array(
                 'limit' => 'integer'
             ))
         ;
     }
+
+//    public function buildForm(FormBuilderInterface $builder, array $options)
+//    {
+//        $builder->addModelTransformer(new DropZoneDataTransformer());
+//    }
+
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {

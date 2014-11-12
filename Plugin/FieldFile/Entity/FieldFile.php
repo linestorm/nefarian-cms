@@ -3,6 +3,8 @@
 namespace Nefarian\CmsBundle\Plugin\FieldFile\Entity;
 
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
+use Nefarian\CmsBundle\Plugin\File\Entity\File;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class FieldFile
@@ -13,24 +15,37 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
 class FieldFile extends NodeContent
 {
     /**
-     * @var File
+     * @var File[]
      */
-    protected $file;
+    protected $files;
+
+    function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
 
     /**
      * @return File
      */
-    public function getFile()
+    public function getFiles()
     {
-        return $this->file;
+        return $this->files;
     }
 
     /**
      * @param File $file
      */
-    public function setFile(File $file)
+    public function addFile(File $file)
     {
-        $this->file = $file;
+        $this->files[] = $file;
+    }
+
+    /**
+     * @param File $file
+     */
+    public function removeFile(File $file)
+    {
+        $this->files->removeElement($file);
     }
 
 } 

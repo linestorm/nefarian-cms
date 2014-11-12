@@ -17,7 +17,7 @@ class FileType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
+            ->add('description', 'textarea')
 
             ->add('filename', 'hidden')
             ->add('path', 'hidden')
@@ -26,6 +26,7 @@ class FileType extends AbstractType
             ->add('status', 'hidden')
         ;
     }
+
 
 
     /**

@@ -3,7 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldFile\Controller;
 
 use FOS\RestBundle\View\View;
-use Nefarian\CmsBundle\Plugin\FieldFile\Entity\File;
+use Nefarian\CmsBundle\Plugin\File\Entity\File;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -52,7 +52,7 @@ class FileController extends Controller
      */
     private function doUpload($entity = null)
     {
-        $mediaManager = $this->get('nefarian.plugin.media.manager');
+        $mediaManager = $this->get('nefarian.plugin.file.manager');
 
         $request = $this->getRequest();
 
