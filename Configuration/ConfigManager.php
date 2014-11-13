@@ -55,9 +55,14 @@ class ConfigManager
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @param ConfigurationInterface[] $configurations
+     */
     public function setBaseConfigurations(array $configurations)
     {
-        $this->configurations = $configurations;
+        foreach ($configurations as $configuration) {
+            $this->configurations[$configuration->getType()] = $configuration;
+        }
     }
 
 
@@ -68,10 +73,24 @@ class ConfigManager
      */
     public function rebuild()
     {
-        foreach ($this->configurations as $name => $configuration) {
-            $this->set($name, $configuration);
+        foreach ($this->configurations as $type => $configuration) {
+            $this->create($type, $type);
         }
         $this->eventDispatcher->dispatch(self::CONFIG_BUILD);
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
+     *
+     * @return ConfigurationInterface
+     */
+    public function create($type, $name)
+    {
+        $config = clone $this->configurations[$type];
+        $this->set($name, $config);
+
+        return $config;
     }
 
     /**
@@ -109,6 +128,7 @@ class ConfigManager
             $configEntity = new Config();
             $configEntity->setName($name);
         }
+        $configuration->setName($name);
         $configEntity->setValue(serialize($configuration));
         $this->em->persist($configEntity);
         $this->em->flush($configEntity);

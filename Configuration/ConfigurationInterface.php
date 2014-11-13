@@ -5,11 +5,22 @@ namespace Nefarian\CmsBundle\Configuration;
 interface ConfigurationInterface
 {
     /**
-     * Get the name of the config
+     * @param $name
      *
+     * @return void
+     */
+    public function setName($name);
+
+    /**
      * @return string
      */
     public function getName();
+    /**
+     * Get the type of the config
+     *
+     * @return string
+     */
+    public function getType();
 
     /**
      * The name of the parent config

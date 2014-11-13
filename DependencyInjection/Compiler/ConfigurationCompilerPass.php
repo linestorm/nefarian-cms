@@ -5,7 +5,6 @@ namespace Nefarian\CmsBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Class ConfigurationCompilerPass
@@ -21,12 +20,12 @@ class ConfigurationCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $configManagerDefinition = $container->getDefinition('nefarian_core.config_manager');
-        $configurationServices = $container->findTaggedServiceIds('nefarian.configuration');
+        $configurationServices   = $container->findTaggedServiceIds('nefarian.configuration');
 
         $configs = array();
 
-        foreach($configurationServices as $sid => $params){
-            $configs[$params[0]['config']] = new Reference($sid);
+        foreach ($configurationServices as $sid => $params) {
+            $configs[] = new Reference($sid);
         }
 
         $configManagerDefinition->addMethodCall('setBaseConfigurations', array(
