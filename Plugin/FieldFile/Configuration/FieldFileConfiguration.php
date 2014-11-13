@@ -13,10 +13,12 @@ use Nefarian\CmsBundle\Plugin\FieldFile\Form\FieldFileSettingsForm;
  */
 class FieldFileConfiguration extends FieldConfiguration
 {
+    protected $fileTypes = array();
+
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getType()
     {
         return 'field.file';
     }
@@ -27,6 +29,27 @@ class FieldFileConfiguration extends FieldConfiguration
     public function getForm()
     {
         return new FieldFileSettingsForm();
+    }
+
+    /**
+     * @return array
+     */
+    public function getFileTypes()
+    {
+        return $this->fileTypes;
+    }
+
+    /**
+     * @param array $fileTypes
+     */
+    public function setFileTypes(array $fileTypes)
+    {
+        $this->fileTypes = $fileTypes;
+    }
+
+    protected function hasFileType($fileType)
+    {
+        return array_search($fileType, $this->fileTypes);
     }
 
 } 

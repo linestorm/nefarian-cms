@@ -54,7 +54,7 @@ class RoutingConfiguration extends AbstractConfiguration
      *
      * @return string
      */
-    public function getName()
+    public function getType()
     {
         return 'routing.settings';
     }

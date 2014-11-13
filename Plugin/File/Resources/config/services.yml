@@ -1,0 +1,82 @@
+parameters:
+  nefarian.plugin.file.manager.class:    Nefarian\CmsBundle\Plugin\File\File\FileManager
+
+  linestorm.cms.module.file.resize_profile.manager.class: Nefarian\CmsBundle\Plugin\File\File\Resizer\FileResizeProfileManager
+
+services:
+  nefarian.plugin.file:
+    class: Nefarian\CmsBundle\Plugin\File\FilePlugin
+    tags:
+      - { name: nefarian.plugin }
+
+  #
+  # MEDIA MANAGER
+  nefarian.plugin.file.manager:
+        class: %nefarian.plugin.file.manager.class%
+
+
+
+  #
+  # MEDIA PROVIDER
+  nefarian.meida.provider.local_storeage:
+    class: Nefarian\CmsBundle\Plugin\File\File\LocalStorageFileProvider
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - Nefarian\CmsBundle\Plugin\File\Entity\File
+      - @security.context
+      - %kernel.root_dir%/../web/files/
+      - /files/
+#    calls:
+#      - ['setOptimiser', [@linestorm.cms.media.optimiser]]
+    tags:
+      - { name: nefarian.file.provider }
+
+  #
+  # MEDIA RESIZE PROFILE MANAGER
+#  linestorm.cms.media.resize_profile_manager:
+#      class: %linestorm.cms.module.media.resize_profile.manager.class%
+#      arguments:
+#        - @doctrine.orm.default_entity_manager
+#        - Andy\PortfolioBundle\Entity\MediaResizeProfile
+
+
+  #
+  # MEDIA RESIZE PROFILE MANAGER
+#  linestorm.cms.file.resize_profile_manager:
+#      class: %linestorm.cms.module.file.resize_profile.manager.class%
+#      arguments:
+#        - @doctrine.orm.default_entity_manager
+#        - LineStormFileBundle:FileResizeProfile
+
+
+  #
+  # TWIG MEDIA MODULE
+#  linestorm.cms.twig.module_file_extension:
+#    class: Nefarian\CmsBundle\Plugin\File\Twig\FileExtension
+#    tags:
+#      - { name: twig.extension }
+#
+#
+#  linestorm.cms.form.type.widget.fileentity:
+#        class: Nefarian\CmsBundle\Plugin\File\Form\Type\FileEntityType
+#        arguments: [@nefarian.plugin.file.manager]
+#        tags:
+#            - { name: form.type, alias: fileentity }
+#
+#  linestorm.cms.form.type.file:
+#        class: Nefarian\CmsBundle\Plugin\File\Form\FileFormType
+#        arguments: [@nefarian.plugin.file.manager]
+#        tags:
+#            - { name: form.type, alias: linestorm_cms_form_file }
+#
+#  linestorm.cms.form.type.file_multiple:
+#        class: Nefarian\CmsBundle\Plugin\File\Form\FileMultipleFormType
+#        arguments: [@nefarian.plugin.file.manager]
+#        tags:
+#            - { name: form.type, alias: linestorm_cms_form_file_multiple }
+#
+#  linestorm.cms.form.type.file_category:
+#        class: Nefarian\CmsBundle\Plugin\File\Form\FileCategoryFormType
+#        arguments: [@nefarian.plugin.file.manager]
+#        tags:
+#            - { name: form.type, alias: linestorm_cms_form_file_category }

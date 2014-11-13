@@ -1,0 +1,7 @@
+api_file:
+  type:         rest
+  resource:     Nefarian\CmsBundle\Plugin\File\Controller\Api\FileController
+
+api_category:
+  type:         rest
+  resource:     Nefarian\CmsBundle\Plugin\File\Controller\Api\CategoryController

@@ -18,7 +18,7 @@ class FieldTagConfiguration extends FieldConfiguration
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getType()
     {
         return 'field.tag';
     }

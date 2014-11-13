@@ -1,0 +1,100 @@
+{% extends '@plugin_file/base.html.twig' %}
+{% set page_modules = ['cms/file/list'] %}
+
+{% block page_title %}
+    View File
+{% endblock %}
+
+{% block page_desc %}
+    All File Nodes
+{% endblock %}
+
+{% block plugin %}
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Published</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for node in nodes %}
+                        <tr>
+                            <td><a href="{{ url('nefarian_plugin_content_management_node_edit', {id: node.id}) }}">{{ node.title }}</a></td>
+                            <td>{{ node.contentType.name }}</td>
+                            <td>{% if node.published %}{{ node.publishedOn|date('Y-m-d') }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <a class="btn btn-primary" href="{{ url('nefarian_plugin_content_management_node_create_select') }}">
+                <i class="fa-plus"></i> New Node
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{# % block head %}
+    {% block requirejs %}
+        {{
+            include('LineStormCmsBundle::requirejs.html.twig', {
+                requirejs_module: ['cms_main', 'cms_file_list']
+            })
+        }}
+    {% endblock %}
+
+    {% stylesheets
+        filter="compass" output="cms/file/css/file.css"
+        "@LineStormFileBundle/Resources/assets/sass/file.scss"
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block module %}
+
+
+    <div class="form-group">
+        <button class="btn btn-default file-edit">
+            <i class="fa-pencil"></i> Edit Selected
+        </button>
+
+        <a href="{{ url('linestorm_cms_admin_module_file_create') }}" class="btn btn-default file-new">
+            <i class="fa-picture-o"></i> New File
+        </a>
+
+        <a href="{{ url('linestorm_cms_admin_module_file_category_create') }}" class="btn btn-default file-category-new">
+            <i class="fa-folder-o"></i> New Category
+        </a>
+    </div>
+
+    <div class="form-group">
+        {{ include('LineStormFileBundle:Form:filetreebrowser.html.twig', {
+            url: url('linestorm_cms_module_file_api_get_category_filetree'),
+            input: '.file-form-category'
+        }) }}
+    </div>
+
+
+    <div class="form-group">
+        <button class="btn btn-default file-edit">
+            <i class="fa-pencil"></i> Edit Selected
+        </button>
+
+        <a href="{{ url('linestorm_cms_admin_module_file_create') }}" class="btn btn-default file-new">
+            <i class="fa-picture-o"></i> New File
+        </a>
+
+        <a href="{{ url('linestorm_cms_admin_module_file_category_create') }}" class="btn btn-default file-category-new">
+            <i class="fa-folder-o"></i> New Category
+        </a>
+    </div>
+
+{% endblock % #}

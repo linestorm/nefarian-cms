@@ -16,7 +16,7 @@ class FieldCategoryConfiguration extends FieldConfiguration
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getType()
     {
         return 'field.category';
     }

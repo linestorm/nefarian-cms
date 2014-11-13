@@ -6,6 +6,7 @@ use Nefarian\CmsBundle\Configuration\Configuration;
 use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
+use Nefarian\CmsBundle\Plugin\FieldFile\Configuration\FieldFileConfiguration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -24,7 +25,7 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
     protected $field;
 
     /**
-     * @var ConfigurationInterface
+     * @var FieldFileConfiguration
      */
     protected $configuration;
 
@@ -52,6 +53,7 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
                 'options' => array(
                     'data_class' => 'Nefarian\CmsBundle\Plugin\File\Entity\File',
                 ),
+                'config_name' => $this->configuration->getName(),
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,

@@ -16,7 +16,7 @@ class FieldBodyConfiguration extends FieldConfiguration
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getType()
     {
         return 'field.body';
     }

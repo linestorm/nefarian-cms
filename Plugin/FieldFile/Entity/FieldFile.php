@@ -19,6 +19,11 @@ class FieldFile extends NodeContent
      */
     protected $files;
 
+    /**
+     * @var int
+     */
+    protected $delta;
+
     function __construct()
     {
         $this->files = new ArrayCollection();
@@ -47,5 +52,23 @@ class FieldFile extends NodeContent
     {
         $this->files->removeElement($file);
     }
+
+    /**
+     * @return int
+     */
+    public function getDelta()
+    {
+        return $this->delta;
+    }
+
+    /**
+     * @param int $delta
+     */
+    public function setDelta($delta)
+    {
+        $this->delta = $delta;
+    }
+
+
 
 } 

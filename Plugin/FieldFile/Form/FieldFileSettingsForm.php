@@ -5,9 +5,11 @@ namespace Nefarian\CmsBundle\Plugin\FieldFile\Form;
 use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
+use Nefarian\CmsBundle\Plugin\FieldFile\Form\DataTransformer\DataTypeListDataTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class FieldFileSettingsForm
@@ -25,7 +27,13 @@ class FieldFileSettingsForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('limit', 'number');
+            ->add('limit', 'number')
+            ->add(
+                $builder->create('fileTypes', 'text', array(
+                ))
+                    ->addModelTransformer(new DataTypeListDataTransformer())
+            )
+        ;
     }
 
     /**

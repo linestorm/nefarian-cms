@@ -1,0 +1,41 @@
+index:
+    pattern:  /
+    defaults: { _controller: File:list }
+
+file_new:
+    pattern:  /new
+    defaults: { _controller: File:new }
+
+file_view:
+    pattern:  /{id}
+    defaults: { _controller: File:view }
+    requirements:
+       id: \d+
+
+file_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: File:edit }
+    requirements:
+       id: \d+
+
+file_upload_edit:
+    path: /{id}/upload
+    defaults: { _controller: "File:uploadEdit" }
+    requirements:
+       id: \d+
+
+file_upload:
+    path: /upload
+    defaults: { _controller: "File:upload" }
+
+
+file_category_edit:
+    pattern:  /category/{id}/edit
+    defaults: { _controller: Category:edit }
+    requirements:
+       id: \d+
+
+
+file_category_create:
+    pattern:  /category/new
+    defaults: { _controller: Category:new }

@@ -30,7 +30,7 @@
 
 {% block file_dropzone_widget %}
     <div class="dropzone-box"
-         data-url="{{ path('nefarian_web_plugin_field_file_api_file_upload') }}"
+         data-url="{{ path('nefarian_web_plugin_field_file_api_file_upload', {form: form.vars.config_name}) }}"
          data-count="{{ form.children|length }}"
          data-limit="{{ form.vars.limit }}"
          data-prototype="{{ _self.dropzoneItem(form.vars.prototype)|e('html_attr') }}">

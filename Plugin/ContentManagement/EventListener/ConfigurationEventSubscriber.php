@@ -4,7 +4,6 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\EventListener;
 
 use Doctrine\ORM\EntityManager;
 use Nefarian\CmsBundle\Configuration\ConfigManager;
-use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -54,13 +53,9 @@ class ConfigurationEventSubscriber implements EventSubscriberInterface
         foreach ($contentTypes as $contentType) {
             $fields = $contentType->getTypeFields();
             foreach ($fields as $field) {
-                $fieldConfigName            = 'field.' . $field->getField()->getName();
-                $contentTypeFieldConfigName = 'content_type.' . $contentType->getName() . '.' . $field->getName();
-                $contentFieldTypeConfig     = $this->configManager->get($fieldConfigName);
-                if ($contentFieldTypeConfig instanceof ConfigurationInterface) {
-                    $contentFieldTypeFieldConfig = clone $contentFieldTypeConfig;
-                    $this->configManager->set($contentTypeFieldConfigName, $contentFieldTypeFieldConfig);
-                }
+                $configType = 'field.' . $field->getField()->getName();
+                $configName = 'content_type.' . $contentType->getName() . '.' . $field->getName();
+                $this->configManager->create($configType, $configName);
             }
         }
     }
