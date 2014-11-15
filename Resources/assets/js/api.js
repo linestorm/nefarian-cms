@@ -1,34 +1,7 @@
 (function(){
-    define(['jquery', 'bootstrap'], function ($, bs) {
+    define(['jquery', 'bootstrap', 'bootbox'], function ($, bs, bootbox) {
 
         var api = null;
-
-        var _buildModalContainer = function(title, content, showClose){
-            var $container,
-                container =
-                    '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> ' +
-                    '    <div class="modal-dialog"> ' +
-                    '    <div class="modal-content"> ' +
-                    '        <div class="modal-header"> ' +
-                    '            <h4 class="modal-title" id="myModalLabel">__title__</h4> ' +
-                    '        </div> ' +
-                    '        <div class="modal-body">__widget__</div> ' +
-                    '        <div class="modal-footer"> ' +
-                    '            <button type="button" class="btn btn-default close-button" data-dismiss="modal">Close</button> ' +
-                    '        </div> ' +
-                    '    </div> ' +
-                    '    </div> ' +
-                    '</div>'
-            ;
-
-            $container = $(container.replace('__widget__', content).replace('__title__', title));
-
-            if(showClose === false){
-                $container.find('button.close-button').hide();
-            }
-
-            return $container;
-        };
 
         // convert a form to a multi dimentional array
         var _serializeForm = function($form){
@@ -107,9 +80,19 @@
 
         var _saveForm = function($form, callback_success, callback_failure){
 
+            var $formModal = bootbox.dialog({
+                title: 'Saving Form',
+                message: '<div class="modal-message">Please wait while we save your form.</div>',
+                closeButton: false,
+                buttons: {
+                    cancel: {
+                        label: 'Close',
+                        className: 'btn-primary btn form-api-modal-close'
+                    }
+                }
+            });
 
-            var $formModal = _buildModalContainer('Saving Form...', '<div class="modal-message">Please wait while we save your form.</div>', false);
-            $formModal.modal();
+            $formModal.find('button.form-api-modal-close').attr('disabled', true);
 
             var returned = 0;
 
@@ -159,8 +142,8 @@
                 success: function(e,s,x){
                     if(buttons)
                         buttons.prop('disabled', false);
+                    $formModal.find('button.form-api-modal-close').attr('disabled', false);
                     $formModal.find('.modal-message').html("The form has been saved.");
-                    $formModal.find('.close-button').show();
                     callback_success.call(this, e,s,x);
                 },
                 error: function(e,b,c){
@@ -186,6 +169,7 @@
                     }
                     html += '</div>';
 
+                    $formModal.find('button.form-api-modal-close').attr('disabled', false);
                     $formModal.find('.modal-message').html(html);
                     if('function' === typeof callback_failure){
                         callback_failure.call(this, e,b,c,$formModal);
@@ -244,24 +228,50 @@
                             return;
                         }
 
-                        var $formModal = _buildModalContainer( 'Session Error', '<div class="alert-error"><p>The session entered an unknown state ('+xhr.status+')</p></div>');
-                        $formModal.modal();
+                        bootbox.dialog({
+                            title: 'Session Error',
+                            message: '<div class="alert-error"><p>The session entered an unknown state ('+xhr.status+')</p></div>',
+                            buttons: {
+                                cancel: {
+                                    label: 'Close'
+                                }
+                            }
+                        });
 
                     },
                     error: function(xhr, state, o){
-                        var $formModal;
 
                         if(xhr.status === 403){
 
-                            $formModal = _buildModalContainer( 'Session Error', '<div class="alert-error"><p>Your session has expired</p></div>', false);
-                            $formModal.find('.modal-footer').append('<a href="'+xhr.responseJSON.url+'" class="btn btn-primary">Login</a>');
-                            $formModal.modal();
+                            bootbox.dialog({
+                                title: 'Session Error',
+                                message: '<div class="alert-error"><p>Your session has expired</p></div>',
+                                closeButton: false,
+                                buttons: {
+                                    login: {
+                                        label: 'Login',
+                                        className: 'btn-primary btn',
+                                        callback: function(){
+                                            window.location.href = xhr.responseJSON.url;
+                                        }
+                                    }
+                                }
+                            });
+
                             clearInterval(_sessionPokeInterval);
                             return;
                         }
 
-                        $formModal = _buildModalContainer( 'Session Error', '<div class="alert-error"><p>The session entered an unknown state ('+xhr.status+')</p></div>');
-                        $formModal.modal();
+                        bootbox.dialog({
+                            title: 'Session Error',
+                            message: '<div class="alert-error"><p>The session entered an unknown state ('+xhr.status+')</p></div>',
+                            closeButton: false,
+                            buttons: {
+                                cancel: {
+                                    label: 'Close'
+                                }
+                            }
+                        });
                     }
                 });
             } else {

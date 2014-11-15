@@ -4,6 +4,8 @@ namespace Nefarian\CmsBundle\Plugin\FieldFile\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\File;
 
 /**
  * Class FileType
@@ -26,8 +28,6 @@ class FileType extends AbstractType
             ->add('status', 'hidden')
         ;
     }
-
-
 
     /**
      * Returns the name of this type.

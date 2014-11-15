@@ -22,22 +22,7 @@ class File
     /**
      * @var string
      */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $nameOriginal;
-
-    /**
-     * @var string
-     */
-    protected $hash;
-
-    /**
-     * @var string
-     */
-    protected $alt;
+    protected $description;
 
     /**
      * @var string
@@ -47,7 +32,7 @@ class File
     /**
      * @var string
      */
-    protected $src;
+    protected $url;
 
     /**
      * @var string
@@ -57,7 +42,17 @@ class File
     /**
      * @var int
      */
-    protected $category;
+    protected $size;
+
+    /**
+     * @var int
+     */
+    protected $status;
+
+    /**
+     * @var string
+     */
+    protected $filename;
 
     /**
      * @var array Array of all api urls
@@ -66,23 +61,28 @@ class File
 
     /**
      * @param \Nefarian\CmsBundle\Plugin\File\Model\File $file
-     * @param array                              $api
+     * @param array                                      $api
      */
     function __construct(\Nefarian\CmsBundle\Plugin\File\Model\File $file, array $api = array())
     {
-        $this->id           = $file->getId();
-        $this->title        = $file->getTitle();
-        $this->path         = $file->getPath();
+        $this->id          = $file->getId();
+        $this->title       = $file->getTitle();
+        $this->description = $file->getDescription();
+        $this->path        = $file->getPath();
+        $this->url         = $file->getUrl();
+        $this->size        = $file->getSize();
+        $this->status      = $file->getStatus();
+        $this->filename    = $file->getFilename();
+        $this->_api        = $api;
 
-        $this->_api         = $api;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getAlt()
+    public function getApi()
     {
-        return $this->alt;
+        return $this->_api;
     }
 
     /**
@@ -91,13 +91,6 @@ class File
     public function getCredits()
     {
         return $this->credits;
-    }
-    /**
-     * @return string
-     */
-    public function getHash()
-    {
-        return $this->hash;
     }
 
     /**
@@ -111,25 +104,9 @@ class File
     /**
      * @return string
      */
-    public function getName()
+    public function getPath()
     {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNameOriginal()
-    {
-        return $this->nameOriginal;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSrc()
-    {
-        return $this->src;
+        return $this->path;
     }
 
     /**
@@ -141,27 +118,43 @@ class File
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getCategory()
+    public function getDescription()
     {
-        return $this->category;
+        return $this->description;
     }
 
     /**
      * @return string
      */
-    public function getPath()
+    public function getUrl()
     {
-        return $this->path;
+        return $this->url;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getApi()
+    public function getFilename()
     {
-        return $this->_api;
+        return $this->filename;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
 } 

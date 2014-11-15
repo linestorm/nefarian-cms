@@ -67,6 +67,12 @@ class File
         $this->createdOn = new \DateTime();
     }
 
+    function __toString()
+    {
+        return $this->path;
+    }
+
+
     /**
      * @return string
      */
@@ -217,6 +223,14 @@ class File
     public function setUrl($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\File\File
+     */
+    public function getFile()
+    {
+        return new \Symfony\Component\HttpFoundation\File\File($this->path, false);
     }
 
 }

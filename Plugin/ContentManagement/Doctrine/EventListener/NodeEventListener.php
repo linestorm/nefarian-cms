@@ -193,6 +193,10 @@ class NodeEventListener implements EventSubscriber
                 $symfonyRoute = $this->createNewNodeRoute($entity);
                 $route        = $this->createNewNodeRouteEntity($symfonyRoute);
                 $em->persist($route);
+                $uow->computeChangeSet($em->getClassMetadata(get_class($route)), $route);
+
+                $entity->setRoute($route);
+                $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($entity)), $entity);
             }
         }
     }

@@ -168,3 +168,46 @@ html body.page-signin {
     }
   }
 }
+
+.dropzone-box {
+  .file-fields {
+    margin-top: 5px;
+    input, textarea{
+      width: 100%;
+      box-sizing: border-box;
+      padding: 5px;
+      border: none;
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 2px;
+    }
+  }
+
+  /* slide up progress bar on success */
+  .dz-success {
+    .progress {
+      overflow-y: hidden;
+      max-height: 0px;
+      transition-property: all;
+      transition-duration: .5s;
+      transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    }
+    .dz-success-mark {
+      visibility: 0;
+      transition-property: all;
+      transition-duration: .5s;
+      transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    }
+  }
+
+  .dz-preview {
+    width: 260px;
+    .dz-thumbnail {
+      width: 238px;
+      height: 160px;
+
+      > img {
+        max-height: 160px;
+      }
+    }
+  }
+}

@@ -60,7 +60,7 @@ class NodeRouterManager
 
         // process the result
         /** @var RoutingConfiguration $routingConfig */
-        $routingConfig = $this->configManager->get('content_type.routing');
+        $routingConfig = $this->configManager->get('routing.settings');
         $term = $routingConfig->processString($term);
 
         return $term;

@@ -75,7 +75,7 @@ class DataTypeListDataTransformer implements DataTransformerInterface
         $extensions = array();
         $values = explode(',', $value);
         foreach($values as $value){
-            $value = preg_replace('/[^a-zA-Z0-9]*/', '', $value);
+            $value = preg_replace('/[^a-zA-Z0-9\/\*]+/', '', $value);
             if(strlen($value)){
                 $extensions[] = $value;
             }

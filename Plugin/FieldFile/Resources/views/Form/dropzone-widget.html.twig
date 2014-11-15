@@ -1,38 +1,44 @@
 {% macro dropzoneItem(form) %}
     {% spaceless %}
-        <div class="media-tile">
-            <div class="media-preview">
-                <div class="media-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                <img class="media-image-thumbnail" data-dz-thumbnail src="{% if form.src|default(false) %}{{ form.src.vars.value }}{% endif %}" />
-            </div>
-
-            <button type="button" class="btn btn-danger media-remove" tabindex="-1" data-dz-remove><i class="fa-times"></i></button>
-
-            <div class="file-form-container">
-                <div class="media-form-item" id="{{ form.vars.id }}___name__">
-                    {{ form_widget(form.title, {attr: {placeholder: 'Title', class: 'media-textarea'} }) }}
-                    {{ form_widget(form.description, {attr: {placeholder: 'Description', class: 'media-textarea'} }) }}
-
-                    {{ form_widget(form.filename) }}
-                    {{ form_widget(form.path) }}
-                    {{ form_widget(form.url) }}
-                    {{ form_widget(form.size) }}
-                    {{ form_widget(form.status) }}
+        <div class="dz-preview dz-file-preview">
+            <div class="dz-details">
+                <div class="dz-filename">
+                    <span data-dz-name>{{ form.filename.vars.value }}</span>
                 </div>
-                <p>
-
-                </p>
+                <div class="dz-size">File size: <span data-dz-size></span></div>
+                <div class="dz-thumbnail-wrapper">
+                    <div class="dz-thumbnail">
+                        <img data-dz-thumbnail {% if form.url.vars.value %}src="{{ form.url.vars.value }}"{% endif %}>
+                        <span class="dz-nopreview">No preview</span>
+                        <div class="dz-error-mark"><i class="fa fa-times-circle-o"></i></div>
+                        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                    </div>
+                </div>
             </div>
-
+            <div class="progress progress-striped active">
+                <div class="progress-bar progress-bar-success" data-dz-uploadprogress></div>
+            </div>
+            <div class="file-form-container file-fields">
+                {{ form_widget(form.title, {attr: {placeholder: 'Title', class: 'media-textarea', 'data-field-name': form.title.vars.full_name|replace({'__name__': '__delta__'}) } }) }}
+                {{ form_widget(form.description, {attr: {placeholder: 'Description', class: 'media-textarea', 'data-field-name': form.description.vars.full_name|replace({'__name__': '__delta__'}) } }) }}
+                {{ form_widget(form.filename, {attr: {'data-field-name': form.filename.vars.full_name|replace({'__name__': '__delta__'})} }) }}
+                {{ form_widget(form.path, {attr: {'data-field-name': form.path.vars.full_name|replace({'__name__': '__delta__'})} }) }}
+                {{ form_widget(form.url, {attr: {'data-field-name': form.url.vars.full_name|replace({'__name__': '__delta__'})} }) }}
+                {{ form_widget(form.size, {attr: {'data-field-name': form.size.vars.full_name|replace({'__name__': '__delta__'})} }) }}
+                {{ form_widget(form.status, {attr: {'data-field-name': form.status.vars.full_name|replace({'__name__': '__delta__'})} }) }}
+            </div>
         </div>
     {% endspaceless %}
 {% endmacro %}
 
 {% block file_dropzone_widget %}
+    <!-- dropzone -->
     <div class="dropzone-box"
+         data-mime-types="{{ form.vars.mimeTypes|join(',') }}"
          data-url="{{ path('nefarian_web_plugin_field_file_api_file_upload', {form: form.vars.config_name}) }}"
          data-count="{{ form.children|length }}"
          data-limit="{{ form.vars.limit }}"
+         data-items="{{ form.vars.files|serialize }}"
          data-prototype="{{ _self.dropzoneItem(form.vars.prototype)|e('html_attr') }}">
 
         <div class="dz-default dz-message">
@@ -40,9 +46,5 @@
             Drop files in here<br><span class="dz-text-small">or click to pick manually</span>
         </div>
 
-        <!-- dropzone -->
-        {% for child in form %}
-            {{ _self.dropzoneItem(child) }}
-        {% endfor %}
     </div>
 {% endblock %}

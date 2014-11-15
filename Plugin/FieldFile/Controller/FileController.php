@@ -49,7 +49,7 @@ class FileController extends Controller
                 $provider = $mediaManager->getDefaultProviderInstance();
                 if(!$provider->validateUpload($uploadedFile, $fileTypes))
                 {
-                    throw new UploadException("Upload failed: bad extension");
+                    throw new UploadException("File type not allowed");
                 }
 
                 if ($uploadedFile->isValid()) {

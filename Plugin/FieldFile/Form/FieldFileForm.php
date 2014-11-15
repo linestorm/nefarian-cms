@@ -10,6 +10,7 @@ use Nefarian\CmsBundle\Plugin\FieldFile\Configuration\FieldFileConfiguration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\File;
 
 /**
  * Class FieldFileForm
@@ -52,14 +53,20 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
                 'type' => new FileType(),
                 'options' => array(
                     'data_class' => 'Nefarian\CmsBundle\Plugin\File\Entity\File',
+                    'constraints' => array(
+                        new File(array(
+                            'mimeTypes' => $this->configuration->getFileTypes(),
+                        ))
+                    )
                 ),
+                'mime_types' => $this->configuration->getFileTypes(),
                 'config_name' => $this->configuration->getName(),
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
                 'limit' => (int)$limit,
-                'label' => $limit == 1 ? null : $limit,
+                'label' => null,
             ));
     }
 

@@ -331,11 +331,19 @@ class LocalStorageFileProvider extends AbstractFileProvider implements FileProvi
 
     public function validateUpload(UploadedFile $file, array $types)
     {
-        $extension = $file->getClientOriginalExtension();
+        $mimeType = $file->getClientMimeType();
         foreach($types as $type)
         {
-            if($type === $extension){
-                return true;
+            if(strpos($type, '*') !== false){
+                $regex = str_replace('\*', '(.+)', preg_quote($type, '/'));
+                if(preg_match("#{$regex}#", $mimeType))
+                {
+                    return true;
+                }
+            } else {
+                if ($type === $mimeType) {
+                    return true;
+                }
             }
         }
 
