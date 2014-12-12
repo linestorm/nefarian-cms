@@ -35,7 +35,7 @@
     <!-- dropzone -->
     <div class="dropzone-box"
          data-mime-types="{{ form.vars.mimeTypes|join(',') }}"
-         data-url="{{ path('nefarian_web_plugin_field_file_api_file_upload', {form: form.vars.config_name}) }}"
+         data-url="{{ path('nefarian_web_plugin_field_file_api_file_upload', {form: form.vars.form_id}) }}"
          data-count="{{ form.children|length }}"
          data-limit="{{ form.vars.limit }}"
          data-items="{{ form.vars.files|serialize }}"

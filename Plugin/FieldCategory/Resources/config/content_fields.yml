@@ -1,6 +1,7 @@
 category:
   class:   Nefarian\CmsBundle\Plugin\FieldCategory\Entity\FieldCategory
   form:    Nefarian\CmsBundle\Plugin\FieldCategory\Form\FieldCategoryForm
+  config:  Nefarian\CmsBundle\Plugin\FieldCategory\Configuration\FieldCategoryConfiguration
   configs:
     settings:
       fields:

@@ -1,6 +1,7 @@
 tag:
   class:   Nefarian\CmsBundle\Plugin\FieldTag\Entity\FieldTag
   form:    Nefarian\CmsBundle\Plugin\FieldTag\Form\FieldTagForm
+  config:  Nefarian\CmsBundle\Plugin\FieldTag\Configuration\FieldTagConfiguration
   assets:
     - @plugin_field_tag/node/tags.js
   configs:

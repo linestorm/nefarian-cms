@@ -21,12 +21,12 @@ services:
       - @service_container
     tags:
       - { name: doctrine.event_subscriber }
-  nefarian.plugins.content_management.doctrine.content_type_listener:
-    class: %nefarian.plugins.content_management.doctrine.content_type_listener.class%
-    arguments:
-      - @service_container
-    tags:
-      - { name: doctrine.event_subscriber }
+#  nefarian.plugins.content_management.doctrine.content_type_listener:
+#    class: %nefarian.plugins.content_management.doctrine.content_type_listener.class%
+#    arguments:
+#      - @service_container
+#    tags:
+#      - { name: doctrine.event_subscriber }
 
   #
   # Forms - field collection
@@ -66,6 +66,12 @@ services:
     tags:
       - {name: nefarian.node.path_processor}
 
+  #
+  # Views
+  nefarian.plugin.content_management.view.mode:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\View\NodeView
+    tags:
+      - { name: nefarian.view }
 
   #
   # Configurations

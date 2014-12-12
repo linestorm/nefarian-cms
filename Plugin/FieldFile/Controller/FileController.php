@@ -28,11 +28,13 @@ class FileController extends Controller
             throw new BadRequestHttpException();
         }
 
-        $configManager = $this->get('nefarian_core.config_manager');
+        $em = $this->getDoctrine()->getManager();
+        $form = $em->getRepository('PluginContentManagement:ContentTypeField')->find($form);
+
         $mediaManager  = $this->get('nefarian.plugin.file.manager');
 
         /** @var FieldFileConfiguration $config */
-        $config    = $configManager->get($form);
+        $config    = $form->getConfig();
         $fileTypes = $config->getFileTypes();
 
         $files = array();

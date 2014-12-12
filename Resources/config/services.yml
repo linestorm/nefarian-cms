@@ -10,9 +10,6 @@ parameters:
 
   nefarian_core.twig.assets_extension:       Nefarian\CmsBundle\Twig\PluginExtension
 
-  # Views
-  nefarian_core.views.manager.class:         Nefarian\CmsBundle\View\ViewManager
-
   # Routing
   nefarian_core.routing.plugin_loader.class: Nefarian\CmsBundle\Router\PluginLoader
   nefarian_core.routing.api_loader.class:    Nefarian\CmsBundle\Router\ApiLoader
@@ -100,13 +97,6 @@ services:
     class: Nefarian\CmsBundle\Router\NefarianRouteProvider
     arguments:
       - @doctrine.orm.default_entity_manager
-
-
-  #
-  # Views
-  nefarian_core.views.manager:
-    class: %nefarian_core.views.manager.class%
-    arguments: [@doctrine.orm.default_entity_manager]
 
   #
   # Twig Functions for plugins

@@ -64,8 +64,7 @@ class FieldCollectionType extends AbstractType
             foreach ($contentType->getTypeFields() as $typeField) {
                 $fieldEntity     = $typeField->getField();
                 $field           = $this->fieldManager->getField($fieldEntity->getName());
-                $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $typeField->getName();
-                $config          = $this->configManager->get($fieldConfigName);
+                $config          = $typeField->getConfig();
 
                 if ($field instanceof Field) {
                     $formClass = $field->getForm();
@@ -82,7 +81,7 @@ class FieldCollectionType extends AbstractType
 
                     $this->fieldLabels[$i] = $typeField;
                     $builder->add($i, 'field_content_collection', array(
-                        'type' => new $formClass($fieldEntity, $config),
+                        'type' => new $formClass($typeField),
                         'options' => array(
                             'label' => false,
                         ),

@@ -2,6 +2,8 @@
 
 namespace Nefarian\CmsBundle\Content\Field;
 
+use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
+
 interface FieldInterface
 {
     /**
@@ -20,4 +22,9 @@ interface FieldInterface
      * @return mixed
      */
     public function getEntityClass();
+
+    /**
+     * @return ConfigurationInterface
+     */
+    public function getConfig();
 } 

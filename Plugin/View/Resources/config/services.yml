@@ -1,5 +1,7 @@
 parameters:
   nefarian.plugins.content_management.doctrine.node_listener.class:  Nefarian\CmsBundle\Plugin\ContentManagement\Doctrine\EventListener\NodeEventListener
+  nefarian.plugin.view.view_manager.class: Nefarian\CmsBundle\Plugin\View\ViewManager
+  nefarian.plugin.view.view_form_builder.class: Nefarian\CmsBundle\Plugin\View\View\ViewFormBuilder
 
 #  nefarian.plugins.content_management.form.type.field_collection.class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type\FieldCollectionType
 
@@ -9,6 +11,18 @@ services:
     class: Nefarian\CmsBundle\Plugin\View\ViewPlugin
     tags:
       - { name: nefarian.plugin }
+
+
+  #
+  # View Manager
+  nefarian.plugin.view.view_manager:
+    class: %nefarian.plugin.view.view_manager.class%
+    arguments: [@doctrine.orm.default_entity_manager, @nefarian.plugin.view.view_form_builder]
+
+  nefarian.plugin.view.view_form_builder:
+    class: %nefarian.plugin.view.view_form_builder.class%
+    public: false
+
 
   #
   # Doctrine - Map node listener

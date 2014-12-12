@@ -20,7 +20,7 @@ content_type_edit_fields:
 
 content_type_edit_field_details:
   path:     /content/type/{contentTypeField}/details/edit
-  defaults: { _controller: ContentType:editFieldDetailsAction }
+  defaults: { _controller: ContentType:editFieldDetails }
 
 content_type_create_fields:
   path:     /content/type/{id}/fields/create

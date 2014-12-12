@@ -9,6 +9,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Nefarian\CmsBundle\Configuration\ConfigManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -68,6 +69,17 @@ class ContentTypeEventListener implements EventSubscriber
 
                         $this->configManager->rename($oldFieldConfigName, $newFieldConfigName);
                     }
+                }
+            }
+
+            if($entity instanceof ContentTypeField){
+                $changeSet = $uow->getEntityChangeSet($entity);
+                if (isset($changeSet['name'])) {
+                    list($oldValue, $newValue) = $changeSet['name'];
+                    $oldFieldConfigName = 'content_type.' . $entity->getContentType()->getName() . '.' . $oldValue;
+                    $newFieldConfigName = 'content_type.' . $entity->getContentType()->getName() . '.' . $newValue;
+
+                    $this->configManager->rename($oldFieldConfigName, $newFieldConfigName);
                 }
             }
         }

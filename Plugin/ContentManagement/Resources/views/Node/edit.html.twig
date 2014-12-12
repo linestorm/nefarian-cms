@@ -23,6 +23,7 @@
     {% if node.editedOn %}
         / <em>Edited on <abbr title="{% if node.editedBy %}By {{ node.editedBy.username }} {% endif %}at {{ node.editedOn | date('H:i:s') }}">{{ node.editedOn | date('Y-m-d') }}</abbr></em>
     {% endif %}
+    / <a href="{{ url('nefarian_web_plugin_content_management_node_view', {id: node.id}) }}">Preview</a>
 {% endblock %}
 
 {% block plugin %}

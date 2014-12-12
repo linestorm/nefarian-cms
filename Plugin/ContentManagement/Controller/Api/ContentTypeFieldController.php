@@ -8,6 +8,7 @@ use FOS\RestBundle\View\View;
 use Nefarian\CmsBundle\Controller\AbstractApiController;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFieldForm;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
@@ -28,7 +29,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
      */
     function getForm()
     {
-        return new ContentTypeForm();
+        return new ContentTypeFieldForm();
     }
 
     /**
@@ -42,15 +43,14 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
     public function putAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
     {
         /** @var EntityManager $em */
-        $configManager = $this->get('nefarian_core.config_manager');
+        $em = $this->getDoctrine()->getManager();
 
-        $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
-        $fieldConfig     = $configManager->get($fieldConfigName);
-        $fieldConfigForm = $fieldConfig->getForm();
+        $config = clone $contentTypeField->getConfig();
+        $fieldConfigForm = $config->getForm();
 
         $payload = json_decode($request->getContent(), true);
 
-        $form = $this->createForm($fieldConfigForm, $fieldConfig, array(
+        $form = $this->createForm($fieldConfigForm, $config, array(
             'attr' => array(
                 'class' => 'api-save'
             ),
@@ -66,7 +66,53 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
         if($form->isValid())
         {
             $entity = $form->getData();
-            $configManager->set($fieldConfigName, $entity);
+
+            $contentTypeField->setConfig($entity);
+            $em->persist($contentTypeField);
+            $em->flush($contentTypeField);
+
+            $view = View::create(null, 200, array(
+                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('id' => $contentType->getId())),
+            ));
+        }
+        else
+        {
+            $view = View::create($form);
+        }
+
+        return $this->get('fos_rest.view_handler')->handle($view);
+    }
+
+    public function putDetailsAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
+    {
+        /** @var EntityManager $em */
+
+        $fieldConfigForm = new ContentTypeFieldForm();
+
+        $payload = json_decode($request->getContent(), true);
+
+        $form = $this->createForm($fieldConfigForm, $contentTypeField, array(
+            'attr' => array(
+                'class' => 'api-save'
+            ),
+            'method' => 'PUT',
+            'action' => $this->generateUrl('nefarian_api_content_management_put_type_field', array(
+                'contentType' => $contentType->getId(),
+                'contentTypeField' => $contentTypeField->getId(),
+            )),
+        ));
+
+        $form->remove('field');
+
+        $form->submit($payload[$fieldConfigForm->getName()]);
+
+        if($form->isValid())
+        {
+            $entity = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
 
             $view = View::create(null, 200, array(
                 'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('id' => $contentType->getId())),
@@ -84,12 +130,6 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-
-        $configManager = $this->get('nefarian_core.config_manager');
-
-        $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
-        $configManager->delete($fieldConfigName);
-
         $em->remove($contentTypeField);
         $em->flush();
 

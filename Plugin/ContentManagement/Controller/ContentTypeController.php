@@ -105,10 +105,14 @@ class ContentTypeController extends Controller
                     'class' => 'api-save'
                 ),
                 'method' => 'PUT',
-                'action' => $this->generateUrl('nefarian_api_content_management_put_type',
-                    array('id' => $contentTypeField->getId())),
+                'action' => $this->generateUrl('nefarian_api_content_management_put_type_field_details', array(
+                    'contentType' => $contentTypeField->getContentType()->getId(),
+                    'contentTypeField' => $contentTypeField->getId(),
+                )),
             )
         );
+
+        $form->remove('field');
 
         return $this->render(
             '@plugin_content_management/ContentType/edit-tab-details.html.twig',
@@ -158,8 +162,7 @@ class ContentTypeController extends Controller
     public function createFieldsAction(Request $request, ContentType $contentType)
     {
         /** @var EntityManager $em */
-        $em            = $this->getDoctrine()->getManager();
-        $configManager = $this->get('nefarian_core.config_manager');
+        $em = $this->getDoctrine()->getManager();
 
         $name = $request->request->get('field_name');
         $type = $request->request->get('field_type');
@@ -177,41 +180,29 @@ class ContentTypeController extends Controller
         $contentTypeField->setField($field);
         $contentTypeField->setContentType($contentType);
         $contentTypeField->setOrder(count($contentType->getTypeFields()));
+
+        // create a new field definition
+        $fieldManager    = $this->get('nefarian_core.content_field_manager');
+        $fieldDefinition = $fieldManager->getField($field->getName());
+        $configClass     = $fieldDefinition->getConfig();
+        $defaultConfig   = new $configClass();
+        $contentTypeField->setConfig($defaultConfig);
+
         $em->persist($contentTypeField);
         $em->flush();
 
-        // create a new field definition
-        $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
-        $fieldConfig     = $configManager->get($fieldConfigName);
-
-        $form = $this->createForm($fieldConfig->getForm(), $fieldConfig, array(
-            'attr' => array(
-                'class' => 'api-save'
-            ),
-            'method' => 'POST',
-            'action' => $this->generateUrl('nefarian_api_content_management_post_type',
-                array('id' => $contentType->getId())),
-        ));
-
-        return $this->render(
-            '@plugin_content_management/ContentType/edit-tab-field-create.html.twig',
-            array(
-                'contentType' => $contentType,
-                'form' => $form->createView(),
-            )
-        );
+        return $this->redirect($this->generateUrl('nefarian_plugin_content_management_content_type_edit_field', array(
+            'contentType' => $contentType->getId(),
+            'contentTypeField' => $contentTypeField->getId(),
+        )));
     }
 
     public function editFieldAction(ContentType $contentType, ContentTypeField $contentTypeField)
     {
-        /** @var EntityManager $em */
-        $configManager = $this->get('nefarian_core.config_manager');
+        $config = $contentTypeField->getConfig();
+        $form   = $config->getForm();
 
-        $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
-        $fieldConfig     = $configManager->get($fieldConfigName);
-        $form = $fieldConfig->getForm();
-
-        $form = $this->createForm($form, $fieldConfig, array(
+        $form = $this->createForm($form, $config, array(
             'attr' => array(
                 'class' => 'api-save'
             ),

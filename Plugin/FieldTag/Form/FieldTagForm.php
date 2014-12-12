@@ -2,10 +2,9 @@
 
 namespace Nefarian\CmsBundle\Plugin\FieldTag\Form;
 
-use Nefarian\CmsBundle\Configuration\Configuration;
-use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
+use Nefarian\CmsBundle\Plugin\FieldTag\Configuration\FieldTagConfiguration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -19,25 +18,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class FieldTagForm extends AbstractType implements FieldNodeFormInterface
 {
     /**
-     * @var Field
+     * @var ContentTypeField
      */
-    protected $field;
+    protected $contentTypeField;
 
     /**
-     * @var ConfigurationInterface
+     * @param ContentTypeField $contentTypeField
      */
-    protected $configuration;
-
-    /**
-     * @param Field         $field
-     * @param ConfigurationInterface $configuration
-     */
-    function __construct(Field $field, ConfigurationInterface $configuration)
+    function __construct(ContentTypeField $contentTypeField)
     {
-        $this->field  = $field;
-        $this->configuration = $configuration;
+        $this->contentTypeField = $contentTypeField;
     }
-
 
     /**
      * @param FormBuilderInterface $builder
@@ -45,11 +36,13 @@ class FieldTagForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $limit = $this->configuration->getLimit();
+        /** @var FieldTagConfiguration $configuration */
+        $configuration = $this->contentTypeField->getConfig();
+        $limit         = $configuration->getLimit();
         $builder
             ->add('tags', 'tag', array(
                 'tag_class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
-                'tag_base' => $this->configuration->getTag(),
+                'tag_base' => $configuration->getTag(),
                 'name' => 'name',
                 'label' => $limit == 1 ? null : $limit,
                 'attr' => array(

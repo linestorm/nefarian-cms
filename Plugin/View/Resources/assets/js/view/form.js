@@ -87,11 +87,13 @@ define(['jquery', 'jqueryui', 'angular', 'bootstrap', 'cms/core/api'], function 
                     }
                 });
             } else {
+                var newFields = [];
                 for (var i = 0; i < $scope.fields.length; ++i) {
-                    if ($scope.fields[i].class == association.hash) {
-                        $scope.fields.splice(i, 1);
+                    if ($scope.fields[i].class !== association.hash) {
+                        newFields.push($scope.fields[i]);
                     }
                 }
+                $scope.fields = newFields;
             }
             storage.set('settings', $scope.settings);
         };

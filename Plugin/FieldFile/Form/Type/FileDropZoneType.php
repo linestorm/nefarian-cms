@@ -20,7 +20,7 @@ class FileDropZoneType extends AbstractType
     {
         $resolver
             ->setRequired(array(
-                'config_name'
+                'form_id'
             ))
             ->setDefaults(array(
                 'limit' => 1,
@@ -30,7 +30,7 @@ class FileDropZoneType extends AbstractType
                 'mime_types' => array(),
             ))
             ->setAllowedTypes(array(
-                'config_name' => 'string',
+                'form_id' => 'integer',
                 'limit' => 'integer',
                 'mime_types' => 'array',
             ));
@@ -46,9 +46,9 @@ class FileDropZoneType extends AbstractType
                 }
             }
         }
-        $view->vars['mimeTypes']   = $options['mime_types'];
-        $view->vars['limit']       = $options['limit'];
-        $view->vars['config_name'] = $options['config_name'];
+        $view->vars['mimeTypes'] = $options['mime_types'];
+        $view->vars['limit']     = $options['limit'];
+        $view->vars['form_id']   = $options['form_id'];
     }
 
     public function getParent()

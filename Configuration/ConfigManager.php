@@ -147,4 +147,12 @@ class ConfigManager
         $this->em->remove($configEntity);
         $this->em->flush($configEntity);
     }
+
+    public function rename($oldName, $newName)
+    {
+        $oldConfig = clone $this->get($oldName);
+        $oldConfig->setName($newName);
+        $this->delete($oldName);
+        $this->set($newName, $oldConfig);
+    }
 } 

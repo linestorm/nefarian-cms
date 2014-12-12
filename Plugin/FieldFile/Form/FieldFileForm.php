@@ -3,8 +3,7 @@
 namespace Nefarian\CmsBundle\Plugin\FieldFile\Form;
 
 use Nefarian\CmsBundle\Configuration\Configuration;
-use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Nefarian\CmsBundle\Plugin\FieldFile\Configuration\FieldFileConfiguration;
 use Symfony\Component\Form\AbstractType;
@@ -21,25 +20,17 @@ use Symfony\Component\Validator\Constraints\File;
 class FieldFileForm extends AbstractType implements FieldNodeFormInterface
 {
     /**
-     * @var Field
+     * @var ContentTypeField
      */
-    protected $field;
+    protected $contentTypeField;
 
     /**
-     * @var FieldFileConfiguration
+     * @param ContentTypeField $contentTypeField
      */
-    protected $configuration;
-
-    /**
-     * @param Field                  $field
-     * @param ConfigurationInterface $configuration
-     */
-    function __construct(Field $field, ConfigurationInterface $configuration)
+    function __construct(ContentTypeField $contentTypeField)
     {
-        $this->field         = $field;
-        $this->configuration = $configuration;
+        $this->contentTypeField = $contentTypeField;
     }
-
 
     /**
      * @param FormBuilderInterface $builder
@@ -47,7 +38,9 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $limit = $this->configuration->getLimit();
+        /** @var FieldFileConfiguration $configuration */
+        $configuration = $this->contentTypeField->getConfig();
+        $limit = $configuration->getLimit();
         $builder
             ->add('files', 'file_dropzone', array(
                 'type' => new FileType(),
@@ -55,12 +48,12 @@ class FieldFileForm extends AbstractType implements FieldNodeFormInterface
                     'data_class' => 'Nefarian\CmsBundle\Plugin\File\Entity\File',
                     'constraints' => array(
                         new File(array(
-                            'mimeTypes' => $this->configuration->getFileTypes(),
+                            'mimeTypes' => $configuration->getFileTypes(),
                         ))
                     )
                 ),
-                'mime_types' => $this->configuration->getFileTypes(),
-                'config_name' => $this->configuration->getName(),
+                'mime_types' => $configuration->getFileTypes(),
+                'form_id' => $this->contentTypeField->getId(),
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,

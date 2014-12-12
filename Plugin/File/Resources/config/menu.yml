@@ -1,10 +1,10 @@
 file:
-  title: File
+  title: Files
   icon: picture-o
 
   items:
     all_file:
       route: index
-      title: All File
-      description: Add, Edit and Delete File
+      title: All Files
+      description: Add, Edit and Delete Files
 

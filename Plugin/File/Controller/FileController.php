@@ -28,6 +28,8 @@ class FileController extends Controller
      */
     public function listAction()
     {
+        // get all the files
+
         $userManager = $this->get('nefarian_core.user_manager');
         $userManager->hasPermission($this->getUser(), 'file.view');
 

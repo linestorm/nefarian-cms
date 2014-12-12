@@ -89,4 +89,5 @@ class ContentTypeController extends AbstractApiController implements ClassResour
         return false;
     }
 
+
 } 

@@ -17,6 +17,11 @@ class Field implements FieldInterface
     /**
      * @var string
      */
+    protected $config;
+
+    /**
+     * @var string
+     */
     protected $form;
 
     /**
@@ -37,6 +42,7 @@ class Field implements FieldInterface
     {
         $this->name       = $name;
         $this->class      = $properties['class'];
+        $this->config     = $properties['config'];
         $this->form       = $properties['form'];
         $this->assets     = $properties['assets'];
     }
@@ -55,6 +61,14 @@ class Field implements FieldInterface
     public function getForm()
     {
         return $this->form;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**

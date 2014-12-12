@@ -2,6 +2,9 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
+use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\ContentTypeFieldConfiguration;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\FieldConfiguration;
+
 class ContentTypeField
 {
     /**
@@ -18,6 +21,11 @@ class ContentTypeField
      * @var Field
      */
     protected $field;
+
+    /**
+     * @var FieldConfiguration
+     */
+    protected $config;
 
     /**
      * @TODO: implement
@@ -129,6 +137,19 @@ class ContentTypeField
         return $this->contentType;
     }
 
+    /**
+     * @return FieldConfiguration
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
 
-
+    /**
+     * @param FieldConfiguration $config
+     */
+    public function setConfig(FieldConfiguration $config)
+    {
+        $this->config = $config;
+    }
 } 

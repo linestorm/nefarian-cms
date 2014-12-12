@@ -19,20 +19,16 @@ class EntityController extends Controller
 
     public function getEntitiesAction()
     {
-        $em          = $this->getDoctrine()->getManager();
-        $metaFactory = $em->getMetadataFactory();
-
-        /** @var \Doctrine\ORM\Mapping\ClassMetadata[] $metaSchemas */
-        $metaSchemas = $metaFactory->getAllMetadata();
+        $viewManager = $this->get('nefarian.plugin.view.view_manager');
+        $views       = $viewManager->getViews();
 
         $entities = array();
-        foreach($metaSchemas as $metaSchema)
-        {
-            if(!$metaSchema->isMappedSuperclass)
-            {
+        foreach ($views as $view) {
+            $metaData = $viewManager->getMetaDataForView($view);
+            if (!$metaData->isMappedSuperclass) {
                 $entities[] = array(
-                    'value' => sha1($metaSchema->getName()),
-                    'name'  => $metaSchema->getTableName(),
+                    'value' => $view->getName(),
+                    'name' => $metaData->getTableName(),
                 );
             }
         }
@@ -44,47 +40,36 @@ class EntityController extends Controller
 
     public function getEntityFieldsAction(Request $request)
     {
-        $entityHash = $request->query->get('entity');
+        $viewName = $request->query->get('entity');
 
-        if(!$entityHash)
-        {
+        if (!$viewName) {
             throw new BadRequestHttpException('Entity not provided');
         }
 
-        $em          = $this->getDoctrine()->getManager();
-        $metaFactory = $em->getMetadataFactory();
+        $viewManager = $this->get('nefarian.plugin.view.view_manager');
+        $view        = $viewManager->getView($viewName);
 
-        /** @var \Doctrine\ORM\Mapping\ClassMetadata[] $metaSchemas */
-        $metaSchemas = $metaFactory->getAllMetadata();
+        $viewForm = $viewManager->buildView($view);
 
-        $associations = array();
         $fields       = array();
-        foreach($metaSchemas as $metaSchema)
-        {
-            $hash = sha1($metaSchema->getName());
-            if($hash == $entityHash)
-            {
-                $table = $metaSchema->getTableName();
-                foreach($metaSchema->getFieldNames() as $fieldName)
-                {
-                    $fields[] = $table . '.' . $fieldName;
-                }
+        $associations = array();
 
-                foreach($metaSchema->associationMappings as $associationSchema)
-                {
-                    $associations[] = array(
-                        'name' => $table . '.' . $associationSchema['fieldName'],
-                        'hash' => sha1($associationSchema['targetEntity']),
-                    );
-                }
+        foreach ($viewForm->getFields() as $name => $type) {
+            $fields[] = array(
+                'name' => $name,
+                'parent' => $view->getName()
+            );
+        }
 
-                // no point in continuing
-                break;
-            }
+        foreach ($viewForm->getAssociations() as $name => $type) {
+            $associations[] = array(
+                'name' => $name,
+                'parent' => $view->getName()
+            );
         }
 
         $view = new View(array(
-            'fields'       => $fields,
+            'fields' => $fields,
             'associations' => $associations,
         ));
 

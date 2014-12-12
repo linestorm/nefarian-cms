@@ -4,6 +4,7 @@ namespace Nefarian\CmsBundle\Plugin\FieldCategory\Form;
 
 use Nefarian\CmsBundle\Configuration\Configuration;
 use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\FieldNodeFormInterface;
 use Symfony\Component\Form\AbstractType;
@@ -19,23 +20,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
 {
     /**
-     * @var Field
+     * @var ContentTypeField
      */
-    protected $field;
+    protected $contentTypeField;
 
     /**
-     * @var ConfigurationInterface
+     * @param ContentTypeField $contentTypeField
      */
-    protected $configuration;
-
-    /**
-     * @param Field                  $field
-     * @param ConfigurationInterface $configuration
-     */
-    function __construct(Field $field, ConfigurationInterface $configuration)
+    function __construct(ContentTypeField $contentTypeField)
     {
-        $this->field = $field;
-        $this->configuration = $configuration ;
+        $this->contentTypeField = $contentTypeField;
     }
 
 
@@ -45,7 +39,7 @@ class FieldCategoryForm extends AbstractType implements FieldNodeFormInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $limit = $this->configuration->getLimit();
+        $limit = $this->contentTypeField->getConfig()->getLimit();
         $builder
             ->add('category', 'entity', array(
                 'label' => $limit == 1 ? null : $limit,

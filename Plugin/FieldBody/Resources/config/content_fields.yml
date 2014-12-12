@@ -1,5 +1,6 @@
 body:
   class:   Nefarian\CmsBundle\Plugin\FieldBody\Entity\FieldBody
   form:    Nefarian\CmsBundle\Plugin\FieldBody\Form\FieldBodyForm
+  config:  Nefarian\CmsBundle\Plugin\FieldBody\Configuration\FieldBodyConfiguration
   assets:
     - @plugin_field_body/node/body.js

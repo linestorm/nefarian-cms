@@ -29,6 +29,7 @@ class FieldsConfiguration implements ConfigurationInterface
                 ->children()
                     ->scalarNode('class')->isRequired()->end()
                     ->scalarNode('form')->isRequired()->end()
+                    ->scalarNode('config')->isRequired()->end()
                     ->arrayNode('assets')
                         ->prototype('scalar')->end()
                     ->end()
