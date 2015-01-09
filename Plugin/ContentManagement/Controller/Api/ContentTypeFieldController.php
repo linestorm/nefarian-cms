@@ -3,16 +3,14 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api;
 
 use Doctrine\ORM\EntityManager;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Nefarian\CmsBundle\Controller\AbstractApiController;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFieldForm;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
-use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -40,12 +38,60 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
         return 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType';
     }
 
+    public function postAction(Request $request, ContentType $contentType)
+    {
+        /** @var EntityManager $em */
+
+        $fieldConfigForm = new ContentTypeFieldForm();
+        $contentTypeField = new ContentTypeField();
+        $contentTypeField->setContentType($contentType);
+
+        $payload = json_decode($request->getContent(), true);
+
+        $form = $this->createForm($fieldConfigForm, $contentTypeField, array(
+            'method' => 'POST',
+        ));
+
+        $label = $payload[$fieldConfigForm->getName()]['label'];
+        $payload[$fieldConfigForm->getName()]['name']
+               = strtolower(preg_replace(array('/[^a-zA-Z0-9 ]/', '/\s+/'), array('', '_'), $label));
+        $form->submit($payload[$fieldConfigForm->getName()]);
+
+        if ($form->isValid()) {
+            $entity = $form->getData();
+
+            if ($entity instanceof ContentTypeField) {
+
+                $fieldManager    = $this->get('nefarian_core.content_field_manager');
+                $fieldDefinition = $fieldManager->getField($entity->getField()->getName());
+                $configClass     = $fieldDefinition->getConfig();
+                $defaultConfig   = new $configClass();
+                $entity->setConfig($defaultConfig);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+
+                $view = View::create(null, 302, array(
+                    'location' => $this->generateUrl('nefarian_api_content_management_post_type_field', array(
+                        'contentType' => $contentType->getId(),
+                    )),
+                ));
+            }
+        } else {
+            $view = View::create($form);
+        }
+
+        return $this->get('fos_rest.view_handler')->handle($view);
+    }
+
+
     public function putAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        $config = clone $contentTypeField->getConfig();
+        $config          = clone $contentTypeField->getConfig();
         $fieldConfigForm = $config->getForm();
 
         $payload = json_decode($request->getContent(), true);
@@ -63,8 +109,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
 
         $form->submit($payload[$fieldConfigForm->getName()]);
 
-        if($form->isValid())
-        {
+        if ($form->isValid()) {
             $entity = $form->getData();
 
             $contentTypeField->setConfig($entity);
@@ -72,11 +117,10 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $em->flush($contentTypeField);
 
             $view = View::create(null, 200, array(
-                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('id' => $contentType->getId())),
+                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields',
+                    array('type' => $contentType->getName())),
             ));
-        }
-        else
-        {
+        } else {
             $view = View::create($form);
         }
 
@@ -106,8 +150,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
 
         $form->submit($payload[$fieldConfigForm->getName()]);
 
-        if($form->isValid())
-        {
+        if ($form->isValid()) {
             $entity = $form->getData();
 
             $em = $this->getDoctrine()->getManager();
@@ -115,11 +158,10 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $em->flush();
 
             $view = View::create(null, 200, array(
-                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('id' => $contentType->getId())),
+                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields',
+                    array('type' => $contentType->getName())),
             ));
-        }
-        else
-        {
+        } else {
             $view = View::create($form);
         }
 
@@ -138,9 +180,9 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
         return $this->get('fos_rest.view_handler')->handle($view);
     }
 
-    public function postAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
+    /*public function postAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
     {
-        /** @var EntityManager $em */
+        /** @var EntityManager $em * /
         $configManager = $this->get('nefarian_core.config_manager');
 
         $fieldConfigName = 'content_type.' . $contentType->getName() . '.' . $contentTypeField->getName();
@@ -168,7 +210,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $configManager->set($fieldConfigName, $entity);
 
             $view = View::create(null, 201, array(
-                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('id' => $contentType->getId())),
+                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('type' => $contentType->getName())),
             ));
         }
         else
@@ -177,7 +219,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
-    }
+    }*/
 
 
     /**
@@ -185,22 +227,23 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
      */
     function getUrl($method, $entity = null)
     {
-        switch($method)
-        {
+        switch ($method) {
             case self::METHOD_POST:
                 return $this->generateUrl('nefarian_api_content_management_post_type');
                 break;
 
             case self::METHOD_PUT:
-                return $this->generateUrl('nefarian_api_content_management_put_type', array( 'id' => $entity->getId() ));
+                return $this->generateUrl('nefarian_api_content_management_put_type', array('id' => $entity->getId()));
                 break;
 
             case self::METHOD_DELETE:
-                return $this->generateUrl('nefarian_api_content_management_delete_type', array( 'id' => $entity->getId() ));
+                return $this->generateUrl('nefarian_api_content_management_delete_type',
+                    array('id' => $entity->getId()));
                 break;
 
             case self::METHOD_GET:
-                return $this->generateUrl('nefarian_plugin_content_management_content_type_edit', array( 'id' => $entity->getId() ));
+                return $this->generateUrl('nefarian_plugin_content_management_content_type_edit',
+                    array('type' => $entity->getName()));
                 break;
         }
 
@@ -210,8 +253,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
     public function hasPermission($method)
     {
         $userManager = $this->get('nefarian_core.user_manager');
-        switch($method)
-        {
+        switch ($method) {
             case self::METHOD_NEW:
             case self::METHOD_POST:
                 return $userManager->hasPermission($this->getUser(), 'content.type.create');

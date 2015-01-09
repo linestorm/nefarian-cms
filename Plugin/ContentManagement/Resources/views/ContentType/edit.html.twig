@@ -19,8 +19,8 @@
         <div class="col-sm-12">
             <ul class="nav nav-tabs" role="tablist">
                 {% set selected_tab = selected_tab|default('main') %}
-                <li {% if selected_tab == 'main' %}class="active"{% endif %}><a href="{{ path('nefarian_plugin_content_management_content_type_edit', {id: contentType.id}) }}">Content Type</a></li>
-                <li {% if selected_tab == 'fields' %}class="active"{% endif %}><a href="{{ path('nefarian_plugin_content_management_content_type_edit_fields', {id: contentType.id}) }}">Fields</a></li>
+                <li {% if selected_tab == 'main' %}class="active"{% endif %}><a href="{{ path('nefarian_plugin_content_management_content_type_edit', {type: contentType.name}) }}">Content Type</a></li>
+                <li {% if selected_tab == 'fields' %}class="active"{% endif %}><a href="{{ path('nefarian_plugin_content_management_content_type_edit_fields', {type: contentType.name}) }}">Fields</a></li>
                 <li {% if selected_tab == 'display' %}class="active"{% endif %}><a href="#">Health</a></li>
             </ul>
             <div class="tab-content tab-content-bordered">

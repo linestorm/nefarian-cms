@@ -3,7 +3,6 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NoResultException;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
@@ -12,6 +11,7 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ContentTypeController extends Controller
 {
@@ -60,18 +60,15 @@ class ContentTypeController extends Controller
         );
     }
 
-    public function editAction($id)
+    /**
+     * @param ContentType $contentType
+     *
+     * @return Response
+     *
+     * @ParamConverter("contentType", options={"mapping": {"type" = "name"}})
+     */
+    public function editAction(ContentType $contentType)
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        try {
-            $contentType = $em->getRepository('PluginContentManagement:ContentType')->findWithFields($id);
-        }
-        catch (NoResultException $e) {
-            throw $this->createNotFoundException('Content Type Not Found', $e);
-        }
-
         $form = $this->createForm(
             new ContentTypeForm(),
             $contentType,
@@ -94,9 +91,56 @@ class ContentTypeController extends Controller
         );
     }
 
-    public function editFieldDetailsAction(ContentTypeField $contentTypeField)
+    /**
+     * @param ContentType $contentType
+     *
+     * @return Response
+     *
+     * @ParamConverter("contentType", options={"mapping": {"type" = "name"}})
+     */
+    public function editFieldsAction(ContentType $contentType)
     {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
+        $contentTypeFieldForm = new ContentTypeFieldForm();
+        $contentTypeFields = new ContentTypeField();
+        $contentTypeFields->setOrder(count($contentType->getTypeFields()));
+        $form = $this->createForm($contentTypeFieldForm, $contentTypeFields, array(
+            'attr' => array(
+                'class' => 'api-save'
+            ),
+            'method' => 'POST',
+            'action' => $this->generateUrl('nefarian_api_content_management_post_type_field', array(
+                'contentType' => $contentType->getId(),
+            )),
+        ));
+
+        $form->remove('name');
+
+        $fields = $em->getRepository('PluginContentManagement:Field')->findAll();
+
+        return $this->render(
+            '@plugin_content_management/ContentType/edit-tab-field.html.twig',
+            array(
+                'contentType' => $contentType,
+                'fields' => $fields,
+                'form' => $form->createView(),
+            )
+        );
+    }
+
+    /**
+     * @param ContentType      $contentType
+     * @param ContentTypeField $contentTypeField
+     *
+     * @return Response
+     *
+     * @ParamConverter("contentType", options={"mapping": {"type" = "name"}})
+     * @ParamConverter("contentTypeField", options={"mapping": {"typeField" = "name"}})
+     */
+    public function editFieldDetailsAction(ContentType $contentType, ContentTypeField $contentTypeField)
+    {
         $form = $this->createForm(
             new ContentTypeFieldForm(),
             $contentTypeField,
@@ -106,7 +150,7 @@ class ContentTypeController extends Controller
                 ),
                 'method' => 'PUT',
                 'action' => $this->generateUrl('nefarian_api_content_management_put_type_field_details', array(
-                    'contentType' => $contentTypeField->getContentType()->getId(),
+                    'contentType' => $contentType->getId(),
                     'contentTypeField' => $contentTypeField->getId(),
                 )),
             )
@@ -124,80 +168,16 @@ class ContentTypeController extends Controller
         );
     }
 
-    public function editFieldsAction($id)
-    {
-        /** @var EntityManager $em */
-        $em          = $this->getDoctrine()->getManager();
-        $contentType = $em->getRepository('PluginContentManagement:ContentType')->find($id);
-
-        if (!$contentType instanceof ContentType) {
-            throw $this->createNotFoundException('Content Type Not Found');
-        }
-
-        $form = $this->createForm(
-            new ContentTypeForm(),
-            $contentType,
-            array(
-                'attr' => array(
-                    'class' => 'api-save'
-                ),
-                'method' => 'PUT',
-                'action' => $this->generateUrl('nefarian_api_content_management_put_type',
-                    array('id' => $contentType->getId())),
-            )
-        );
-
-        $fields = $em->getRepository('PluginContentManagement:Field')->findAll();
-
-        return $this->render(
-            '@plugin_content_management/ContentType/edit-tab-field.html.twig',
-            array(
-                'contentType' => $contentType,
-                'fields' => $fields,
-                'form' => $form->createView(),
-            )
-        );
-    }
-
-    public function createFieldsAction(Request $request, ContentType $contentType)
-    {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        $name = $request->request->get('field_name');
-        $type = $request->request->get('field_type');
-
-        $field = $em->getRepository('PluginContentManagement:Field')->find($type);
-
-        if (!$field instanceof Field) {
-            throw $this->createNotFoundException('Content Type Field not found');
-        }
-
-        // create a new field type
-        $contentTypeField = new ContentTypeField();
-        $contentTypeField->setName($name);
-        $contentTypeField->setLabel($name);
-        $contentTypeField->setField($field);
-        $contentTypeField->setContentType($contentType);
-        $contentTypeField->setOrder(count($contentType->getTypeFields()));
-
-        // create a new field definition
-        $fieldManager    = $this->get('nefarian_core.content_field_manager');
-        $fieldDefinition = $fieldManager->getField($field->getName());
-        $configClass     = $fieldDefinition->getConfig();
-        $defaultConfig   = new $configClass();
-        $contentTypeField->setConfig($defaultConfig);
-
-        $em->persist($contentTypeField);
-        $em->flush();
-
-        return $this->redirect($this->generateUrl('nefarian_plugin_content_management_content_type_edit_field', array(
-            'contentType' => $contentType->getId(),
-            'contentTypeField' => $contentTypeField->getId(),
-        )));
-    }
-
-    public function editFieldAction(ContentType $contentType, ContentTypeField $contentTypeField)
+    /**
+     * @param ContentType      $contentType
+     * @param ContentTypeField $contentTypeField
+     *
+     * @return Response
+     *
+     * @ParamConverter("contentType", options={"mapping": {"type" = "name"}})
+     * @ParamConverter("contentTypeField", options={"mapping": {"typeField" = "name"}})
+     */
+    public function editFieldSettingsAction(ContentType $contentType, ContentTypeField $contentTypeField)
     {
         $config = $contentTypeField->getConfig();
         $form   = $config->getForm();

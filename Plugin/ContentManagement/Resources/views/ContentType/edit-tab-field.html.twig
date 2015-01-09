@@ -1,7 +1,7 @@
 {% extends '@plugin_content_management/ContentType/edit.html.twig' %}
 {% set selected_tab = 'fields' %}
 {% block tab %}
-    <form action="{{ url('nefarian_plugin_content_management_content_type_create_fields', {id: contentType.id}) }}" method="post">
+    {{ form_start(form) }}
         <div class="table-responsive">
             <table class="table table-striped field-type">
                 <thead>
@@ -16,18 +16,18 @@
                 {% for field in contentType.typeFields %}
                     {% spaceless %}
                         <tr>
-                            <td>{{ field.name|capitalize }}</td>
-                            <td><a href="{{ url('nefarian_plugin_content_management_content_type_edit_field', {contentType: contentType.id, contentTypeField: field.id}) }}">{{ field.field.name|capitalize }}</a></td>
+                            <td><abbr title="{{ field.name }}" >{{ field.label|capitalize }}</abbr></td>
+                            <td><a href="{{ url('nefarian_plugin_content_management_content_type_edit_field', {type: contentType.name, typeField: field.name}) }}">{{ field.field.name|capitalize }}</a></td>
                             <td></td>
                             <td>
                                 <div class="btn-group">
                                     <a href="{{
-                                        url('nefarian_plugin_content_management_content_type_edit_field_details', {contentTypeField: field.id})
+                                        url('nefarian_plugin_content_management_content_type_edit_field_details', {type: contentType.name ,typeField: field.name})
                                     }}" class="btn btn-default">Edit</a>
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-down"></i></button>
                                     <ul class="dropdown-menu">
                                         <li><a class="field-type-remove" href="{{
-                                            url('nefarian_api_content_management_delete_type_field', {contentType: contentType.id, contentTypeField: field.id})
+                                            url('nefarian_api_content_management_delete_type_field', {contentType: contentType.id, contentTypeField: field.name})
                                             }}"><i class="fa-trash-o"></i> Remove</a></li>
                                     </ul>
                                 </div>
@@ -38,15 +38,15 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td><input type="text" name="field_name" class="form-control" required="true" placeholder="Field Label" /></td>
                     <td>
-                        <select class="form-control" name="field_type">
-                            {% for field in fields %}
-                                <option value="{{ field.id }}">{{ field.name }}</option>
-                            {% endfor %}
-                        </select>
+                        {{ form_widget(form.order) }}
+                        {{ form_widget(form.label, {attr: {'placeholder': 'Field Label'} } ) }}
                     </td>
-                    <td></td>
+                    <td>
+                        {{ form_widget(form.field) }}
+                    </td>
+                    <td>
+                    </td>
                     <td>
                         <button type="submit" class="btn btn-primary">
                             Create
@@ -56,6 +56,6 @@
                 </tfoot>
             </table>
         </div>
-    </form>
+    {{ form_end(form) }}
 
 {% endblock %}

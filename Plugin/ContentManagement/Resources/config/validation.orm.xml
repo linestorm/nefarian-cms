@@ -31,10 +31,6 @@
 
         <property name="typeFields">
             <constraint name="Valid"/>
-            <!--<constraint name="Count">
-              <option name="min">1</option>
-              <option name="minMessage">You must specify at least one field</option>
-            </constraint>-->
         </property>
 
     </class>
@@ -44,20 +40,25 @@
         <property name="name">
             <constraint name="NotNull"/>
             <constraint name="Length">
-                <option name="min">5</option>
-                <option name="max">25</option>
+                <option name="min">3</option>
+                <option name="max">20</option>
                 <option name="minMessage">Field name must be at least {{ limit }} characters in length</option>
-                <option name="maxMessage">File name cannot be longer than {{ limit }} characters in length</option>
+                <option name="maxMessage">Field name cannot be longer than {{ limit }} characters in length</option>
             </constraint>
             <constraint name="Regex">
-                <option name="pattern">/[a-z_]+/</option>
+                <option name="pattern">/^[a-z][a-z_]+$/</option>
                 <option name="message">Field name must be lower case alphabetic with underscores</option>
             </constraint>
-            <constraint name="Regex">
-                <option name="pattern">/^[a-z]/</option>
-                <option name="message">Field name must start with a lower case alphabetic character</option>
-            </constraint>
         </property>
+        
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">
+                <value>name</value>
+                <value>contentType</value>
+            </option>
+            <option name="errorPath">name</option>
+            <option name="message">This name is already in use.</option>
+        </constraint>
 
     </class>
 
