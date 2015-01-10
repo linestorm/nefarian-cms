@@ -75,10 +75,13 @@
 
             var opts = $.extend(true, {}, options, { url: url });
 
-            $.ajax(opts);
+            // this must be tied to a variable to prevent ajax request timing issues
+            var call = $.ajax(opts);
+
+            return call;
         };
 
-        var _saveForm = function($form, callback_success, callback_failure){
+        var _saveForm = function($form){
 
             var $formModal = bootbox.dialog({
                 title: 'Saving Form',
@@ -99,9 +102,6 @@
             var data, field, fname, method;
 
             method = $form[0].method;
-
-            callback_success = callback_success || null;
-            callback_failure = callback_failure || null;
 
             data = {};
 
@@ -136,46 +136,67 @@
             if(buttons)
                 buttons.prop('disabled', true);
 
-            _call($form[0].action, {
+            // this must be tied to a variable to prevent ajax request timing issues
+            var call = _call($form[0].action, {
                 data: JSON.stringify(sData),
-                method: method,
-                success: function(e,s,x){
-                    if(buttons)
-                        buttons.prop('disabled', false);
-                    $formModal.find('button.form-api-modal-close').attr('disabled', false);
-                    $formModal.find('.modal-message').html("The form has been saved.");
-                    callback_success.call(this, e,s,x);
-                },
-                error: function(e,b,c){
-                    if(buttons)
-                        buttons.prop('disabled', false);
+                method: method
+            });
 
-                    var html = '<p>An error occured when saving the form.</p><div id="FormErrors" class="alert alert-danger">';
-                    if(e.status === 400){
-                        if(e.responseJSON){
-                            var errors = _parseError(e.responseJSON.errors, null, true);
-                            var str = '';
-                            for(var i in errors){
-                                if(errors[i].length){
-                                    html += "<p class=''><strong style='text-transform:capitalize;'>"+i+":</strong> "+errors[i].join(', ')+"</p>";
+            call
+                .success(function(ob,s,x){
+                    x.isNefarianApi = x.getResponseHeader('X-NEFARIAN-API') === "true";
+                    if(x.isNefarianApi) {
+                        if (buttons)
+                            buttons.prop('disabled', false);
+                        $formModal.find('button.form-api-modal-close').attr('disabled', false);
+
+                        if(ob.status < 400){
+                            $formModal.find('.modal-message').html("The form has been saved.");
+
+                            if("undefined" !== typeof ob.options.location) {
+                                var location = ob.options.location;
+                                if (location && location.length) {
+                                    window.location = location;
                                 }
                             }
-                            $('#FormErrors').html(str).slideDown();
                         } else {
-                            alert(status);
+                            var html = '<p>An error occured when saving the form.</p><div id="FormErrors" class="alert alert-danger">';
+                            if(ob.status === 400){
+                                var errors = _parseError(ob.data, null, true);
+                                var str = '';
+                                for(var i in errors){
+                                    if(errors[i].length) {
+                                        if (i === 'error') {
+                                            for (var j in errors[i]) {
+                                                html += errors[i][j] + "</br>";
+                                            }
+                                        } else {
+                                            html += "<p class=''><strong style='text-transform:capitalize;'>" + i + ":</strong> " + errors[i].join(', ') + "</p>";
+                                        }
+                                    }
+                                }
+                                $('#FormErrors').html(str).slideDown();
+                            } else {
+                                html += "<p><strong style='text-transform:capitalize;'>Oh Dear.</strong> Looks like we have a problem here, the server responded with a "+e.status+" resonse.</p></div>";
+                            }
+                            html += '</div>';
+
+                            $formModal.find('button.form-api-modal-close').attr('disabled', false);
+                            $formModal.find('.modal-message').html(html);
                         }
                     } else {
-                        html += "<p><strong style='text-transform:capitalize;'>Oh Dear.</strong> Looks like we have a problem here, the server responded with a "+e.status+" resonse.</p></div>";
+                        if (buttons)
+                            buttons.prop('disabled', false);
+                        $formModal.find('button.form-api-modal-close').attr('disabled', false);
                     }
-                    html += '</div>';
-
+                })
+                .error(function(e,b,c){
+                    if(buttons)
+                        buttons.prop('disabled', false);
                     $formModal.find('button.form-api-modal-close').attr('disabled', false);
-                    $formModal.find('.modal-message').html(html);
-                    if('function' === typeof callback_failure){
-                        callback_failure.call(this, e,b,c,$formModal);
-                    }
-                }
-            });
+                });
+
+            return call;
         };
 
         var _parseError = function(e, p, flatten){
