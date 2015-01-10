@@ -9,11 +9,9 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO" />
         </id>
+        <one-to-many target-entity="Node" mapped-by="contentType" field="nodes" orphan-removal="true">
+        </one-to-many>
         <one-to-many target-entity="ContentTypeField" mapped-by="contentType" field="typeFields" orphan-removal="true">
-            <cascade>
-                <cascade-persist/>
-                <cascade-remove/>
-            </cascade>
             <order-by>
                 <order-by-field name="order" direction="ASC" />
             </order-by>

@@ -12,9 +12,9 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="delta" type="integer" column="delta" nullable="false"/>
-        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node" field="node" inversed-by="contents" >
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node" field="node" inversed-by="contents" orphan-removal="true">
         </many-to-one>
-        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField" field="fieldType">
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField" field="fieldType" inversed-by="contents" orphan-removal="true">
         </many-to-one>
     </entity>
 </doctrine-mapping>

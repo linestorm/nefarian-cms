@@ -22,16 +22,13 @@
 
         <one-to-many target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent" field="contents" mapped-by="node" orphan-removal="true">
             <cascade>
+                <cascade-merge/>
                 <cascade-persist/>
-                <cascade-remove/>
-                <cascade-detach/>
+                <cascade-refresh/>
             </cascade>
         </one-to-many>
 
-        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType" field="contentType">
-            <cascade>
-                <cascade-persist/>
-            </cascade>
+        <many-to-one target-entity="Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType" field="contentType" inversed-by="nodes" orphan-removal="true">
         </many-to-one>
 
         <many-to-one target-entity="Nefarian\CmsBundle\Entity\Route" field="route">
@@ -45,8 +42,5 @@
         <many-to-one target-entity="Nefarian\CmsBundle\Entity\User" field="createdBy">
             <gedmo:blameable on="create" />
         </many-to-one>
-
-        <gedmo:soft-deleteable field-name="deletedOn" />
-
     </entity>
 </doctrine-mapping>

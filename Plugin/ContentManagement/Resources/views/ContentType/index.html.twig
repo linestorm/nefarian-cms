@@ -1,5 +1,7 @@
 {% extends '@plugin_content_management/base.html.twig' %}
 
+{% set page_modules = ['cms/content_management/type/type'] %}
+
 {% block page_title %}
     Content Types
 {% endblock %}
@@ -40,7 +42,7 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ url('nefarian_plugin_content_management_content_type_edit', {type: contentType.name}) }}">View</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#" class="text-danger"><i class="fa-trash-o"></i> Delete</a></li>
+                                    <li><a href="{{ url('nefarian_api_content_management_delete_type', {id: contentType.id}) }}" class="content-type-delete text-danger"><i class="fa-trash-o"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>

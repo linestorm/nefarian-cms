@@ -1,0 +1,37 @@
+{% extends '@plugin_content_management/ContentType/edit.html.twig' %}
+{% set selected_tab = 'form' %}
+{% set page_modules = ['cms/content_management/type/form_view'] %}
+{% block tab %}
+    {{ form_start(form) }}
+        <div class="table-responsive">
+            <table class="table table-striped content-type-form-view">
+                <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Display Type</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i,fieldType in form.typeFields %}
+                    {% spaceless %}
+                        <tr>
+                            <td><button type="button" class="btn-link drag-handle"><i class="fa-arrows"></i></button> {{ form_widget(fieldType) }}</td>
+                            <td>{{ contentType.typeFields[i].label|capitalize }}</td>
+                            <td>{{ contentType.typeFields[i].field.name|capitalize }}</a></td>
+                            <td></td>
+                        </tr>
+                    {% endspaceless %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-save"></i> Save
+        </button>
+    {{ form_end(form) }}
+
+{% endblock %}

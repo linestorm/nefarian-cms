@@ -18,17 +18,21 @@ content_type_edit_fields:
   path:     /content/type/{type}/fields
   defaults: { _controller: ContentType:editFields }
 
-content_type_edit_field_details:
+content_type_edit_field:
   path:     /content/type/{type}/fields/{typeField}/edit
-  defaults: { _controller: ContentType:editFieldDetails }
+  defaults: { _controller: ContentType:editField }
 
 content_type_create_fields:
   path:     /content/type/{type}/fields/create
   defaults: { _controller: ContentType:createFields, _method: POST }
 
-content_type_edit_field:
+content_type_edit_field_settings:
   path:     /content/type/{type}/fields/{typeField}/settings
   defaults: { _controller: ContentType:editFieldSettings }
+
+content_type_edit_form_view:
+  path:     /content/type/{type}/form-view
+  defaults: { _controller: ContentType:editFormView }
 
 node_create_select:
   path: /node/create

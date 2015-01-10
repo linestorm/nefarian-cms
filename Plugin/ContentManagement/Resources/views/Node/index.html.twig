@@ -24,7 +24,7 @@
                             {% for node in nodes %}
                                 <tr>
                                     <td><a href="{{ url('nefarian_plugin_content_management_node_edit', {id: node.id}) }}">{{ node.title }}</a></td>
-                                    <td>{{ node.contentType.name }}</td>
+                                    <td>{{ node.contentType.label|capitalize }}</td>
                                     <td>{% if node.published %}{{ node.publishedOn|date('Y-m-d') }}{% endif %}</td>
                                 </tr>
                             {% endfor %}

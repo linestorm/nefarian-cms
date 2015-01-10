@@ -39,6 +39,11 @@ class ContentType
     protected $typeFields;
 
     /**
+     * @var Node[]
+     */
+    protected $nodes;
+
+    /**
      * @var string
      *
      * @Assert\Regex(
@@ -54,6 +59,7 @@ class ContentType
     function __construct()
     {
         $this->typeFields = new ArrayCollection();
+        $this->nodes      = new ArrayCollection();
     }
 
     /**
@@ -134,6 +140,31 @@ class ContentType
      * @return ContentTypeField[]
      */
     public function getTypeFields()
+    {
+        return $this->typeFields;
+    }
+
+
+    /**
+     * @param Node $node
+     */
+    public function addNode(Node $node)
+    {
+        $this->nodes[] = $node;
+    }
+
+    /**
+     * @param Node $node
+     */
+    public function removeNode(Node $node)
+    {
+        $this->nodes->removeElement($node);
+    }
+
+    /**
+     * @return Node[]
+     */
+    public function getNodes()
     {
         return $this->typeFields;
     }

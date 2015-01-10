@@ -40,7 +40,7 @@ class NodeEventListener implements EventSubscriber
         return array(
             Events::onFlush,
             Events::prePersist,
-            SoftDeleteableListener::POST_SOFT_DELETE,
+            Events::postRemove,
         );
     }
 
@@ -81,6 +81,30 @@ class NodeEventListener implements EventSubscriber
 
             if (!$entity->getCreatedOn()) {
                 $entity->setCreatedOn(new \DateTime());
+            }
+        }
+    }
+
+    public function postRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        $em     = $args->getEntityManager();
+
+        if ($entity instanceof Node) {
+            $route = $entity->getRoute();
+
+            if (!$route instanceof Route) {
+                $oldRoute     = $this->createNewNodeRoute($entity);                     // make a new route
+                $deletedRoute = $this->createNewNodeDeletedRoute($oldRoute->getPath()); // 410 the new route
+                $route        = $this->createNewNodeRouteEntity($deletedRoute);         // create an entity of the route
+                $entity->setRoute($route);
+                $em->persist($route);
+                $em->flush($route);
+            } else {
+                $symfonyRoute = $this->createNewNodeDeletedRoute($route->getPath());
+                $route->setRoute($symfonyRoute);
+                $em->persist($route);
+                $em->flush($route);
             }
         }
     }

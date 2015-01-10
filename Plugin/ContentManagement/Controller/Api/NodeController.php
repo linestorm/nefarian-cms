@@ -9,6 +9,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nefarian\CmsBundle\Controller\AbstractApiController;
 use Nefarian\CmsBundle\Controller\ApiControllerInterface;
+use Nefarian\CmsBundle\FosRest\View\View\JsonApiView;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
@@ -165,13 +166,13 @@ class NodeController extends AbstractApiController implements ClassResourceInter
             $em->persist($entity);
             $em->flush();
 
-            $view = View::create($entity, 200, array(
+            $view = JsonApiView::create($entity, 200, array(
                 'location' => $this->getUrl(self::METHOD_GET, $entity)
             ));
         }
         else
         {
-            $view = View::create($form);
+            $view = JsonApiView::create($form);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);

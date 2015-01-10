@@ -5,7 +5,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
+use Nefarian\CmsBundle\FosRest\View\View\JsonApiView;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFieldForm;
@@ -72,21 +72,21 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
                 $em->persist($entity);
                 $em->flush();
 
-                $view = View::create(null, 302, array(
+                $view = JsonApiView::create(null, 302, array(
                     'location' => $this->generateUrl('nefarian_api_content_management_post_type_field', array(
                         'contentType' => $contentType->getId(),
                     )),
                 ));
             }
         } else {
-            $view = View::create($form);
+            $view = JsonApiView::create($form, 400);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }
 
 
-    public function putAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
+    public function putSettingsAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -116,18 +116,18 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $em->persist($contentTypeField);
             $em->flush($contentTypeField);
 
-            $view = View::create(null, 200, array(
+            $view = JsonApiView::create(null, 200, array(
                 'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields',
                     array('type' => $contentType->getName())),
             ));
         } else {
-            $view = View::create($form);
+            $view = JsonApiView::create($form, 400);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }
 
-    public function putDetailsAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
+    public function putAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
     {
         /** @var EntityManager $em */
 
@@ -157,12 +157,12 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $em->persist($entity);
             $em->flush();
 
-            $view = View::create(null, 200, array(
+            $view = JsonApiView::create(null, 200, array(
                 'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields',
                     array('type' => $contentType->getName())),
             ));
         } else {
-            $view = View::create($form);
+            $view = JsonApiView::create($form, 400);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
@@ -175,7 +175,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
         $em->remove($contentTypeField);
         $em->flush();
 
-        $view = View::create(null, 204);
+        $view = JsonApiView::create(null, 204);
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }
@@ -209,13 +209,13 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $entity = $form->getData();
             $configManager->set($fieldConfigName, $entity);
 
-            $view = View::create(null, 201, array(
+            $view = JsonApiView::create(null, 201, array(
                 'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields', array('type' => $contentType->getName())),
             ));
         }
         else
         {
-            $view = View::create($form);
+            $view = JsonApiView::create($form);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);

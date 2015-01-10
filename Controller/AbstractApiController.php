@@ -8,6 +8,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nefarian\CmsBundle\FosRest\View\View\JsonApiView;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,7 +71,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
         $entities = $qb->getQuery()->getArrayResult();
 
-        $view = View::create($entities);
+        $view = JsonApiView::create($entities);
 
         $view->setFormat('json');
 
@@ -102,7 +103,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
             $entity = $qb->andWhere('e.id = ?1')->setParameter(1, $id)
                 ->getQuery()->getSingleResult(Query::HYDRATE_ARRAY);
 
-            $view = View::create($entity);
+            $view = JsonApiView::create($entity);
 
             $view->setFormat('json');
 
@@ -134,7 +135,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
             'form' => $form->createView()
         ));
 
-        $rView = View::create(array(
+        $rView = JsonApiView::create(array(
             'form' => $html,
         ));
 
@@ -180,7 +181,7 @@ abstract class AbstractApiController extends Controller implements ClassResource
             'form' => $form->createView()
         ));
 
-        $rView = View::create(array(
+        $rView = JsonApiView::create(array(
             'form' => $html,
         ));
 
@@ -220,13 +221,13 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
             $this->postCreate($entity);
 
-            $view = View::create(null, 201, array(
-                'location' => $this->getUrl(self::METHOD_GET, $entity)
+            $view = JsonApiView::create(null, 201, array(
+                'location' => $this->getUrl(self::METHOD_VIEW_ALL, $entity)
             ));
         }
         else
         {
-            $view = View::create($form);
+            $view = JsonApiView::create($form, 400);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
@@ -273,11 +274,13 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
             $this->postUpdate($entity);
 
-            $view = View::create($entity, 200);
+            $view = JsonApiView::create(null, 200, array(
+                'location' => $this->getUrl(self::METHOD_GET, $entity)
+            ));
         }
         else
         {
-            $view = View::create($form);
+            $view = JsonApiView::create($form, 400);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
@@ -312,9 +315,9 @@ abstract class AbstractApiController extends Controller implements ClassResource
 
         $this->postDelete();
 
-        $view = View::create(null, 204, array(
+        $view = new JsonApiView(array(
             'location' => $this->getUrl(self::METHOD_VIEW_ALL)
-        ));
+        ), 204);
 
         return $this->get('fos_rest.view_handler')->handle($view);
     }

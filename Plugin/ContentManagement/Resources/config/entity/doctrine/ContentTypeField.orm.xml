@@ -8,9 +8,14 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO" />
         </id>
-        <many-to-one target-entity="ContentType" field="contentType" inversed-by="typeFields">
+
+        <one-to-many target-entity="NodeContent" mapped-by="fieldType" field="contents" orphan-removal="true">
+        </one-to-many>
+
+        <many-to-one target-entity="ContentType" field="contentType" inversed-by="typeFields" orphan-removal="true">
         </many-to-one>
-        <many-to-one target-entity="Field" field="field" inversed-by="typeFields">
+        <many-to-one target-entity="Field" field="field" inversed-by="typeFields" orphan-removal="true">
         </many-to-one>
+
     </entity>
 </doctrine-mapping>

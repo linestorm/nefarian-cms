@@ -8,6 +8,7 @@ use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Field;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFieldForm;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFormViewForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,7 +84,7 @@ class ContentTypeController extends Controller
         );
 
         return $this->render(
-            '@plugin_content_management/ContentType/edit-tab-main.html.twig',
+            '@plugin_content_management/ContentType/edit-tab-content-type.html.twig',
             array(
                 'contentType' => $contentType,
                 'form' => $form->createView(),
@@ -121,7 +122,7 @@ class ContentTypeController extends Controller
         $fields = $em->getRepository('PluginContentManagement:Field')->findAll();
 
         return $this->render(
-            '@plugin_content_management/ContentType/edit-tab-field.html.twig',
+            '@plugin_content_management/ContentType/edit-tab-fields.html.twig',
             array(
                 'contentType' => $contentType,
                 'fields' => $fields,
@@ -139,7 +140,7 @@ class ContentTypeController extends Controller
      * @ParamConverter("contentType", options={"mapping": {"type" = "name"}})
      * @ParamConverter("contentTypeField", options={"mapping": {"typeField" = "name"}})
      */
-    public function editFieldDetailsAction(ContentType $contentType, ContentTypeField $contentTypeField)
+    public function editFieldAction(ContentType $contentType, ContentTypeField $contentTypeField)
     {
         $form = $this->createForm(
             new ContentTypeFieldForm(),
@@ -149,7 +150,7 @@ class ContentTypeController extends Controller
                     'class' => 'api-save'
                 ),
                 'method' => 'PUT',
-                'action' => $this->generateUrl('nefarian_api_content_management_put_type_field_details', array(
+                'action' => $this->generateUrl('nefarian_api_content_management_put_type_field', array(
                     'contentType' => $contentType->getId(),
                     'contentTypeField' => $contentTypeField->getId(),
                 )),
@@ -159,7 +160,7 @@ class ContentTypeController extends Controller
         $form->remove('field');
 
         return $this->render(
-            '@plugin_content_management/ContentType/edit-tab-details.html.twig',
+            '@plugin_content_management/ContentType/edit-tab-field-edit.html.twig',
             array(
                 'contentType' => $contentTypeField->getContentType(),
                 'contentTypeField' => $contentTypeField,
@@ -187,18 +188,47 @@ class ContentTypeController extends Controller
                 'class' => 'api-save'
             ),
             'method' => 'PUT',
-            'action' => $this->generateUrl('nefarian_api_content_management_put_type_field', array(
+            'action' => $this->generateUrl('nefarian_api_content_management_put_type_field_settings', array(
                 'contentType' => $contentType->getId(),
                 'contentTypeField' => $contentTypeField->getId(),
             )),
         ));
 
         return $this->render(
-            '@plugin_content_management/ContentType/edit-tab-field-edit.html.twig',
+            '@plugin_content_management/ContentType/edit-tab-field-settings.html.twig',
             array(
                 'contentType' => $contentType,
                 'form' => $form->createView(),
             )
         );
     }
+
+    /**
+     * @param ContentType      $contentType
+     *
+     * @return Response
+     *
+     * @ParamConverter("contentType", options={"mapping": {"type" = "name"}})
+     */
+    public function editFormViewAction(ContentType $contentType)
+    {
+        $form = $this->createForm(new ContentTypeFormViewForm(), $contentType, array(
+            'attr' => array(
+                'class' => 'api-save'
+            ),
+            'method' => 'PUT',
+            'action' => $this->generateUrl('nefarian_api_content_management_put_type_form_view', array(
+                'id' => $contentType->getId(),
+            )),
+        ));
+
+        return $this->render(
+            '@plugin_content_management/ContentType/edit-tab-form-view.html.twig',
+            array(
+                'contentType' => $contentType,
+                'form' => $form->createView(),
+            )
+        );
+    }
+
 } 

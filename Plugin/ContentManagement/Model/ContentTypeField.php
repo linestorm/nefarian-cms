@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\ContentTypeFieldConfiguration;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\FieldConfiguration;
 
@@ -16,6 +17,11 @@ class ContentTypeField
      * @var ContentType
      */
     protected $contentType;
+
+    /**
+     * @var NodeContent[]
+     */
+    protected $contents;
 
     /**
      * @var Field
@@ -48,6 +54,11 @@ class ContentTypeField
      * @var int
      */
     protected $order;
+
+    function __construct()
+    {
+        $this->contents = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -152,4 +163,29 @@ class ContentTypeField
     {
         $this->config = $config;
     }
+
+    /**
+     * @return NodeContent[]
+     */
+    public function getContents()
+    {
+        return $this->contents;
+    }
+
+    /**
+     * @param NodeContent $content
+     */
+    public function addContents($content)
+    {
+        $this->contents[] = $content;
+    }
+
+    /**
+     * @param NodeContent $content
+     */
+    public function removeContents($content)
+    {
+        $this->contents->removeElement($content);
+    }
+
 } 

@@ -23,12 +23,7 @@ define(['jquery', 'jqueryui', 'bootstrap', 'bootbox', 'cms/core/api', 'cms/conte
             e.stopPropagation();
             e.preventDefault();
 
-            api.saveForm($(this), function (ob, status, xhr) {
-                var location = xhr.getResponseHeader('location');
-                if (location && location.length) {
-                    window.location = location;
-                }
-            });
+            api.saveForm($(this));
             return false;
         });
 
