@@ -41,16 +41,19 @@ define(['jquery', 'jqueryui', 'bootstrap', 'dropzone', 'typeahead', 'cms_api', '
 
             var $form = $(this),
                 $fileItems = $form.find('.file-tile');
-            api.saveForm($form, function(on, status, xhr){
-                $fileItems.remove();
-            }, function(e, status, ex){
-                if(e.status === 400){
-                    if(e.responseJSON){
-                    } else {
-                        alert(status);
+            api.saveForm($form)
+                .success(function(on, status, xhr){
+                    $fileItems.remove();
+                })
+                .fail(function(e, status, ex){
+                    if(e.status === 400){
+                        if(e.responseJSON){
+                        } else {
+                            alert(status);
+                        }
                     }
-                }
-            });
+                })
+            ;
 
             return false;
         });
@@ -59,20 +62,7 @@ define(['jquery', 'jqueryui', 'bootstrap', 'dropzone', 'typeahead', 'cms_api', '
             e.preventDefault();
             e.stopPropagation();
 
-            api.saveForm($(this), function(on, status, xhr){
-                if(xhr.status === 200){
-                } else if(xhr.status === 201) {
-                } else {
-                }
-            }, function(e, status, ex){
-                if(e.status === 400){
-                    if(e.responseJSON){
-                    } else {
-                        alert(status);
-                    }
-                }
-            });
-
+            api.saveForm($(this));
             return false;
         });
 
