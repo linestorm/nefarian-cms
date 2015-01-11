@@ -104,7 +104,7 @@ class RoutingConfiguration extends AbstractConfiguration
     /**
      * @return boolean
      */
-    public function shouldRemovePunctuation()
+    public function getRemovePunctuation()
     {
         return $this->removePunctuation;
     }

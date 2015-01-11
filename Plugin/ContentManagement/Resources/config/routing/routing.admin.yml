@@ -57,3 +57,12 @@ node_edit:
 routing_settings:
   path: /routing/settings
   defaults: { _controller: Routing:settings }
+
+routing_routes:
+  path: /routing/routes
+  defaults: { _controller: Routing:routes }
+
+
+routing_manage:
+  path: /routing/manage
+  defaults: { _controller: Routing:manage }

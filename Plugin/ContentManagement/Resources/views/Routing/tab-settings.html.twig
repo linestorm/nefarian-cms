@@ -1,15 +1,15 @@
 {% extends '@plugin_content_management/Routing/base.html.twig' %}
-{% set page_modules = ['cms/content_management/node/form'] %}
+{% set selected_tab = 'settings' %}
 
 {% block page_title %}
-    Routing
+    Router Settings
 {% endblock %}
 
 {% block page_desc %}
-    Routing and Alias Settings
+    Configure settings for the node router
 {% endblock %}
 
-{% block plugin %}
+{% block tab %}
     {{ form_start(form) }}
         {{ form_rest(form) }}
 

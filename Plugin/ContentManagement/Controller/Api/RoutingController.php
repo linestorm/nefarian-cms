@@ -3,16 +3,14 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Controller\Api;
 
 use Doctrine\ORM\EntityManager;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Nefarian\CmsBundle\Controller\AbstractApiController;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeForm;
+use Nefarian\CmsBundle\Entity\Route;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\RoutingConfigurationForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
-use FOS\RestBundle\Controller\Annotations as FOSRest;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -54,20 +52,83 @@ class RoutingController extends Controller implements ClassResourceInterface
 
         $form->submit($payload[$fieldConfigForm->getName()]);
 
-        if($form->isValid())
-        {
+        if ($form->isValid()) {
             $entity = $form->getData();
             $configManager->set($fieldConfigName, $entity);
 
             $view = View::create(array(
                 'location' => $this->generateUrl('nefarian_plugin_content_management_routing_settings'),
             ), 200);
-        }
-        else
-        {
+        } else {
             $view = View::create($form);
         }
 
         return $this->get('fos_rest.view_handler')->handle($view);
+    }
+
+    public function getTableAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em   = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('NefarianCmsBundle:Route');
+        $queryBuilder = $repo->createQueryBuilder('r');
+
+        $dataColumns = array(
+            'path',
+        );
+
+        $draw    = $request->query->get('draw', 1);
+        $start   = $request->query->get('start', 0);
+        $length  = $request->query->get('length', 25);
+        $search  = $request->query->get('search', array());
+        $orders   = $request->query->get('order', array());
+        $columns = $request->query->get('columns', array());
+
+        $search += array(
+            'value' => false,
+            'regex' => false,
+        );
+
+        if($search['value']){
+            foreach($dataColumns as $dataColumn) {
+                if ($dataColumn) {
+                    $key = ':value_'.$dataColumn;
+                    $queryBuilder->orWhere('r.'.$dataColumn.' LIKE '.$key)->setParameter($key, "%{$search['value']}%");
+                }
+            }
+        }
+
+        foreach($orders as $order){
+            $order += array(
+                'column' => null,
+                'dir' => 'asc'
+            );
+            $queryBuilder->addOrderBy('r.'.$dataColumns[$order['column']], $order['dir'] == 'asc' ? 'asc' : 'desc');
+        }
+
+        $totalRecords = $em->createQuery('
+            SELECT count(r)
+            FROM NefarianCmsBundle:Route r
+        ')->getSingleScalarResult();
+
+        /** @var Route[] $routes */
+        $routes = $queryBuilder->setFirstResult($start)->setMaxResults($length)->getQuery()->getResult();
+        $data   = array();
+
+        foreach ($routes as $route) {
+            foreach($dataColumns as $i => $dataColumn) {
+                if($dataColumn){
+                    $row[$i] = $route->{"get".$dataColumn}();
+                }
+            }
+            $data[] = $row;
+        }
+
+        return new JsonResponse(array(
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data,
+        ));
     }
 } 
