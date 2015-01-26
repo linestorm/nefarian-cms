@@ -23,13 +23,17 @@ class NodeTagForm extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            ->add('parentTag', 'entity', array(
+            ->add('parentTag', 'tag_choice', array(
                 'class' => 'Nefarian\CmsBundle\Plugin\FieldTag\Entity\NodeTag',
                 'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('u')
+                        ->where('u.parentTag IS NULL')
                         ->orderBy('u.name', 'ASC');
                 },
                 'property' => 'name',
+                'empty_value' => '',
+                'empty_data' => null,
+                'required' => false,
             ))
             ->add('description');
     }

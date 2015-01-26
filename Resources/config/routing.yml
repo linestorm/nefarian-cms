@@ -1,6 +1,9 @@
 nefarian_plugins_routing:
   resource: routing/plugins.yml
 
+nefarian_forms_routing:
+  resource: routing/forms.yml
+
 nefarian_api:
   resource:   .
   type:       nefarian_api

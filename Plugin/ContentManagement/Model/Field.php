@@ -19,7 +19,12 @@ abstract class Field
     /**
      * @var string
      */
-    protected $category;
+    protected $label;
+
+    /**
+     * @var string
+     */
+    protected $description;
 
     /**
      * @var ContentTypeField[]
@@ -59,19 +64,35 @@ abstract class Field
     }
 
     /**
-     * @param string $category
+     * @return string
      */
-    public function setCategory($category)
+    public function getLabel()
     {
-        $this->category = $category;
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
 
     /**
      * @return string
      */
-    public function getCategory()
+    public function getDescription()
     {
-        return $this->category;
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 
     /**
@@ -98,4 +119,5 @@ abstract class Field
     {
         return $this->typeFields;
     }
+
 } 

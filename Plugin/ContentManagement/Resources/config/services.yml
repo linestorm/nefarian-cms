@@ -44,6 +44,13 @@ services:
         - { name: form.type, alias: field_content_collection }
 
 
+  nefarian.plugins.content_management.form.type.field_content_type_field_view_change:
+    class: Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFieldViewChangeForm
+    arguments:
+      - @nefarian_core.content_field_manager
+    tags:
+        - { name: form.type, alias: nefarian_plugin_content_management_content_type_field_view_change }
+
   #
   # Configuration events
   nefarian.plugins.content_management.event_listener.configuration:

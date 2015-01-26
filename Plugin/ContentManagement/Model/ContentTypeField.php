@@ -3,8 +3,9 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\ContentTypeFieldConfiguration;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\FieldConfiguration;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeFieldWidget;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Field\Configuration\FieldSettingsConfiguration;
 
 class ContentTypeField
 {
@@ -29,7 +30,7 @@ class ContentTypeField
     protected $field;
 
     /**
-     * @var FieldConfiguration
+     * @var FieldSettingsConfiguration
      */
     protected $config;
 
@@ -49,6 +50,16 @@ class ContentTypeField
      * @var string
      */
     protected $label;
+
+    /**
+     * @var ContentTypeFieldWidget
+     */
+    protected $viewWidget;
+
+    /**
+     * @var ContentTypeFieldDisplay
+     */
+    protected $viewDisplay;
 
     /**
      * @var int
@@ -157,9 +168,9 @@ class ContentTypeField
     }
 
     /**
-     * @param FieldConfiguration $config
+     * @param FieldSettingsConfiguration $config
      */
-    public function setConfig(FieldConfiguration $config)
+    public function setConfig(FieldSettingsConfiguration $config)
     {
         $this->config = $config;
     }
@@ -186,6 +197,38 @@ class ContentTypeField
     public function removeContents($content)
     {
         $this->contents->removeElement($content);
+    }
+
+    /**
+     * @return ContentTypeFieldWidget
+     */
+    public function getViewWidget()
+    {
+        return $this->viewWidget;
+    }
+
+    /**
+     * @param ContentTypeFieldWidget $viewWidget
+     */
+    public function setViewWidget(ContentTypeFieldWidget $viewWidget)
+    {
+        $this->viewWidget = $viewWidget;
+    }
+
+    /**
+     * @return ContentTypeFieldDisplay
+     */
+    public function getViewDisplay()
+    {
+        return $this->viewDisplay;
+    }
+
+    /**
+     * @param ContentTypeFieldDisplay $viewDisplay
+     */
+    public function setViewDisplay(ContentTypeFieldDisplay $viewDisplay)
+    {
+        $this->viewDisplay = $viewDisplay;
     }
 
 } 

@@ -160,3 +160,16 @@ services:
       class: Nefarian\CmsBundle\Form\Type\HiddenEntityIdType
       tags:
           - { name: form.type, alias: hidden_entity }
+
+  nefarian_core.form.type.auto_complete:
+      class: Nefarian\CmsBundle\Form\Type\AutoCompleteType
+      arguments:
+        - @nefarian_core.auto_complete_manager
+        - @router.default
+      tags:
+          - { name: form.type, alias: auto_complete }
+
+  #
+  # AutoComplete
+  nefarian_core.auto_complete_manager:
+    class: Nefarian\CmsBundle\Form\AutoComplete\AutoCompleteManager

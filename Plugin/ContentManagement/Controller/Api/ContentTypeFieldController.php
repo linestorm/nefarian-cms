@@ -8,6 +8,11 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nefarian\CmsBundle\FosRest\View\View\JsonApiView;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentType;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeFieldDisplay;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeFieldWidget;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\FieldViewDisplay;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\FieldViewForm;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Field\Widget\WidgetSettingsInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\ContentTypeFieldForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
@@ -42,7 +47,7 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
     {
         /** @var EntityManager $em */
 
-        $fieldConfigForm = new ContentTypeFieldForm();
+        $fieldConfigForm  = new ContentTypeFieldForm();
         $contentTypeField = new ContentTypeField();
         $contentTypeField->setContentType($contentType);
 
@@ -61,21 +66,44 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $entity = $form->getData();
 
             if ($entity instanceof ContentTypeField) {
+                $em = $this->getDoctrine()->getManager();
 
                 $fieldManager    = $this->get('nefarian_core.content_field_manager');
                 $fieldDefinition = $fieldManager->getField($entity->getField()->getName());
-                $configClass     = $fieldDefinition->getConfig();
+                $configClass     = $fieldDefinition->getSettings();
                 $defaultConfig   = new $configClass();
                 $entity->setConfig($defaultConfig);
 
-                $em = $this->getDoctrine()->getManager();
+                $fieldDisplay = $fieldDefinition->getDisplay();
+                $viewDisplay  = new ContentTypeFieldDisplay();
+                $viewDisplay->setName($fieldDisplay->getName());
+                $viewDisplay->setLabel($fieldDisplay->getLabel());
+                $viewDisplay->setConfig($fieldDisplay->getSettings());
+                $viewDisplay->setTypeField($entity);
+                $viewDisplay->setOrder(count($contentType->getTypeFields()));
+                $em->persist($viewDisplay);
+                $entity->setViewDisplay($viewDisplay);
+
+
+                $fieldWidget = $fieldDefinition->getWidget();
+                $viewWidget  = new ContentTypeFieldWidget();
+                $viewWidget->setName($fieldWidget->getName());
+                $viewWidget->setLabel($fieldWidget->getLabel());
+                $viewWidget->setConfig($fieldWidget->getSettings());
+                $viewWidget->setTypeField($entity);
+                $viewWidget->setOrder(count($contentType->getTypeFields()));
+                $em->persist($viewWidget);
+                $entity->setViewWidget($viewWidget);
+
                 $em->persist($entity);
                 $em->flush();
 
                 $view = JsonApiView::create(null, 302, array(
-                    'location' => $this->generateUrl('nefarian_api_content_management_post_type_field', array(
-                        'contentType' => $contentType->getId(),
-                    )),
+                    'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_field_settings',
+                        array(
+                            'type' => $contentType->getName(),
+                            'typeField' => $contentTypeField->getName(),
+                        )),
                 ));
             }
         } else {
@@ -115,6 +143,66 @@ class ContentTypeFieldController extends Controller implements ClassResourceInte
             $contentTypeField->setConfig($entity);
             $em->persist($contentTypeField);
             $em->flush($contentTypeField);
+
+            $view = JsonApiView::create(null, 200, array(
+                'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields',
+                    array('type' => $contentType->getName())),
+            ));
+        } else {
+            $view = JsonApiView::create($form, 400);
+        }
+
+        return $this->get('fos_rest.view_handler')->handle($view);
+    }
+
+    public function patchWidgetAction(Request $request, ContentType $contentType, ContentTypeField $contentTypeField)
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        $payload = json_decode($request->getContent(), true);
+
+        $currentWidget = $contentTypeField->getViewWidget()->getName();
+
+        $form = $this->createForm('nefarian_plugin_content_management_content_type_field_view_change',
+            array(
+                'type' => $currentWidget
+            ),
+            array(
+                'field'  => $contentTypeField->getField(),
+                'method' => 'PATCH',
+                'action' => $this->generateUrl('nefarian_api_content_management_patch_type_field_widget', array(
+                    'contentType' => $contentType->getId(),
+                    'contentTypeField' => $contentTypeField->getId(),
+                )),
+                'attr' => array(
+                    'class' => 'api-save',
+                ),
+            )
+        );
+
+        $form->submit($payload['nefarian_plugin_content_management_content_type_field_view_change']);
+
+        if ($form->isValid()) {
+            $form = $form->getData();
+
+            $fieldManager = $this->get('nefarian_core.content_field_manager');
+            $widget = $fieldManager->getFieldWidget($form['type']);
+
+            $widgetEntity = $contentTypeField->getViewWidget();
+            $widgetEntity->setName($widget->getName());
+            $widgetEntity->setLabel($widget->getLabel());
+            $widgetEntity->setDescription($widget->getDescription());
+            $config = $widget->getSettings();
+            if($config instanceof WidgetSettingsInterface) {
+                $widgetEntity->setConfig($widget->getSettings());
+            } else {
+                $widgetEntity->unsetConfig();
+            }
+
+
+            $em->persist($widgetEntity);
+            $em->flush($widgetEntity);
 
             $view = JsonApiView::create(null, 200, array(
                 'location' => $this->generateUrl('nefarian_plugin_content_management_content_type_edit_fields',

@@ -24,6 +24,8 @@ class NefarianCmsBundle extends Bundle
         $container->addCompilerPass(new Compilers\PluginCompilerPass());
         $container->addCompilerPass(new Compilers\EditorCompilerPass());
 
+        $container->addCompilerPass(new Compilers\AutoCompleteCompilerPass());
+
         $container->addCompilerPass(new Compilers\ConfigurationCompilerPass());
     }
 }

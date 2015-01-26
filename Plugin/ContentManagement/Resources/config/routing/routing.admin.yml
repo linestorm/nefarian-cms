@@ -34,6 +34,14 @@ content_type_edit_form_view:
   path:     /content/type/{type}/form-view
   defaults: { _controller: ContentType:editFormView }
 
+content_type_edit_form_view_change:
+  path:     /content/type/{type}/form-view/{typeField}/change
+  defaults: { _controller: ContentTypeField:changeFormView }
+
+content_type_edit_form_view_settings:
+  path:     /content/type/{type}/form-view/{typeField}/settings
+  defaults: { _controller: ContentTypeField:editFormViewSettings }
+
 node_create_select:
   path: /node/create
   defaults: { _controller: Admin\Node:newSelect }

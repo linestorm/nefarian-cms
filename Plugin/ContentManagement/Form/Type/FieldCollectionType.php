@@ -3,15 +3,13 @@
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form\Type;
 
 use Nefarian\CmsBundle\Configuration\ConfigManager;
-use Nefarian\CmsBundle\Content\Field\Field;
 use Nefarian\CmsBundle\Content\Field\FieldManager;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\Node;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Entity\NodeContent;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Field\FieldInterface;
 use Nefarian\CmsBundle\Plugin\ContentManagement\Form\DataTransformer\FieldCollectionDataTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -64,11 +62,13 @@ class FieldCollectionType extends AbstractType
             foreach ($contentType->getTypeFields() as $typeField) {
                 $fieldEntity     = $typeField->getField();
                 $field           = $this->fieldManager->getField($fieldEntity->getName());
-                $config          = $typeField->getConfig();
+                $fieldWidget     = $this->fieldManager->getFieldWidget($typeField->getViewWidget()->getName());
 
-                if ($field instanceof Field) {
-                    $formClass = $field->getForm();
+                if ($field instanceof FieldInterface) {
                     $dataClass = $field->getEntityClass();
+                    $formClass = $fieldWidget->getForm();
+
+                    $fieldFormConfig = $typeField->getConfig();
 
                     /** @var NodeContent $entity */
                     if (array_key_exists($typeField->getName(), $fieldContents)) {
@@ -81,12 +81,13 @@ class FieldCollectionType extends AbstractType
 
                     $this->fieldLabels[$i] = $typeField;
                     $builder->add($i, 'field_content_collection', array(
-                        'type' => new $formClass($typeField),
+                        'type' => $formClass,
                         'options' => array(
                             'label' => false,
+                            'content_type_field' => $typeField,
                         ),
                         'type_field' => $typeField,
-                        'limit' => (int)$config->getLimit() ?: 1,
+                        'limit' => (int)$fieldFormConfig->getLimit() ?: 1,
                         'label' => false,
                         'allow_add' => true,
                         'allow_delete' => true,

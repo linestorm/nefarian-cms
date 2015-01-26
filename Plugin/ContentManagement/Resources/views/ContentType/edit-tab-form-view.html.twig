@@ -2,6 +2,7 @@
 {% set selected_tab = 'form' %}
 {% set page_modules = ['cms/content_management/type/form_view'] %}
 {% block tab %}
+    {% form_theme form '@plugin_content_management/ContentType/Fields/form.html.twig' %}
     {{ form_start(form) }}
         <div class="table-responsive">
             <table class="table table-striped content-type-form-view">
@@ -9,8 +10,8 @@
                 <tr>
                     <th>Order</th>
                     <th>Name</th>
-                    <th>Type</th>
-                    <th>Display Type</th>
+                    <th>Field Type</th>
+                    <th>View Type</th>
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
@@ -18,10 +19,41 @@
                 {% for i,fieldType in form.typeFields %}
                     {% spaceless %}
                         <tr>
-                            <td><button type="button" class="btn-link drag-handle"><i class="fa-arrows"></i></button> {{ form_widget(fieldType) }}</td>
+                            <td><button type="button" class="btn-link drag-handle"><i class="fa-arrows"></i></button> {{ form_widget(fieldType, {
+                                    attr: {
+                                        class: 'table-sort-order'
+                                    }
+                                }) }}</td>
                             <td>{{ contentType.typeFields[i].label|capitalize }}</td>
-                            <td>{{ contentType.typeFields[i].field.name|capitalize }}</a></td>
-                            <td></td>
+                            <td>{{ contentType.typeFields[i].field.label|capitalize }}</a></td>
+                            <td>
+                                {{ contentType.typeFields[i].viewWidget.label }}
+                            </td>
+                            <td>
+
+                                <div class="btn-group pull-right">
+                                    {% if contentType.typeFields[i].viewWidget.config %}
+                                    <a href="{{ url('nefarian_plugin_content_management_content_type_edit_form_view_settings', {
+                                        type: contentType.name,
+                                        typeField: contentType.typeFields[i].name
+                                    }) }}" class="btn btn-default">
+                                        <i class="fa-cog"></i>
+                                    </a>
+                                    {% else %}
+                                        <button type="button" class="btn btn-default" disabled>
+                                            <i class="fa-cog"></i>
+                                        </button>
+                                    {% endif %}
+
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-down"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-right pull-right">
+                                        <li><a class="field-type-remove" href="{{ url('nefarian_plugin_content_management_content_type_edit_form_view_change', {
+                                                type: contentType.name,
+                                                typeField: contentType.typeFields[i].name
+                                            }) }}"><i class="fa-pencil"></i> Change</a></li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                     {% endspaceless %}
                 {% endfor %}

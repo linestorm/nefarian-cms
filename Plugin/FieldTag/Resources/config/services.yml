@@ -12,7 +12,8 @@ services:
   # Widget Types
   nefarian.plugins.field_tag.form.type.tag_collection:
     class: %nefarian.plugins.field_tag.form.type.tag_collection.class%
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments:
+      - @doctrine.orm.default_entity_manager
     tags:
         - { name: form.type, alias: tag }
 
@@ -22,7 +23,49 @@ services:
     tags:
         - { name: form.type, alias: tag_choice }
 
-  nefarian.plugin.field_tag.field.configuration:
-    class: Nefarian\CmsBundle\Plugin\FieldTag\Configuration\FieldTagConfiguration
+  nefarian.plugins.field_tag.form.field.widget.tag_autocomplete:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Field\Widget\Form\TagAutoCompleteWidgetForm
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @nefarian.plugin.field_tag.form.type.tag_collection_handler
     tags:
-      - { name: nefarian.configuration, config: field.tag }
+        - { name: form.type, alias: nefarian_plugin_field_tag_widget_autocomplete }
+
+  nefarian.plugins.field_tag.form.field.widget.tag_select:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Field\Widget\Form\TagSelectWidgetForm
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+        - { name: form.type, alias: nefarian_plugin_field_tag_widget_select }
+
+
+  # Fields
+  nefarian.plugin.field_tag.field.tag:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Field\FieldTag
+    tags:
+      - { name: nefarian.content.field }
+
+  nefarian.plugin.field_tag.field.widget.tag_autocomplete:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Field\Widget\TagAutoCompleteWidget
+    tags:
+      - { name: nefarian.content.field.widget }
+
+  nefarian.plugin.field_tag.field.display.tag:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Field\Display\TagHtmlDisplay
+    tags:
+      - { name: nefarian.content.field.display }
+
+
+  nefarian.plugin.field_tag.field.widget.tag_select:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\Field\Widget\TagSelectWidget
+    tags:
+      - { name: nefarian.content.field.widget }
+
+  #
+  # Auto Complete
+  nefarian.plugin.field_tag.form.type.tag_collection_handler:
+    class: Nefarian\CmsBundle\Plugin\FieldTag\AutoComplete\TagAutoCompleteHandler
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: auto_complete.handler }

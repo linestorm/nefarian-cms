@@ -54,6 +54,8 @@ class FieldInstallCommand extends ContainerAwareCommand
                     $fieldEntity = new Field();
                 }
                 $fieldEntity->setName($field->getName());
+                $fieldEntity->setLabel($field->getLabel());
+                $fieldEntity->setDescription($field->getDescription());
 
                 $em->persist($fieldEntity);
             }

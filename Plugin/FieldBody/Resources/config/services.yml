@@ -6,7 +6,17 @@ services:
     tags:
       - { name: nefarian.plugin }
 
-  nefarian.plugin.field_body.field.configuration:
-    class: Nefarian\CmsBundle\Plugin\FieldBody\Configuration\FieldBodyConfiguration
+  nefarian.plugin.field_body.field.text:
+    class: Nefarian\CmsBundle\Plugin\FieldBody\Field\FieldBody
     tags:
-      - { name: nefarian.configuration, config: field.body }
+      - { name: nefarian.content.field }
+
+  nefarian.plugin.field_body.field.widget.text:
+    class: Nefarian\CmsBundle\Plugin\FieldBody\Field\Widget\WidgetBody
+    tags:
+      - { name: nefarian.content.field.widget }
+
+  nefarian.plugin.field_body.field.display.text:
+    class: Nefarian\CmsBundle\Plugin\FieldBody\Field\Display\DisplayBody
+    tags:
+      - { name: nefarian.content.field.display }

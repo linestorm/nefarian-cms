@@ -6,11 +6,6 @@ services:
     tags:
       - { name: nefarian.plugin }
 
-  nefarian.plugin.field_file.field.configuration:
-    class: Nefarian\CmsBundle\Plugin\FieldFile\Configuration\FieldFileConfiguration
-    tags:
-      - { name: nefarian.configuration, config: field.file }
-
   #
   # Form Types
   nefarian.plugin.file.form_type.file_browser:
@@ -24,3 +19,19 @@ services:
     class: Nefarian\CmsBundle\Plugin\FieldFile\Form\Type\FileDropZoneType
     tags:
       - { name: form.type, alias: file_dropzone }
+
+
+  nefarian.plugin.field_file.field.file:
+    class: Nefarian\CmsBundle\Plugin\FieldFile\Field\FieldFile
+    tags:
+      - { name: nefarian.content.field }
+
+  nefarian.plugin.field_file.field.widget.dropzone:
+    class: Nefarian\CmsBundle\Plugin\FieldFile\Field\Widget\FileDropzoneWidget
+    tags:
+      - { name: nefarian.content.field.widget }
+
+  nefarian.plugin.field_file_body.field.display.gallery:
+    class: Nefarian\CmsBundle\Plugin\FieldFile\Field\Display\TagHtmlDisplay
+    tags:
+      - { name: nefarian.content.field.display }

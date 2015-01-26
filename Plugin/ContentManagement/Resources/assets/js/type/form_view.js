@@ -21,7 +21,7 @@ define(['jquery', 'jqueryui', 'bootstrap', 'bootbox', 'cms/core/api'], function 
             },
             update: function(e, ui){
                 $sortableContainer.find('tr').each(function(i,el){
-                    $(el).find('input:hidden').val(i);
+                    $(el).find('.table-sort-order input').val(i);
                 });
             }
         }).disableSelection();

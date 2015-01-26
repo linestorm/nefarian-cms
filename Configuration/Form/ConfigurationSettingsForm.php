@@ -3,6 +3,7 @@
 namespace Nefarian\CmsBundle\Configuration\Form;
 
 use Nefarian\CmsBundle\Configuration\Configuration;
+use Nefarian\CmsBundle\Configuration\ConfigurationInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -16,14 +17,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class ConfigurationSettingsForm extends AbstractType
 {
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     protected $configuration;
 
     /**
-     * @param Configuration $configuration
+     * @param ConfigurationInterface $configuration
      */
-    function __construct(Configuration $configuration)
+    function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
     }
@@ -57,7 +58,7 @@ class ConfigurationSettingsForm extends AbstractType
     }
 
     /**
-     * @return Configuration
+     * @return ConfigurationInterface
      */
     public function getConfiguration()
     {

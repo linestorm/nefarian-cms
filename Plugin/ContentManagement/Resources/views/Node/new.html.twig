@@ -9,7 +9,9 @@
 {% block head_javascripts %}
     {% set page_modules = page_modules | merge(editor.assets) %}
     {% for field in fields %}
-        {% set page_modules = page_modules | merge(field.assets) %}
+        {% for library in field.widget.assetLibraries %}
+            {% set page_modules = page_modules | merge(library.javascripts) %}
+        {% endfor %}
     {% endfor %}
     {{ parent() }}
 {% endblock %}

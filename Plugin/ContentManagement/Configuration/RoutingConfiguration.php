@@ -110,6 +110,14 @@ class RoutingConfiguration extends AbstractConfiguration
     }
 
     /**
+     * @return boolean
+     */
+    public function shouldRemovePunctuation()
+    {
+        return $this->removePunctuation;
+    }
+
+    /**
      * @param boolean $removePunctuation
      */
     public function setRemovePunctuation($removePunctuation)

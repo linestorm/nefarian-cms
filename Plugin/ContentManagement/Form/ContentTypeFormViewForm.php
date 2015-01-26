@@ -2,6 +2,7 @@
 
 namespace Nefarian\CmsBundle\Plugin\ContentManagement\Form;
 
+use Nefarian\CmsBundle\Form\Type\Table\Table;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,6 +18,9 @@ class ContentTypeFormViewForm extends AbstractType
         $builder
             ->add('typeFields', 'collection', array(
                 'type' => new ContentTypeFormViewFieldForm(),
+                'options' => array(
+                    'data_class' => 'Nefarian\CmsBundle\Plugin\ContentManagement\Entity\ContentTypeField',
+                ),
             ))
         ;
     }

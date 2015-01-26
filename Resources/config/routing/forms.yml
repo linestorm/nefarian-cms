@@ -1,0 +1,3 @@
+nefarian_form_autocomplete:
+  path: /api/forms/autocomplete/{type}
+  defaults: { _controller: NefarianCmsBundle:Api/AutoComplete:autoComplete }

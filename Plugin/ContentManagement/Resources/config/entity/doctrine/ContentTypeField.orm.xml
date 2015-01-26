@@ -9,6 +9,11 @@
             <generator strategy="AUTO" />
         </id>
 
+        <one-to-one field="viewDisplay" target-entity="ContentTypeFieldDisplay" inversed-by="typeField"  orphan-removal="true">
+        </one-to-one>
+        <one-to-one field="viewWidget" target-entity="ContentTypeFieldWidget" inversed-by="typeField" orphan-removal="true">
+        </one-to-one>
+
         <one-to-many target-entity="NodeContent" mapped-by="fieldType" field="contents" orphan-removal="true">
         </one-to-many>
 
@@ -16,6 +21,7 @@
         </many-to-one>
         <many-to-one target-entity="Field" field="field" inversed-by="typeFields" orphan-removal="true">
         </many-to-one>
+
 
     </entity>
 </doctrine-mapping>

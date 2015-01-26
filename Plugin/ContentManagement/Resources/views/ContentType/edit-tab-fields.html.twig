@@ -8,6 +8,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Type</th>
+                    <th>Form Type</th>
                     <th>Display Type</th>
                     <th>&nbsp;</th>
                 </tr>
@@ -17,18 +18,47 @@
                     {% spaceless %}
                         <tr>
                             <td><abbr title="{{ field.name }}" >{{ field.label|capitalize }}</abbr></td>
-                            <td><abbr title="Edit {{ field.label }} Settings"><a href="{{ url('nefarian_plugin_content_management_content_type_edit_field_settings', {type: contentType.name, typeField: field.name}) }}">{{ field.field.name|capitalize }}</a></abbr></td>
-                            <td></td>
+                            <td><abbr title="Edit {{ field.label }} Settings">
+                                    <a href="{{ url('nefarian_plugin_content_management_content_type_edit_field_settings', {
+                                        type: contentType.name,
+                                        typeField: field.name
+                                    }) }}">{{ field.field.label|capitalize }}</a>
+                                </abbr></td>
+                            <td>
+                                {% if field.viewWidget.config %}
+                                        <abbr title="Configure Widget Settings">
+                                            <a href="{{ url('nefarian_plugin_content_management_content_type_edit_form_view_settings', {
+                                                type: contentType.name,
+                                                typeField: field.name
+                                            }) }}">
+                                                {{ field.viewWidget.label }}
+                                            </a>
+                                    </abbr>
+                                {% else %}
+                                    {{ field.viewWidget.label }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <abbr title="Configure Display Settings"><a href="#">
+                                    {{ field.viewDisplay.label }}
+                                </a></abbr>
+                            </td>
                             <td>
                                 <div class="btn-group">
                                     <a href="{{
-                                        url('nefarian_plugin_content_management_content_type_edit_field', {type: contentType.name ,typeField: field.name})
+                                        url('nefarian_plugin_content_management_content_type_edit_field', {
+                                            type: contentType.name,
+                                            typeField: field.name
+                                        })
                                     }}" class="btn btn-default">Edit</a>
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-down"></i></button>
                                     <ul class="dropdown-menu">
                                         <li><a class="field-type-remove" href="{{
-                                            url('nefarian_api_content_management_delete_type_field', {contentType: contentType.id, contentTypeField: field.id})
-                                            }}"><i class="fa-trash-o"></i> Remove</a></li>
+                                            url('nefarian_api_content_management_delete_type_field', {
+                                                contentType: contentType.id,
+                                                contentTypeField: field.id
+                                            })
+                                        }}"><i class="fa-trash-o"></i> Remove</a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -44,6 +74,8 @@
                     </td>
                     <td>
                         {{ form_widget(form.field) }}
+                    </td>
+                    <td>
                     </td>
                     <td>
                     </td>

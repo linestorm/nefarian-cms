@@ -233,14 +233,19 @@ class PluginCompilerPass implements CompilerPassInterface
             $nefarianAssetManagerDefinition->addMethodCall('setAssets', array($assetMap));
 
             // load in all the content fields
-
-            $fieldsConfig = $plugin->getConfig($plugin::CONFIG_FIELDS);
-            $class        = 'Nefarian\CmsBundle\Content\Field\Field';
-            foreach ($fieldsConfig as $fieldName => $fieldConfig) {
-                $sId             = 'nefarian_core.content_field.' . $fieldName;
-                $fieldDefinition = $container->register($sId, $class);
-                $fieldDefinition->setArguments(array($fieldName, $fieldConfig));
+            $fields = $container->findTaggedServiceIds('nefarian.content.field');
+            foreach($fields as $sId => $def){
                 $fieldManagerDefinition->addMethodCall('addField', array(new Reference($sId)));
+            }
+
+            $fieldWidgets = $container->findTaggedServiceIds('nefarian.content.field.widget');
+            foreach($fieldWidgets as $sId => $def){
+                $fieldManagerDefinition->addMethodCall('addFieldWidget', array(new Reference($sId)));
+            }
+
+            $fieldDisplays = $container->findTaggedServiceIds('nefarian.content.field.display');
+            foreach($fieldDisplays as $sId => $def){
+                $fieldManagerDefinition->addMethodCall('addFieldDisplay', array(new Reference($sId)));
             }
 
             // add the plugin forms to the form list

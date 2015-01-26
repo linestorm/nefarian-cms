@@ -128,7 +128,6 @@ class ConfigManager
             $configEntity = new Config();
             $configEntity->setName($name);
         }
-        $configuration->setName($name);
         $configEntity->setValue(serialize($configuration));
         $this->em->persist($configEntity);
         $this->em->flush($configEntity);
@@ -151,7 +150,6 @@ class ConfigManager
     public function rename($oldName, $newName)
     {
         $oldConfig = clone $this->get($oldName);
-        $oldConfig->setName($newName);
         $this->delete($oldName);
         $this->set($newName, $oldConfig);
     }

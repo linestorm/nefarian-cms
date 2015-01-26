@@ -4,6 +4,7 @@ namespace Nefarian\CmsBundle\Plugin\ContentManagement\Configuration;
 
 use Nefarian\CmsBundle\Configuration\AbstractConfiguration;
 use Nefarian\CmsBundle\Configuration\Configuration;
+use Nefarian\CmsBundle\Plugin\ContentManagement\Configuration\Field\View\Form\FormConfigurationInterface;
 
 /**
  * Class FieldConfiguration

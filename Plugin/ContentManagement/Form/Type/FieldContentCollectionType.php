@@ -18,8 +18,6 @@ class FieldContentCollectionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        parent::buildForm($builder, $options);
         $builder->addModelTransformer(new FieldContentCollectionDataTransformer($options['type_field']));
     }
 
